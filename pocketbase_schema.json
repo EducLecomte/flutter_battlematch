@@ -1,0 +1,833 @@
+[
+  {
+    "id": "mwjoueurs000001",
+    "name": "joueurs",
+    "type": "auth",
+    "system": false,
+    "fields": [
+      {
+        "type": "text",
+        "id": "f_jnomjo00001",
+        "name": "nom",
+        "system": false,
+        "hidden": false,
+        "presentable": true,
+        "required": true,
+        "min": 1,
+        "max": 48,
+        "pattern": "",
+        "autogeneratePattern": ""
+      },
+      {
+        "type": "text",
+        "id": "f_jshortj0001",
+        "name": "short",
+        "system": false,
+        "hidden": false,
+        "presentable": true,
+        "required": true,
+        "min": 1,
+        "max": 6,
+        "pattern": "",
+        "autogeneratePattern": ""
+      },
+      {
+        "type": "autodate",
+        "id": "autodate2990389176",
+        "name": "created",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": false
+      },
+      {
+        "type": "autodate",
+        "id": "autodate3332085495",
+        "name": "updated",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": true
+      }
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.id != ''",
+    "viewRule": "@request.auth.id != ''",
+    "createRule": "",
+    "updateRule": "id = @request.auth.id",
+    "deleteRule": "id = @request.auth.id",
+    "mfa": {
+      "enabled": false,
+      "duration": 1800
+    },
+    "otp": {
+      "enabled": false,
+      "duration": 180
+    },
+    "oauth2": {
+      "enabled": false,
+      "providers": []
+    },
+    "passwordAuth": {
+      "enabled": true,
+      "identityFields": [
+        "email"
+      ]
+    },
+    "token": {
+      "secret": "",
+      "duration": 1209600
+    }
+  },
+  {
+    "id": "mwtournois00001",
+    "name": "tournois",
+    "type": "base",
+    "system": false,
+    "fields": [
+      {
+        "type": "text",
+        "id": "f_nomto000001",
+        "name": "nom",
+        "system": false,
+        "hidden": false,
+        "presentable": true,
+        "required": true,
+        "min": 1,
+        "max": 48,
+        "pattern": "",
+        "autogeneratePattern": ""
+      },
+      {
+        "type": "url",
+        "id": "f_liennr00001",
+        "name": "lien_nr",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "exceptDomains": null,
+        "onlyDomains": null
+      },
+      {
+        "type": "relation",
+        "id": "f_createdby01",
+        "name": "created_by",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "collectionId": "mwjoueurs000001",
+        "cascadeDelete": false,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "autodate",
+        "id": "autodate2990389176",
+        "name": "created",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": false
+      },
+      {
+        "type": "autodate",
+        "id": "autodate3332085495",
+        "name": "updated",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": true
+      }
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.id != ''",
+    "viewRule": "@request.auth.id != ''",
+    "createRule": "@request.auth.id != '' && created_by = @request.auth.id",
+    "updateRule": "created_by = @request.auth.id",
+    "deleteRule": "created_by = @request.auth.id"
+  },
+  {
+    "id": "mwteams00000001",
+    "name": "teams",
+    "type": "base",
+    "system": false,
+    "fields": [
+      {
+        "type": "text",
+        "id": "f_nomte000001",
+        "name": "nom",
+        "system": false,
+        "hidden": false,
+        "presentable": true,
+        "required": true,
+        "min": 1,
+        "max": 48,
+        "pattern": "",
+        "autogeneratePattern": ""
+      },
+      {
+        "type": "relation",
+        "id": "f_capitaine01",
+        "name": "capitaine_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "collectionId": "mwjoueurs000001",
+        "cascadeDelete": false,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "autodate",
+        "id": "autodate2990389176",
+        "name": "created",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": false
+      },
+      {
+        "type": "autodate",
+        "id": "autodate3332085495",
+        "name": "updated",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": true
+      }
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.id != ''",
+    "viewRule": "@request.auth.id != ''",
+    "createRule": "capitaine_id = @request.auth.id",
+    "updateRule": "capitaine_id = @request.auth.id",
+    "deleteRule": "capitaine_id = @request.auth.id"
+  },
+  {
+    "id": "mwteammembres01",
+    "name": "team_membres",
+    "type": "base",
+    "system": false,
+    "fields": [
+      {
+        "type": "relation",
+        "id": "f_teamid00001",
+        "name": "team_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "collectionId": "mwteams00000001",
+        "cascadeDelete": true,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "relation",
+        "id": "f_joueurid001",
+        "name": "joueur_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "collectionId": "mwjoueurs000001",
+        "cascadeDelete": true,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "select",
+        "id": "f_role0000001",
+        "name": "role",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "maxSelect": 1,
+        "values": [
+          "captain",
+          "player"
+        ]
+      },
+      {
+        "type": "select",
+        "id": "f_statut00001",
+        "name": "statut",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "maxSelect": 1,
+        "values": [
+          "pending",
+          "accepted"
+        ]
+      },
+      {
+        "type": "autodate",
+        "id": "autodate2990389176",
+        "name": "created",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": false
+      },
+      {
+        "type": "autodate",
+        "id": "autodate3332085495",
+        "name": "updated",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": true
+      }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_team_membre_unique` ON `team_membres` (`team_id`, `joueur_id`)"
+    ],
+    "listRule": "@request.auth.id != ''",
+    "viewRule": "@request.auth.id != ''",
+    "createRule": "@request.auth.id = team_id.capitaine_id",
+    "updateRule": "(statut = 'pending' && joueur_id = @request.auth.id) || @request.auth.id = team_id.capitaine_id",
+    "deleteRule": "joueur_id = @request.auth.id || @request.auth.id = team_id.capitaine_id"
+  },
+  {
+    "id": "mwrencontres001",
+    "name": "rencontres",
+    "type": "base",
+    "system": false,
+    "fields": [
+      {
+        "type": "relation",
+        "id": "f_tournoi0001",
+        "name": "tournoi_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "collectionId": "mwtournois00001",
+        "cascadeDelete": true,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "relation",
+        "id": "f_teamidrenco",
+        "name": "team_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "collectionId": "mwteams00000001",
+        "cascadeDelete": true,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "text",
+        "id": "f_noadv000001",
+        "name": "nom_adversaire",
+        "system": false,
+        "hidden": false,
+        "presentable": true,
+        "required": true,
+        "min": 1,
+        "max": 96,
+        "pattern": "",
+        "autogeneratePattern": ""
+      },
+      {
+        "type": "autodate",
+        "id": "autodate2990389176",
+        "name": "created",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": false
+      },
+      {
+        "type": "autodate",
+        "id": "autodate3332085495",
+        "name": "updated",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": true
+      }
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.id != ''",
+    "viewRule": "@request.auth.id != ''",
+    "createRule": "@request.auth.id = team_id.capitaine_id",
+    "updateRule": "@request.auth.id = team_id.capitaine_id",
+    "deleteRule": "@request.auth.id = team_id.capitaine_id"
+  },
+  {
+    "id": "mwarmees0000001",
+    "name": "armees",
+    "type": "base",
+    "system": false,
+    "fields": [
+      {
+        "type": "text",
+        "id": "f_nomar000001",
+        "name": "nom",
+        "system": false,
+        "hidden": false,
+        "presentable": true,
+        "required": true,
+        "min": 1,
+        "max": 32,
+        "pattern": "",
+        "autogeneratePattern": ""
+      },
+      {
+        "type": "text",
+        "id": "f_shortar0001",
+        "name": "short",
+        "system": false,
+        "hidden": false,
+        "presentable": true,
+        "required": true,
+        "min": 2,
+        "max": 3,
+        "pattern": "",
+        "autogeneratePattern": ""
+      },
+      {
+        "type": "autodate",
+        "id": "autodate2990389176",
+        "name": "created",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": false
+      },
+      {
+        "type": "autodate",
+        "id": "autodate3332085495",
+        "name": "updated",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": true
+      }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_armee_nom_unique` ON `armees` (`nom`)",
+      "CREATE UNIQUE INDEX `idx_armee_short_unique` ON `armees` (`short`)"
+    ],
+    "listRule": "",
+    "viewRule": "",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null
+  },
+  {
+    "id": "mwchoix00000001",
+    "name": "choix",
+    "type": "base",
+    "system": false,
+    "fields": [
+      {
+        "type": "text",
+        "id": "f_libelle001",
+        "name": "libelle",
+        "system": false,
+        "hidden": false,
+        "presentable": true,
+        "required": true,
+        "min": 1,
+        "max": 16,
+        "pattern": "",
+        "autogeneratePattern": ""
+      },
+      {
+        "type": "text",
+        "id": "f_shortch0001",
+        "name": "short",
+        "system": false,
+        "hidden": false,
+        "presentable": true,
+        "required": true,
+        "min": 1,
+        "max": 5,
+        "pattern": "",
+        "autogeneratePattern": ""
+      },
+      {
+        "type": "text",
+        "id": "f_couleur0001",
+        "name": "couleur_hex",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "min": 7,
+        "max": 7,
+        "pattern": "^#[0-9A-Fa-f]{6}$",
+        "autogeneratePattern": ""
+      },
+      {
+        "type": "autodate",
+        "id": "autodate2990389176",
+        "name": "created",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": false
+      },
+      {
+        "type": "autodate",
+        "id": "autodate3332085495",
+        "name": "updated",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": true
+      }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_choix_short_unique` ON `choix` (`short`)"
+    ],
+    "listRule": "",
+    "viewRule": "",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null
+  },
+  {
+    "id": "mwmetaadv000001",
+    "name": "meta_adv",
+    "type": "base",
+    "system": false,
+    "fields": [
+      {
+        "type": "relation",
+        "id": "f_rencontre01",
+        "name": "rencontre_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "collectionId": "mwrencontres001",
+        "cascadeDelete": true,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "relation",
+        "id": "f_armee000001",
+        "name": "armee_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "collectionId": "mwarmees0000001",
+        "cascadeDelete": false,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "text",
+        "id": "f_nomjoadv001",
+        "name": "nom_jo_adv",
+        "system": false,
+        "hidden": false,
+        "presentable": true,
+        "required": false,
+        "min": null,
+        "max": 48,
+        "pattern": "",
+        "autogeneratePattern": ""
+      },
+      {
+        "type": "text",
+        "id": "f_liste000001",
+        "name": "liste_adv",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "min": null,
+        "max": 0,
+        "pattern": "",
+        "autogeneratePattern": ""
+      },
+      {
+        "type": "autodate",
+        "id": "autodate2990389176",
+        "name": "created",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": false
+      },
+      {
+        "type": "autodate",
+        "id": "autodate3332085495",
+        "name": "updated",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": true
+      }
+    ],
+    "indexes": [],
+    "listRule": "@request.auth.id != ''",
+    "viewRule": "@request.auth.id != ''",
+    "createRule": "@request.auth.id = rencontre_id.team_id.capitaine_id",
+    "updateRule": "@request.auth.id = rencontre_id.team_id.capitaine_id",
+    "deleteRule": "@request.auth.id = rencontre_id.team_id.capitaine_id"
+  },
+  {
+    "id": "mwestims0000001",
+    "name": "estims",
+    "type": "base",
+    "system": false,
+    "fields": [
+      {
+        "type": "relation",
+        "id": "f_joueurest01",
+        "name": "joueur_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "collectionId": "mwjoueurs000001",
+        "cascadeDelete": true,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "relation",
+        "id": "f_rencestim01",
+        "name": "rencontre_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "collectionId": "mwrencontres001",
+        "cascadeDelete": true,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "relation",
+        "id": "f_metaadvesti",
+        "name": "meta_adv_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "collectionId": "mwmetaadv000001",
+        "cascadeDelete": true,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "relation",
+        "id": "f_choixestim01",
+        "name": "choix_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "collectionId": "mwchoix00000001",
+        "cascadeDelete": false,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "number",
+        "id": "f_scoremin001",
+        "name": "score_min",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "min": 0,
+        "max": 20,
+        "onlyInt": true
+      },
+      {
+        "type": "number",
+        "id": "f_scoremax001",
+        "name": "score_max",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "min": 0,
+        "max": 20,
+        "onlyInt": true
+      },
+      {
+        "type": "select",
+        "id": "f_confiance01",
+        "name": "confiance",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "maxSelect": 1,
+        "values": [
+          "faible",
+          "moyen",
+          "eleve"
+        ]
+      },
+      {
+        "type": "text",
+        "id": "f_commentair01",
+        "name": "commentaire",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "min": null,
+        "max": 2000,
+        "pattern": "",
+        "autogeneratePattern": ""
+      },
+      {
+        "type": "autodate",
+        "id": "autodate2990389176",
+        "name": "created",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": false
+      },
+      {
+        "type": "autodate",
+        "id": "autodate3332085495",
+        "name": "updated",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": true
+      }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_estim_unique_par_joueur_adversaire` ON `estims` (`joueur_id`, `meta_adv_id`)"
+    ],
+    "listRule": "@request.auth.id != ''",
+    "viewRule": "@request.auth.id != ''",
+    "createRule": "joueur_id = @request.auth.id",
+    "updateRule": "joueur_id = @request.auth.id",
+    "deleteRule": "joueur_id = @request.auth.id"
+  },
+  {
+    "id": "mwmatched000001",
+    "name": "matched",
+    "type": "base",
+    "system": false,
+    "fields": [
+      {
+        "type": "relation",
+        "id": "f_rencomatch1",
+        "name": "rencontre_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "collectionId": "mwrencontres001",
+        "cascadeDelete": true,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "relation",
+        "id": "f_joueumatch1",
+        "name": "joueur_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "collectionId": "mwjoueurs000001",
+        "cascadeDelete": true,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "relation",
+        "id": "f_metamatch01",
+        "name": "meta_adv_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "collectionId": "mwmetaadv000001",
+        "cascadeDelete": true,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "autodate",
+        "id": "autodate2990389176",
+        "name": "created",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": false
+      },
+      {
+        "type": "autodate",
+        "id": "autodate3332085495",
+        "name": "updated",
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "onCreate": true,
+        "onUpdate": true
+      }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_matched_un_appariement_par_joueur` ON `matched` (`rencontre_id`, `joueur_id`)",
+      "CREATE UNIQUE INDEX `idx_matched_un_appariement_par_adversaire` ON `matched` (`rencontre_id`, `meta_adv_id`)"
+    ],
+    "listRule": "@request.auth.id != ''",
+    "viewRule": "@request.auth.id != ''",
+    "createRule": "@request.auth.id = rencontre_id.team_id.capitaine_id",
+    "updateRule": "@request.auth.id = rencontre_id.team_id.capitaine_id",
+    "deleteRule": "@request.auth.id = rencontre_id.team_id.capitaine_id"
+  }
+]
