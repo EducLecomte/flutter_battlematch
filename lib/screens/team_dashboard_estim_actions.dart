@@ -34,9 +34,10 @@ class TeamDashboardEstimActions {
           opponent: opponent,
           listChoix: dashboardController.choiceList,
           currentEstim: currentEstim,
-          onSave: (newEstim) async {
-            await _pocketbaseService.saveEstim(newEstim);
-          },
+           onSave: (newEstim) async {
+             await _pocketbaseService.saveEstim(newEstim);
+             return null;
+           },
         );
       },
     );
@@ -49,8 +50,10 @@ class TeamDashboardEstimActions {
     MetaAdv opponent,
     Estim estim,
   ) {
-    final choice = dashboardController.choiceList
-        .firstWhere((choiceItem) => choiceItem.id == estim.choixId);
+    final choice = AppreciationScale.choiceById(
+      dashboardController.choiceList,
+      estim.choixId,
+    );
     showEstimDetailsSheet(
       context,
       joueur: player,

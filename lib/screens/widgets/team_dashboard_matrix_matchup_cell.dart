@@ -1,14 +1,28 @@
 // ===========================================================================
 // Cellule de matchup de la matrice (team_dashboard_matrix_matchup_cell.dart)
 // Affiche pour un couple (joueur, adversaire) : le verrou d'appariement,
-// le blocage d'un partenaire déjà apparié, ou l'estimation colorée.
+// le blocage d'un partenaire déjà apparié, l'appréciation générale (Dicy en
+// gris si absente), la fourchette du score estimé et l'étoile de confiance.
 // ===========================================================================
 
 import 'package:flutter/material.dart';
 
+import '../../logic/estim_score_calculator.dart';
 import '../../models/models.dart';
+import '../../utils/hex_color_parser.dart';
+import 'confiance_star_icon.dart';
 
 class MatrixMatchupCell extends StatelessWidget {
+  static const double matchupCellHeight = 64;
+  static const double matchedLockIconSize = 14;
+  static const double detailElementSpacing = 4;
+  static const double detailLineSpacing = 2;
+  static const double matchedScoreFontSize = 10;
+  static const double appreciationFontSize = 13;
+  static const double confidenceIconSize = 12;
+  static const double unknownAppreciationBackgroundOpacity = 0.1;
+  static const Color dicySymbolColor = Colors.grey;
+
   final Estim? existingEstim;
   final Choix? selectedChoice;
   final bool isThisMatched;
@@ -31,32 +45,34 @@ class MatrixMatchupCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final currentEstim = existingEstim;
+    final matchedScoreLabel =
+        EstimScoreCalculator.scoreRangeLabel(currentEstim);
+    final hasKnownAppreciation = currentEstim != null && selectedChoice != null;
+    final appreciationLabel = hasKnownAppreciation
+        ? selectedChoice!.short
+        : AppreciationScale.dicyLabel;
+    final knownAppreciationColor = HexColorParser.parseHexadecimalColor(
+      selectedChoice?.couleurHex ?? '',
+    );
+    final isCellBlocked =
+        isPlayerMatchedElsewhere || isOpponentMatchedElsewhere;
 
-    // Style de la cellule
     Color cellColor = Colors.transparent;
-    String textToShow = '-';
-    Color textColor =
-        theme.textTheme.bodyMedium?.color ?? Colors.white;
+    Color textColor = dicySymbolColor;
 
     if (isThisMatched) {
-      // Cas 1 : Appariement validé par le capitaine -> Cellule noire
       cellColor = Colors.black87;
-      textToShow = "MATCH";
       textColor = Colors.white;
-    } else if (isPlayerMatchedElsewhere || isOpponentMatchedElsewhere) {
-      // Cas 2 : Le joueur ou l'adversaire est apparié dans un autre duel
-      // -> Case grisée/bloquée
+    } else if (isCellBlocked) {
       cellColor = theme.disabledColor.withValues(alpha: 0.05);
-      textToShow = '';
       textColor = Colors.grey;
-    } else if (existingEstim != null && selectedChoice != null) {
-      // Cas 3 : Une estimation valide existe -> On colore la cellule
-      final choice = selectedChoice!;
-      cellColor = Color(
-        int.parse(choice.couleurHex.replaceFirst('#', '0xFF')),
-      );
-      textToShow = choice.short;
+    } else if (hasKnownAppreciation && knownAppreciationColor != null) {
+      cellColor = knownAppreciationColor;
       textColor = Colors.white;
+    } else if (currentEstim != null) {
+      cellColor = theme.disabledColor
+          .withValues(alpha: unknownAppreciationBackgroundOpacity);
     }
 
     return TableCell(
@@ -64,34 +80,57 @@ class MatrixMatchupCell extends StatelessWidget {
       child: Material(
         color: cellColor,
         child: InkWell(
-          onTap: () => onCellTap(existingEstim),
-          onLongPress: () => onCellLongPress(existingEstim),
+          onTap: () => onCellTap(currentEstim),
+          onLongPress: () => onCellLongPress(currentEstim),
           child: Container(
-            height: 48,
+            height: matchupCellHeight,
             alignment: Alignment.center,
-            child: isThisMatched
-                ? const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+            child: isCellBlocked
+                ? const SizedBox.shrink()
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.lock, color: Colors.white, size: 14),
-                      SizedBox(width: 4),
-                      Text(
-                        "MATCH",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (isThisMatched) ...[
+                            Icon(
+                              Icons.lock,
+                              color: textColor,
+                              size: matchedLockIconSize,
+                            ),
+                            const SizedBox(width: detailElementSpacing),
+                          ],
+                          Text(
+                            appreciationLabel,
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: appreciationFontSize,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          if (currentEstim != null) ...[
+                            const SizedBox(width: detailElementSpacing),
+                            ConfidenceStarIcon(
+                              confidenceLevel: currentEstim.confiance,
+                              iconSize: confidenceIconSize,
+                            ),
+                          ],
+                        ],
                       ),
+                      if (matchedScoreLabel != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: detailLineSpacing),
+                          child: Text(
+                            matchedScoreLabel,
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: matchedScoreFontSize,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                     ],
-                  )
-                : Text(
-                    textToShow,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
-                      fontSize: 14,
-                    ),
                   ),
           ),
         ),

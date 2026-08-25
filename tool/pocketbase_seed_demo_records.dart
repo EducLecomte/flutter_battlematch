@@ -21,6 +21,7 @@
 import 'dart:io';
 
 import 'package:flutter_metawar/config/app_config.dart';
+import 'package:flutter_metawar/models/appreciation_scale.dart';
 import 'package:pocketbase/pocketbase.dart';
 
 /// Nom de la collection d'authentification des super-utilisateurs PocketBase.
@@ -28,6 +29,13 @@ const String collectionNameSuperusers = '_superusers';
 
 /// Mot de passe commun aux comptes de démonstration (longueur >= minimum PB).
 const String motDePasseDemonstration = 'DemoMetaWar2026';
+
+/// Bornes déterministes des scores de démonstration.
+const int scoreMinimuDemonstration = 8;
+const int pasScoreMinimuDemonstration = 3;
+const int amplitudeScoreMinimuDemonstration = 7;
+const int incrementScoreMaximumDemonstration = 1;
+const int amplitudeScoreMaximumDemonstration = 5;
 
 /// Comptes joueurs de démonstration (upsert par email).
 const List<Map<String, String>> referentielJoueursDemo = [
@@ -120,9 +128,6 @@ const List<String> commentairesEstimation = [
   'Unités volantes dangereuses pour nos machines de guerre.',
 ];
 
-/// Niveaux de confiance attribués cycliquement.
-const List<String> niveauxConfiance = ['moyen', 'eleve', 'faible'];
-
 Future<void> main(List<String> arguments) async {
   final String? emailSuperuser = _extraireValeurArgument(arguments, '--email') ??
       Platform.environment['PB_SUPERUSER_EMAIL'];
@@ -162,6 +167,15 @@ Future<void> main(List<String> arguments) async {
     };
     final List<RecordModel> choix =
         await clientPocketBase.collection(collectionNameChoix).getFullList(sort: 'short');
+    final List<RecordModel> choixAppreciation =
+        _filtrerAppreciationsFixes(choix);
+    if (choixAppreciation.isEmpty) {
+      stderr.writeln(
+        'Aucune appréciation fixe trouvée. '
+        'Exécuter d’abord tool/pocketbase_seed_records.dart.',
+      );
+      exit(67);
+    }
 
     // --- Comptes joueurs de démonstration -------------------------------------
     final Map<String, RecordModel> joueursDemoParEmail = {};
@@ -309,17 +323,24 @@ Future<void> main(List<String> arguments) async {
           );
           if (estimExistante != null) continue;
 
-          final int scoreMin = 8 + ((indexJoueur + indexAdv) * 3) % 7;
-          final int scoreMax = (scoreMin + 1 + ((indexJoueur * indexAdv) % 5))
-              .clamp(scoreMin, 20);
+          final int scoreMin = scoreMinimuDemonstration +
+              ((indexJoueur + indexAdv) * pasScoreMinimuDemonstration) %
+                  amplitudeScoreMinimuDemonstration;
+          final int scoreMax = (scoreMin +
+                  incrementScoreMaximumDemonstration +
+                  (indexJoueur * indexAdv) %
+                      amplitudeScoreMaximumDemonstration)
+              .clamp(scoreMin, estimScoreMaximum);
           await clientPocketBase.collection(collectionNameEstims).create(body: {
             'joueur_id': estimateur.id,
             'rencontre_id': rencontre.id,
             'meta_adv_id': adversaire.id,
-            'choix_id': choix[(indexJoueur * 2 + indexAdv) % choix.length].id,
+            'choix_id':
+                choixAppreciation[(indexJoueur * 2 + indexAdv) % choixAppreciation.length].id,
             'score_min': scoreMin,
             'score_max': scoreMax,
-            'confiance': niveauxConfiance[(indexJoueur + indexAdv) % niveauxConfiance.length],
+            'confiance':
+                estimConfianceOptions[(indexJoueur + indexAdv) % estimConfianceOptions.length],
             'commentaire': commentairesEstimation[(indexJoueur * 2 + indexAdv) % commentairesEstimation.length],
           });
           nombreEstimsCreees++;
@@ -395,6 +416,27 @@ Future<RecordModel?> _rechercherPremier(
     return null;
   }
   return resultats.first;
+}
+
+/// Filtre les 7 appréciations fixes et les trie selon l'échelle d'estimation.
+List<RecordModel> _filtrerAppreciationsFixes(List<RecordModel> choixBruts) {
+  final List<RecordModel> choixAppreciation = choixBruts
+      .where(
+        (choix) =>
+            AppreciationScale.fixedCodes
+                .contains(choix.data['short'] as String),
+      )
+      .toList();
+
+  choixAppreciation.sort(
+    (choixGauche, choixDroit) => AppreciationScale.fixedCodes
+        .indexOf(choixGauche.data['short'] as String)
+        .compareTo(
+          AppreciationScale.fixedCodes.indexOf(choixDroit.data['short'] as String),
+        ),
+  );
+
+  return choixAppreciation;
 }
 
 /// Indique si l'enregistrement vient d'être créé (créé à l'instant par ce run).

@@ -116,9 +116,9 @@ flutter analyze           # analyse statique
 - Inscription/connexion joueurs (collection dédiée `joueurs`, session web persistante)
 - Tournois → Équipes (invitations pending/accepted, recherche de joueurs)
 - Rencontres (rondes) par équipe et tournoi
-- Matrice d'estimation temps réel joueur × adversaire (6 choix colorés,
-  scores 20-0, confiance, commentaires)
+- Matrice d'estimation temps réel joueur × adversaire (7 appréciations fixes,
+  symbole `Dicy` en gris, scores 20-0, confiance, commentaires)
 - Mode Capitaine : appariements verrouillés (un duel unique par joueur
   ET par adversaire, garanti par index uniques serveur)
-- Import New Recruit : appel API direct depuis le navigateur ou copier/coller
-  JSON/texte (fallback)
+- Import tournoi : texte ou JSON depuis l'écran Équipes, avec création des
+  rencontres et des adversaires, et comptage des armées inconnues

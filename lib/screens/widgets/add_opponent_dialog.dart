@@ -52,6 +52,7 @@ class _AddOpponentDialogState extends State<AddOpponentDialog> {
         _armyListController.text.trim(),
         selectedArmy,
       );
+      if (!mounted) return;
       final messenger = ScaffoldMessenger.of(context);
       Navigator.of(context).pop();
       messenger.showSnackBar(

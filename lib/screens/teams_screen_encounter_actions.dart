@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import '../models/models.dart';
 import '../services/pocketbase_data_service.dart';
+import '../services/tournament_text_import_service.dart';
 import 'teams_screen_controller.dart';
 import 'widgets/rencontre_delete_confirmation.dart';
 import 'widgets/tournament_text_import_launcher.dart';
@@ -69,25 +70,38 @@ class TeamsScreenEncounterActions {
     }
   }
 
-  // Lance l'import texte d'un tournoi pour la rencontre donnée, puis
-  // recharge la liste des rencontres.
+  // Lance l'import texte d'un tournoi pour l'équipe active, puis recharge
+  // la liste des rencontres.
   Future<void> importTournamentText(
     BuildContext context,
-    Rencontre selectedEncounter,
     VoidCallback onStateChanged,
   ) async {
+    final Team? activeTeam = controller.activeTeam;
+    if (activeTeam == null) {
+      showSnackBar(context, "Aucune équipe active pour importer le tournoi.");
+      return;
+    }
+
     try {
-      final bool importCompleted = await showTournamentTextImportDialog(
+      final TournamentTextImportSummary? importSummary =
+          await showTournamentTextImportDialog(
         context: context,
-        encounterId: selectedEncounter.id,
+        tournoiId: controller.tournoiId,
+        targetTeamId: activeTeam.id,
+        targetTeamName: activeTeam.nom,
         loadReferenceArmies: controller.loadReferenceArmies,
       );
 
-      if (!context.mounted) return;
+      if (!context.mounted || importSummary == null) return;
       await loadEncounters(context, onStateChanged);
-      if (importCompleted && context.mounted) {
-        showSnackBar(context, "Import terminé.",
-            backgroundColor: Colors.green);
+      if (context.mounted) {
+        showSnackBar(
+          context,
+          _formatImportSummary(importSummary),
+          backgroundColor: importSummary.unknownArmyCount > 0
+              ? Colors.amber
+              : Colors.green,
+        );
       }
     } catch (exceptionImport) {
       if (context.mounted) {
@@ -95,7 +109,11 @@ class TeamsScreenEncounterActions {
       }
     }
   }
-
+  String _formatImportSummary(TournamentTextImportSummary importSummary) {
+    return "Import terminé : ${importSummary.createdEncounterCount} "
+        "rencontre(s), ${importSummary.createdOpponentCount} joueur(s), "
+        "${importSummary.unknownArmyCount} armée(s) inconnue(s).";
+  }
   // Supprime la rencontre après confirmation.
   Future<void> deleteEncounter(
     BuildContext context,

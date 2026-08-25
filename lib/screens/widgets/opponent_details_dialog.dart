@@ -59,6 +59,7 @@ Future<void> showOpponentDetailsDialog(
           if (canDelete)
             TextButton.icon(
               onPressed: () async {
+                final navigator = Navigator.of(dialogContext);
                 final confirmed = await showDialog<bool>(
                   context: dialogContext,
                   builder: (confirmationContext) => AlertDialog(
@@ -85,7 +86,7 @@ Future<void> showOpponentDetailsDialog(
                 );
 
                 if (confirmed == true) {
-                  Navigator.of(dialogContext).pop(); // Fermer la modale actuelle
+                  navigator.pop(); // Fermer la modale actuelle
                   await onDelete();
                 }
               },

@@ -2,19 +2,22 @@ import 'package:flutter/material.dart';
 
 import '../../models/models.dart';
 import '../../services/new_recruit_import_service.dart';
-import '../../services/pocketbase_data_service.dart';
+import '../../services/tournament_text_import_service.dart';
 import 'tournament_text_import_action_bar.dart';
 import 'tournament_text_import_analysis_section.dart';
-import 'tournament_text_import_team_selector.dart';
 
 class TournamentTextImportDialog extends StatefulWidget {
-  final String encounterId;
+  final String tournoiId;
+  final String targetTeamId;
+  final String targetTeamName;
   final List<Armee> referenceArmies;
-  final VoidCallback onImportCompleted;
+  final ValueChanged<TournamentTextImportSummary> onImportCompleted;
 
   const TournamentTextImportDialog({
     super.key,
-    required this.encounterId,
+    required this.tournoiId,
+    required this.targetTeamId,
+    required this.targetTeamName,
     required this.referenceArmies,
     required this.onImportCompleted,
   });
@@ -29,12 +32,14 @@ class _TournamentTextImportDialogState
   late final TextEditingController _pasteController;
   List<Map<String, dynamic>> _importedPlayers = [];
   List<String> _detectedTeamNames = [];
-  String? _selectedTeamName;
   bool _isLoading = false;
   String? _errorMessage;
 
   @override
-  void initState() { super.initState(); _pasteController = TextEditingController(); }
+  void initState() {
+    super.initState();
+    _pasteController = TextEditingController();
+  }
 
   @override
   void dispose() {
@@ -54,44 +59,39 @@ class _TournamentTextImportDialogState
       return;
     }
 
-    final List<String> teamNames = players
-        .map((player) => player['teamName'] as String)
-        .toSet()
-        .toList();
-
     setState(() {
       _errorMessage = null;
       _importedPlayers = players;
-      _detectedTeamNames = teamNames;
-      _selectedTeamName = teamNames.isNotEmpty ? teamNames.first : null;
+      _detectedTeamNames = players
+          .map((player) => player['teamName'] as String)
+          .toSet()
+          .toList();
     });
   }
 
   Future<void> _confirmImport() async {
-    if (_selectedTeamName == null || _importedPlayers.isEmpty) return;
-
+    if (_importedPlayers.isEmpty) return;
     setState(() => _isLoading = true);
 
     try {
-      final List<Map<String, dynamic>> selectedPlayers = _importedPlayers
-          .where((player) => player['teamName'] == _selectedTeamName)
-          .toList();
+      final TournamentTextImportSummary importSummary =
+          await TournamentTextImportService.instance.importTournamentText(
+        tournoiId: widget.tournoiId,
+        targetTeamId: widget.targetTeamId,
+        targetTeamName: widget.targetTeamName,
+        importedPlayers: _importedPlayers,
+        referenceArmies: widget.referenceArmies,
+      );
 
-      for (final Map<String, dynamic> player in selectedPlayers) {
-        final Armee? resolvedArmy = NewRecruitImportService.instance
-            .findArmeeByName(player['armyName'] as String, widget.referenceArmies);
-
-        if (resolvedArmy == null) continue;
-
-        await PocketbaseDataService.instance.createOpponent(
-          widget.encounterId,
-          resolvedArmy.id,
-          player['playerName'] as String,
-          player['listText'] as String,
-        );
+      if (importSummary.createdEncounterCount == 0) {
+        if (mounted) {
+          setState(() => _errorMessage =
+              "Aucune équipe détectée à importer pour ce tournoi.");
+        }
+        return;
       }
 
-      widget.onImportCompleted();
+      widget.onImportCompleted(importSummary);
       if (mounted) Navigator.of(context).pop();
     } catch (exceptionImport) {
       if (mounted) setState(() => _errorMessage = 'Erreur : $exceptionImport');
@@ -99,10 +99,6 @@ class _TournamentTextImportDialogState
       if (mounted) setState(() => _isLoading = false);
     }
   }
-
-  int get _selectedPlayerCount => _importedPlayers
-      .where((player) => player['teamName'] == _selectedTeamName)
-      .length;
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +111,8 @@ class _TournamentTextImportDialogState
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text('Importer un tournoi depuis un texte',
+              const Text(
+                  'Importer un tournoi depuis un texte',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 12),
               TournamentTextImportAnalysisSection(
@@ -125,18 +122,16 @@ class _TournamentTextImportDialogState
               ),
               if (_importedPlayers.isNotEmpty) ...[
                 const SizedBox(height: 16),
-                TournamentTextImportTeamSelector(
-                  availableTeamNames: _detectedTeamNames,
-                  selectedTeamName: _selectedTeamName,
-                  playerCountForSelectedTeam: _selectedPlayerCount,
-                  onTeamChanged: (teamName) =>
-                      setState(() => _selectedTeamName = teamName),
+                Text(
+                  '${_detectedTeamNames.length} équipe(s) et '
+                  '${_importedPlayers.length} joueur(s) prêts à importer. '
+                  'L\'équipe cible « ${widget.targetTeamName} » est ignorée.',
                 ),
               ],
               const SizedBox(height: 20),
               TournamentTextImportActionBar(
                 isLoading: _isLoading,
-                canImport: _selectedTeamName != null,
+                canImport: _importedPlayers.isNotEmpty,
                 onCancel: () => Navigator.of(context).pop(),
                 onImport: _confirmImport,
               ),

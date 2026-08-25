@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../config/app_config.dart';
 import '../../models/models.dart';
 import '../team_dashboard_estim_actions.dart';
 import 'team_dashboard_matrix_matchup_cell.dart';
@@ -74,15 +75,17 @@ class MatrixPlayerRow {
     MetaAdv opponent,
   ) {
     // Estimation réelle de ce joueur sur cet adversaire (null si vide)
-    final existingEstim =
-        estimParJoueurEtAdversaire['${player.id}_${opponent.id}'];
+    final existingEstim = estimParJoueurEtAdversaire[
+      '${player.id}$dashboardEstimKeySeparator${opponent.id}'
+    ];
 
     return MatrixMatchupCell(
       existingEstim: existingEstim,
       selectedChoice:
           existingEstim == null ? null : choixParId[existingEstim.choixId],
-      isThisMatched: pairesJoueurAdversaireAppariees
-          .contains('${player.id}_${opponent.id}'),
+      isThisMatched: pairesJoueurAdversaireAppariees.contains(
+        '${player.id}$dashboardEstimKeySeparator${opponent.id}',
+      ),
       isPlayerMatchedElsewhere: joueurIdsApparies.contains(player.id),
       isOpponentMatchedElsewhere:
           adversaireIdsApparies.contains(opponent.id),

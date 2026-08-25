@@ -6,7 +6,6 @@ class TeamsScreenEncounterList extends StatelessWidget {
   final Team? activeTeam;
   final List<Rencontre> availableEncounters;
   final ValueChanged<Rencontre> onEncounterSelected;
-  final ValueChanged<Rencontre> onImportTournamentText;
   final ValueChanged<Rencontre> onDeleteRequested;
 
   const TeamsScreenEncounterList({
@@ -14,7 +13,6 @@ class TeamsScreenEncounterList extends StatelessWidget {
     required this.activeTeam,
     required this.availableEncounters,
     required this.onEncounterSelected,
-    required this.onImportTournamentText,
     required this.onDeleteRequested,
   });
 
@@ -38,7 +36,6 @@ class TeamsScreenEncounterList extends StatelessWidget {
         return RencontreListTile(
           encounter: selectedEncounter,
           onOpenDashboard: () => onEncounterSelected(selectedEncounter),
-          onImportTournamentText: () => onImportTournamentText(selectedEncounter),
           onDeleteRequested: () => onDeleteRequested(selectedEncounter),
         );
       },

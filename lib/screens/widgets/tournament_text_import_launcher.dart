@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
+
 import '../../models/models.dart';
+import '../../services/tournament_text_import_service.dart';
 import 'tournament_text_import_dialog.dart';
 
-Future<bool> showTournamentTextImportDialog({
+Future<TournamentTextImportSummary?> showTournamentTextImportDialog({
   required BuildContext context,
-  required String encounterId,
+  required String tournoiId,
+  required String targetTeamId,
+  required String targetTeamName,
   required Future<List<Armee>> Function() loadReferenceArmies,
 }) async {
   final List<Armee> referenceArmies = await loadReferenceArmies();
-  if (!context.mounted) return false;
+  if (!context.mounted) return null;
 
-  bool importCompleted = false;
+  TournamentTextImportSummary? importSummary;
   await showDialog(
     context: context,
     builder: (dialogContext) => TournamentTextImportDialog(
-      encounterId: encounterId,
+      tournoiId: tournoiId,
+      targetTeamId: targetTeamId,
+      targetTeamName: targetTeamName,
       referenceArmies: referenceArmies,
-      onImportCompleted: () => importCompleted = true,
+      onImportCompleted: (summary) => importSummary = summary,
     ),
   );
 
-  return importCompleted;
+  return importSummary;
 }

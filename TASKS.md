@@ -29,8 +29,8 @@ lib/
   screens/...                # inchangés sauf imports
 
 Collections PB : joueurs (auth DÉDIÉE — users natif intouché), tournois,
-teams, team_membres, rencontres, armees(16 seed), choix(6 seed),
-meta_adv, estims, matched.
+teams, team_membres, rencontres, armees(16 seed), choix(7 appréciations
+fixes), meta_adv, estims, matched.
 
 ## Missions
 
@@ -126,6 +126,37 @@ meta_adv, estims, matched.
       préexistantes (add_opponent_dialog 55/56, opponent_details_dialog 88 —
       use_build_context_synchronously, hors périmètre M8), build web OK,
       flutter test 10/10 (parser import txt inclus)
+- [x] M8.11 Échelle fixe à 7 appréciations + agrégats de score appariements
+      → `AppreciationScale` (7 codes, recherche par code/id, tri/filtre),
+      `HexColorParser` (couleurs sans exception), `EstimScoreCalculator`
+      (midpoint + label), `MatchedScoreSummaryCalculator` (total/moyenne),
+      `EstimDialogController` (état/sauvegarde isolés), bandeau
+      `TeamDashboardScoreSummary`, cellules matrice sécurisées,
+      seed de référence 7 niveaux, seed demo filtré sur l’échelle fixe,
+      4 fichiers de tests unitaires helpers
+      → 2026-08-24 : analyze 0 erreur / 0 warning / 3 infos
+       préexistantes, build web OK, flutter test 21/21
+
+### M9 — Appréciation Dicy, matrice enrichie et import tournoi
+- [x] M9.1 Ajouter `Dicy` comme symbole d'appréciation générale absente
+      (`AppreciationScale.dicyLabel`) et l'afficher en gris dans la matrice
+- [x] M9.2 Enrichir `team_dashboard_matrix_matchup_cell.dart` avec :
+      appréciation générale, fourchette du score estimé et étoile de confiance
+      (`confiance_star_icon.dart`)
+- [x] M9.3 Déplacer l'import du fichier de tournoi au niveau `TeamsScreen`
+      (bouton AppBar, `TeamsScreenController.activeTeam`, sans `encounterId`)
+- [x] M9.4 Créer `tournament_text_import_service.dart` :
+      une rencontre par équipe détectée, adversaires créés, armées inconnues
+      comptées, résumé `TournamentTextImportSummary` affiché dans un snackbar
+- [x] M9.5 Corriger le parseur des lignes dash :
+      `Équipe - JoueurA/JoueurB` reste un bloc équipe/joueurs combinés,
+      toute autre ligne dash devient une ligne joueur/armée
+      (armée connue ou inconnue) + test dédié
+- [x] M9.6 Checkup et corrections :
+      BuildContext after async gap, sélection d'équipe sans `!`,
+      import New Recruit bloqué si toutes les armées sont inconnues
+- [x] M9.7 Validation 2026-08-25 :
+      `flutter analyze` sans problème, `flutter test` 22/22, `flutter build web` OK
 
 ## Journal erreurs/découvertes
 [Date | Problème | Cause racine | Règle préventive]
@@ -178,4 +209,10 @@ meta_adv, estims, matched.
   trous volontaires, 1 appariement exemple ; le superuser contourne les
   règles API PB (écritures inter-utilisateurs possibles pour le seed) |
   pour peupler des données réalistes multi-joueurs, passer par le token
-  _superusers plutôt que dupliquer la logique de règles côté client
+   _superusers plutôt que dupliquer la logique de règles côté client
+- 2026-08-24 | Ancienne échelle à 6 niveaux incohérente avec la nouvelle
+  échelle fixe à 7 niveaux | le référentiel `choix` doit être la source
+  unique de l'échelle | seed `tool/pocketbase_seed_records.dart` réécrit
+  avec 7 records fixes ; `AppreciationScale.scaleChoices` filtre les codes
+  inconnus dans l'UI ; les anciens records restent orphelins tant qu'un
+  superuser n'exécute pas le seed

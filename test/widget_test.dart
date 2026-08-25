@@ -1,7 +1,6 @@
 // ===========================================================================
 // Tests unitaires des modèles de données MetaWar.
-// Vérifie les conversions RecordModel PocketBase ↔ objets Dart
-// ainsi que les constantes sentinelles utilisées par la matrice.
+// Vérifie les conversions RecordModel PocketBase ↔ objets Dart.
 // ===========================================================================
 
 import 'package:flutter_test/flutter_test.dart';
@@ -84,11 +83,6 @@ void main() {
       expect(estim.scoreMax, isNull);
       expect(estim.confiance, 'moyen');
       expect(estim.commentaire, isNull);
-    });
-
-    test('les sentinelles de la matrice sont bien définies', () {
-      expect(choixEstimationInexistanteId, isNotEmpty);
-      expect(choixEstimationDefautId, isNot(choixEstimationInexistanteId));
     });
   });
 

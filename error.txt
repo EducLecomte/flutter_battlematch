@@ -1,0 +1,1 @@
+Échec de la sauvegarde : ClientException: {url: https://metabase.pedagogeek.fr/api/collections/estims/records, isAbort: false, statusCode: 400, response: {data: {}, message: Failed to create record., status: 400}, originalError: null}a

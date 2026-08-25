@@ -154,6 +154,8 @@ class ImportNewRecruitController {
     statusText = "Insertion des adversaires dans PocketBase...";
     onStateChanged();
 
+    int importedPlayerCount = 0;
+
     try {
       for (final player in playersOfSelectedTeam()) {
         // Résolution de l'armée par le nom fourni par New Recruit
@@ -177,6 +179,11 @@ class ImportNewRecruitController {
           player['playerName'] as String,
           player['listText'] as String,
         );
+        importedPlayerCount += 1;
+      }
+
+      if (importedPlayerCount == 0) {
+        return 'Aucune liste importée : toutes les armées sont inconnues.';
       }
 
       onImportCompleted();

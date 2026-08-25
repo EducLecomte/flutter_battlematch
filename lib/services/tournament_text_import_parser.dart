@@ -62,14 +62,14 @@ class TournamentTextImportParser {
         final (String? leftPart, String? rightPart) = _splitDash(line);
 
         if (leftPart != null && rightPart != null) {
-          if (_isPlayerDashLine(leftPart, rightPart, referenceArmies)) {
-            currentPlayerName = leftPart;
-            currentArmyName = rightPart;
-            hasActivePlayer = true;
-          } else {
+          if (rightPart.contains('/')) {
             currentTeamName = leftPart;
             pendingPlayerName = rightPart;
             currentPlayerName = rightPart;
+          } else {
+            currentPlayerName = leftPart;
+            currentArmyName = rightPart;
+            hasActivePlayer = true;
           }
         } else if (pendingPlayerName.isNotEmpty) {
           currentArmyName = line;
@@ -96,19 +96,4 @@ class TournamentTextImportParser {
     if (match == null) return (null, null);
     return (match.group(1)!.trim(), match.group(2)!.trim());
   }
-
-  bool _isPlayerDashLine(
-    String leftPart,
-    String rightPart,
-    List<Armee> referenceArmies,
-  ) {
-    if (rightPart.contains('/')) return false;
-    if (leftPart.contains('(')) return true;
-    return _isArmy(rightPart, referenceArmies);
-  }
-
-  bool _isArmy(String candidateArmyName, List<Armee> referenceArmies) =>
-      NewRecruitImportService.instance
-              .findArmeeByName(candidateArmyName, referenceArmies) !=
-          null;
 }

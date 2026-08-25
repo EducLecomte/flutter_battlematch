@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../config/app_config.dart';
 import '../../models/models.dart';
 import '../team_dashboard_controller.dart';
 import '../team_dashboard_estim_actions.dart';
@@ -48,7 +49,8 @@ class TeamDashboardMatrix extends StatelessWidget {
     // firstWhere/any coûteux relancés pour chaque cellule.
     final Map<String, Estim> estimParJoueurEtAdversaire = {
       for (final estim in estims)
-        '${estim.joueurId}_${estim.metaAdvId}': estim,
+        '${estim.joueurId}$dashboardEstimKeySeparator${estim.metaAdvId}':
+            estim,
     };
     final Set<String> joueurIdsApparies = {
       for (final appariement in matches) appariement.joueurId,
@@ -58,7 +60,7 @@ class TeamDashboardMatrix extends StatelessWidget {
     };
     final Set<String> pairesJoueurAdversaireAppariees = {
       for (final appariement in matches)
-        '${appariement.joueurId}_${appariement.metaAdvId}',
+        '${appariement.joueurId}$dashboardEstimKeySeparator${appariement.metaAdvId}',
     };
     final Map<String, Choix> choixParId = {
       for (final choix in controller.choiceList) choix.id: choix,

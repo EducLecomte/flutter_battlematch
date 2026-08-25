@@ -1,6 +1,7 @@
 /// Barrel des modèles de données (collections PocketBase).
 library;
 
+export 'appreciation_scale.dart';
 export 'armee.dart';
 export 'choix.dart';
 export 'estim.dart';

@@ -2,14 +2,6 @@
 
 import 'package:pocketbase/pocketbase.dart';
 
-/// Identifiant sentinelle signifiant "aucun choix d'estimation sélectionné".
-/// Utilisé par la matrice du tableau de bord pour repérer les cellules vides.
-const String choixEstimationInexistanteId = '0';
-
-/// Identifiant du choix d'estimation pré-sélectionné à l'ouverture du
-/// formulaire ("Entre 5 et 7" dans le référentiel `choix`).
-const String choixEstimationDefautId = '3';
-
 class Choix {
   final String id;
   final String libelle; // "Entre 8 et 12"

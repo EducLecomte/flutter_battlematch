@@ -68,10 +68,11 @@ class TeamManagementController {
     try {
       final newTeam = await _pocketbaseService.createTeam(teamName);
       await loadInitialData();
-      selectedTeam = teams.firstWhere(
+      final Team newlyCreatedTeam = teams.firstWhere(
         (team) => team.id == newTeam.id,
-        orElse: () => selectedTeam!,
+        orElse: () => selectedTeam ?? newTeam,
       );
+      selectedTeam = newlyCreatedTeam;
       await loadMembersForSelectedTeam();
       return null;
     } catch (createError) {

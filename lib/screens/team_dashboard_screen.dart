@@ -12,7 +12,6 @@ import 'team_dashboard_controller.dart';
 import 'team_dashboard_estim_actions.dart';
 import 'widgets/add_opponent_dialog.dart';
 import 'widgets/team_dashboard_body.dart';
-import 'widgets/tournament_text_import_launcher.dart';
 
 class TeamDashboardScreen extends StatefulWidget {
   final Tournoi tournoi;
@@ -78,24 +77,6 @@ class _TeamDashboardScreenState extends State<TeamDashboardScreen> {
     }
   }
 
-  // Ouvre la modale d'importation par texte ; l'API New Recruit est mise
-  // de côté (voir TASKS.md, mission M8).
-  Future<void> _openTournamentTextImport() async {
-    final importCompleted = await showTournamentTextImportDialog(
-      context: context,
-      encounterId: widget.rencontre.id,
-      loadReferenceArmies: () async => _controller.armies,
-    );
-    if (importCompleted && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Équipe adverse importée avec succès !"),
-          backgroundColor: Colors.green,
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     if (_isLoadingReferenceData) {
@@ -108,18 +89,12 @@ class _TeamDashboardScreenState extends State<TeamDashboardScreen> {
       appBar: AppBar(
         title: Text("Ronde : ${widget.rencontre.nomAdversaire}"),
         actions: [
-          if (isCaptain) ...[
-            IconButton(
-              icon: const Icon(Icons.file_upload_outlined),
-              tooltip: "Import texte",
-              onPressed: _openTournamentTextImport,
-            ),
+          if (isCaptain)
             IconButton(
               icon: const Icon(Icons.person_add_outlined),
               tooltip: "Ajouter un adversaire",
               onPressed: () => showAddOpponentDialog(context, _controller),
             ),
-          ],
         ],
       ),
       body: TeamDashboardBody(

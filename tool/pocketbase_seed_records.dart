@@ -1,7 +1,7 @@
 // ===========================================================================
 // Script de seed PocketBase pour MetaWar.
-// Alimente les collections de référence `armees` et `choix` avec les données
-// issues du projet PHP historique (php/MetaWar.sql).
+// Alimente les collections de référence `armees` et `choix` : armées issues
+// du projet PHP historique, appréciations d'estimation fixes de l'application.
 //
 // Usage :
 //   dart run tool/pocketbase_seed_records.dart --email <superuser@exemple.fr> --password <motDePasse>
@@ -37,17 +37,18 @@ const List<Map<String, String>> referentielArmees = [
   {'nom': 'Warriors of the Dark Gods', 'short': 'WDG'},
 ];
 
-/// Référentiel des 6 choix d'estimation colorés (source : MW_Choix).
-/// Les couleurs hexadécimales reprennent la sémantique couleur de l'ancienne
-/// application PHP (team.php) en versions assombries pour rester lisibles
-/// avec le texte blanc de la matrice.
+/// Référentiel des 7 appréciations d'estimation fixes.
+/// Les `short` correspondent exactement aux codes affichés dans la matrice.
+/// Les couleurs hexadécimales sont assombries pour rester lisibles avec le
+/// texte blanc de la matrice.
 const List<Map<String, String>> referentielChoix = [
-  {'libelle': 'Dicy', 'short': 'Dicy', 'couleur_hex': '#757575'},
-  {'libelle': 'Moins de 5', 'short': '5-', 'couleur_hex': '#795548'},
-  {'libelle': 'Entre 5 et 7', 'short': '5-7', 'couleur_hex': '#D32F2F'},
-  {'libelle': 'Entre 8 et 12', 'short': '8-12', 'couleur_hex': '#FBC02D'},
-  {'libelle': 'Entre 13 et 14', 'short': '13-14', 'couleur_hex': '#388E3C'},
-  {'libelle': 'Plus de 15', 'short': '15+', 'couleur_hex': '#1976D2'},
+  {'libelle': 'Très défavorable', 'short': '--', 'couleur_hex': '#B71C1C'},
+  {'libelle': 'Défavorable', 'short': '-', 'couleur_hex': '#D32F2F'},
+  {'libelle': 'Lég. défavor.', 'short': '=-', 'couleur_hex': '#F57F17'},
+  {'libelle': 'Égalité', 'short': '=', 'couleur_hex': '#F9A825'},
+  {'libelle': 'Lég. favor.', 'short': '=+', 'couleur_hex': '#7CB342'},
+  {'libelle': 'Favorable', 'short': '+', 'couleur_hex': '#388E3C'},
+  {'libelle': 'Très favorable', 'short': '++', 'couleur_hex': '#1B5E20'},
 ];
 
 /// Nom de la collection d'authentification des super-utilisateurs PocketBase.

@@ -32,7 +32,7 @@ const String collectionNameRencontres = 'rencontres';
 /// Référentiel statique des 16 armées (The Ninth Age).
 const String collectionNameArmees = 'armees';
 
-/// Référentiel statique des 6 choix d'estimation colorés.
+/// Référentiel statique des 7 appréciations fixes du système d'estimation.
 const String collectionNameChoix = 'choix';
 
 /// Joueurs adverses (méta adverse) attachés à une rencontre.
@@ -50,3 +50,45 @@ const String collectionNameMatched = 'matched';
 
 /// Clé SharedPreferences stockant la session PocketBase sérialisée.
 const String sharedPreferencesKeyAuthSession = 'metawar_pocketbase_auth_session';
+
+// ---------------------------------------------------------------------------
+// Paramètres du tableau de bord d'équipe et des estimations
+// ---------------------------------------------------------------------------
+
+/// Séparateur de la clé composite (joueur, adversaire) utilisée pour
+/// retrouver l'estimation correspondant à un appariement.
+const String dashboardEstimKeySeparator = ':';
+
+/// Score minimum du système d'estimation 0-20.
+const int estimScoreMinimum = 0;
+
+/// Score maximum du système d'estimation 0-20.
+const int estimScoreMaximum = 20;
+
+/// Nombre de divisions du curseur de score.
+const int estimScoreDivisions = 20;
+
+/// Score par défaut du curseur d'estimation.
+const int estimScoreDefault = 10;
+
+/// Niveau de confiance faible.
+const String estimConfianceFaible = 'faible';
+
+/// Niveau de confiance moyen.
+const String estimConfianceMoyen = 'moyen';
+
+/// Niveau de confiance élevé.
+const String estimConfianceEleve = 'eleve';
+
+/// Niveau de confiance par défaut.
+const String estimConfianceDefault = estimConfianceMoyen;
+
+/// Niveaux de confiance acceptés par l'application.
+const List<String> estimConfianceOptions = [
+  estimConfianceFaible,
+  estimConfianceMoyen,
+  estimConfianceEleve,
+];
+
+/// Nombre de décimales affiché pour les agrégats de score.
+const int scoreSummaryDecimalPlaces = 1;

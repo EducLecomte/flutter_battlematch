@@ -6,12 +6,15 @@
 
 import 'package:flutter/material.dart';
 
+import '../../config/app_config.dart';
+import '../../logic/matched_score_summary.dart';
 import '../../models/models.dart';
 import '../team_dashboard_controller.dart';
 import '../team_dashboard_estim_actions.dart';
 import 'opponent_details_dialog.dart';
 import 'team_dashboard_matrix.dart';
 import 'team_dashboard_mode_banner.dart';
+import 'team_dashboard_score_summary.dart';
 
 class TeamDashboardBody extends StatelessWidget {
   final TeamDashboardController controller;
@@ -49,6 +52,16 @@ class TeamDashboardBody extends StatelessWidget {
                 }
 
                 final matches = matchedSnapshot.data ?? [];
+                final estimsByKey = {
+                  for (final estim in estims)
+                    '${estim.joueurId}$dashboardEstimKeySeparator${estim.metaAdvId}':
+                        estim,
+                };
+                final matchedScoreSummary = MatchedScoreSummaryCalculator.summarize(
+                  matches,
+                  estimsByKey,
+                  dashboardEstimKeySeparator,
+                );
 
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -57,6 +70,9 @@ class TeamDashboardBody extends StatelessWidget {
                     children: [
                       TeamDashboardModeBanner(isCaptain: isCaptain),
                       const SizedBox(height: 16),
+                      TeamDashboardScoreSummary(summary: matchedScoreSummary),
+                      if (matchedScoreSummary.matchedCount > 0)
+                        const SizedBox(height: 16),
                       Expanded(
                         child: TeamDashboardMatrix(
                           controller: controller,

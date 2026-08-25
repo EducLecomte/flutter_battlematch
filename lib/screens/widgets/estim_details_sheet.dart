@@ -6,18 +6,28 @@
 
 import 'package:flutter/material.dart';
 
+import '../../config/app_config.dart';
+import '../../logic/estim_score_calculator.dart';
 import '../../models/models.dart';
+import '../../utils/hex_color_parser.dart';
 
 void showEstimDetailsSheet(
   BuildContext context, {
   required Joueur joueur,
   required MetaAdv opponent,
   required Estim estim,
-  required Choix choix,
+  required Choix? choix,
   required bool canEdit,
   required VoidCallback onEdit,
 }) {
   final theme = Theme.of(context);
+  final scoreRangeLabel = EstimScoreCalculator.scoreRangeLabel(estim);
+
+  Color confidenceColor(String confidenceLevel) => switch (confidenceLevel) {
+    estimConfianceEleve => Colors.green,
+    estimConfianceMoyen => Colors.amber,
+    _ => Colors.red,
+  };
 
   showModalBottomSheet(
     context: context,
@@ -42,17 +52,20 @@ void showEstimDetailsSheet(
               children: [
                 const Text("Estimation globale : "),
                 Chip(
-                  label: Text(choix.libelle),
-                  backgroundColor: Color(
-                    int.parse(choix.couleurHex.replaceFirst('#', '0xFF')),
+                  label: Text(choix?.libelle ?? AppreciationScale.unknownLabel),
+                  backgroundColor: (
+                    HexColorParser.parseHexadecimalColor(
+                      choix?.couleurHex ?? '',
+                    ) ??
+                    theme.disabledColor
                   ).withValues(alpha: 0.2),
                 ),
               ],
             ),
             const SizedBox(height: 8),
-            if (estim.scoreMin != null && estim.scoreMax != null)
+            if (scoreRangeLabel != null)
               Text(
-                "Score attendu (système 20-0) : ${estim.scoreMin} à ${estim.scoreMax} points",
+                "Score attendu (système 20-0) : $scoreRangeLabel points",
               ),
             const SizedBox(height: 8),
             Row(
@@ -62,11 +75,7 @@ void showEstimDetailsSheet(
                   estim.confiance.toUpperCase(),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: estim.confiance == 'eleve'
-                        ? Colors.green
-                        : (estim.confiance == 'moyen'
-                            ? Colors.amber
-                            : Colors.red),
+                    color: confidenceColor(estim.confiance),
                   ),
                 ),
               ],

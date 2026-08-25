@@ -6,8 +6,15 @@
 import 'package:flutter/material.dart';
 
 import '../../models/models.dart';
+import '../../utils/hex_color_parser.dart';
 
 class EstimChoixSection extends StatelessWidget {
+  static const double choicePaddingHorizontal = 16;
+  static const double choicePaddingVertical = 10;
+  static const double choiceBorderRadius = 8;
+  static const double choiceSpacing = 8;
+  static const double choiceFontSize = 16;
+
   final List<Choix> listChoix;
   final String? selectedChoixId;
   final ValueChanged<String> onChoixSelected;
@@ -21,6 +28,28 @@ class EstimChoixSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final choices = AppreciationScale.scaleChoices(listChoix);
+
+    if (choices.isEmpty) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Appréciation générale :",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "Aucune appréciation disponible. "
+            "Lancez le seed de référence pour charger les 7 niveaux.",
+            style: theme.textTheme.bodyMedium,
+          ),
+        ],
+      );
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,39 +60,39 @@ class EstimChoixSection extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: choiceSpacing,
+          runSpacing: choiceSpacing,
           alignment: WrapAlignment.center,
-          children: listChoix.map((choix) {
-            final bool isSelected = selectedChoixId == choix.id;
-            final Color choiceColor = Color(
-              int.parse(choix.couleurHex.replaceFirst('#', '0xFF')),
-            );
+          children: choices.map((choice) {
+            final bool isSelected = selectedChoixId == choice.id;
+            final Color? parsedColor =
+                HexColorParser.parseHexadecimalColor(choice.couleurHex);
+            final Color badgeColor = parsedColor ?? theme.disabledColor;
 
             return InkWell(
-              onTap: () => onChoixSelected(choix.id),
-              borderRadius: BorderRadius.circular(8),
+              onTap: () => onChoixSelected(choice.id),
+              borderRadius: BorderRadius.circular(choiceBorderRadius),
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 10,
+                  horizontal: choicePaddingHorizontal,
+                  vertical: choicePaddingVertical,
                 ),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? choiceColor
-                      : choiceColor.withValues(alpha: 0.15),
+                      ? badgeColor
+                      : badgeColor.withValues(alpha: 0.15),
                   border: Border.all(
-                    color: isSelected ? Colors.white : choiceColor,
+                    color: isSelected ? Colors.white : badgeColor,
                     width: 2,
                   ),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(choiceBorderRadius),
                 ),
                 child: Text(
-                  choix.short,
+                  choice.short,
                   style: TextStyle(
-                    color: isSelected ? Colors.white : choiceColor,
+                    color: isSelected ? Colors.white : badgeColor,
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: choiceFontSize,
                   ),
                 ),
               ),

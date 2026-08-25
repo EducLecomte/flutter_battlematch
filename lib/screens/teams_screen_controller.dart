@@ -36,6 +36,8 @@ class TeamsScreenController {
 
   String _tournoiId = '';
 
+  String get tournoiId => _tournoiId;
+
   Future<void> createEncounter(String opponentName) async {
     if (activeTeam == null || opponentName.trim().isEmpty) return;
     await _pocketbaseService.createRencontre(

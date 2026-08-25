@@ -5,6 +5,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../../config/app_config.dart';
+
 class EstimScoreSection extends StatelessWidget {
   final int scoreMin;
   final int scoreMax;
@@ -23,9 +25,9 @@ class EstimScoreSection extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          "Score estimé (0-20) :",
-          style: TextStyle(fontWeight: FontWeight.bold),
+        Text(
+          "Score estimé ($estimScoreMinimum-$estimScoreMaximum) :",
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         Row(
@@ -43,9 +45,9 @@ class EstimScoreSection extends StatelessWidget {
         ),
         RangeSlider(
           values: RangeValues(scoreMin.toDouble(), scoreMax.toDouble()),
-          min: 0,
-          max: 20,
-          divisions: 20,
+          min: estimScoreMinimum.toDouble(),
+          max: estimScoreMaximum.toDouble(),
+          divisions: estimScoreDivisions,
           labels: RangeLabels('$scoreMin', '$scoreMax'),
           onChanged: (RangeValues values) {
             onScoreChanged(values.start.round(), values.end.round());

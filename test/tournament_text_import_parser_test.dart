@@ -61,4 +61,23 @@ void main() {
     expect(combinedPlayer['armyName'], 'Sylvan Elves');
     expect(combinedPlayer['listText'], contains('420 - 10 Pathfinders'));
   });
+
+  test('importe un joueur avec une armée inconnue sur une ligne dash', () {
+    const String rawContent = '''
+Team Test
+Alice (Alias) - Faction Inconnue
+100 - Unité Simple
+4000
+''';
+
+    final List<Map<String, dynamic>> importedPlayers =
+        const TournamentTextImportParser()
+            .parseTournamentText(rawContent, referenceArmies);
+
+    expect(importedPlayers, hasLength(1));
+    expect(importedPlayers.first['teamName'], 'Team Test');
+    expect(importedPlayers.first['playerName'], 'Alice (Alias)');
+    expect(importedPlayers.first['armyName'], 'Faction Inconnue');
+    expect(importedPlayers.first['listText'], contains('Unité Simple'));
+  });
 }
