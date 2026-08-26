@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 /// Carte d'édition des informations personnelles du profil
-/// (email en lecture seule, pseudo, initiales et bouton d'enregistrement).
+/// (email en lecture seule, pseudo et bouton d'enregistrement).
+/// Le champ d'initiales a été retiré : `short` est généré automatiquement.
 class ProfileInfoCard extends StatelessWidget {
   final String email;
   final TextEditingController nomController;
-  final TextEditingController shortController;
   final bool isSaving;
   final VoidCallback onSave;
 
@@ -13,7 +13,6 @@ class ProfileInfoCard extends StatelessWidget {
     super.key,
     required this.email,
     required this.nomController,
-    required this.shortController,
     required this.isSaving,
     required this.onSave,
   });
@@ -48,18 +47,6 @@ class ProfileInfoCard extends StatelessWidget {
               controller: nomController,
               decoration: const InputDecoration(
                 labelText: "Pseudo / Nom complet",
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Champ Initiales
-            TextFormField(
-              controller: shortController,
-              maxLength: 6,
-              textCapitalization: TextCapitalization.characters,
-              decoration: const InputDecoration(
-                labelText: "Initiales (Max 6 lettres)",
                 border: OutlineInputBorder(),
               ),
             ),

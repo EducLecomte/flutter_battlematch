@@ -50,14 +50,27 @@
         "presentable": false,
         "onCreate": true,
         "onUpdate": true
+      },
+      {
+        "type": "bool",
+        "id": "f_jadmin00001",
+        "name": "admin",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "default": false,
+        "values": {
+          "checked": true,
+          "unchecked": false
+        }
       }
     ],
     "indexes": [],
     "listRule": "@request.auth.id != ''",
     "viewRule": "@request.auth.id != ''",
     "createRule": "",
-    "updateRule": "id = @request.auth.id",
-    "deleteRule": "id = @request.auth.id",
+    "updateRule": "id = @request.auth.id || @request.auth.admin = true",
+    "deleteRule": "id = @request.auth.id || @request.auth.admin = true",
     "mfa": {
       "enabled": false,
       "duration": 1800
@@ -440,9 +453,9 @@
     ],
     "listRule": "",
     "viewRule": "",
-    "createRule": null,
-    "updateRule": null,
-    "deleteRule": null
+    "createRule": "@request.auth.admin = true",
+    "updateRule": "@request.auth.admin = true",
+    "deleteRule": "@request.auth.admin = true"
   },
   {
     "id": "mwchoix00000001",
@@ -515,9 +528,9 @@
     ],
     "listRule": "",
     "viewRule": "",
-    "createRule": null,
-    "updateRule": null,
-    "deleteRule": null
+    "createRule": "@request.auth.admin = true",
+    "updateRule": "@request.auth.admin = true",
+    "deleteRule": "@request.auth.admin = true"
   },
   {
     "id": "mwmetaadv000001",
@@ -747,9 +760,9 @@
     ],
     "listRule": "@request.auth.id != ''",
     "viewRule": "@request.auth.id != ''",
-    "createRule": "joueur_id = @request.auth.id",
-    "updateRule": "joueur_id = @request.auth.id",
-    "deleteRule": "joueur_id = @request.auth.id"
+    "createRule": "joueur_id = @request.auth.id || joueur_id IN (SELECT joueur_id FROM team_membres WHERE statut = 'accepted' AND team_id IN (SELECT id FROM teams WHERE capitaine_id = @request.auth.id))",
+    "updateRule": "joueur_id = @request.auth.id || joueur_id IN (SELECT joueur_id FROM team_membres WHERE statut = 'accepted' AND team_id IN (SELECT id FROM teams WHERE capitaine_id = @request.auth.id))",
+    "deleteRule": "joueur_id = @request.auth.id || joueur_id IN (SELECT joueur_id FROM team_membres WHERE statut = 'accepted' AND team_id IN (SELECT id FROM teams WHERE capitaine_id = @request.auth.id))"
   },
   {
     "id": "mwmatched000001",

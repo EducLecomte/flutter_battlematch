@@ -158,7 +158,42 @@ fixes), meta_adv, estims, matched.
 - [x] M9.7 Validation 2026-08-25 :
       `flutter analyze` sans problème, `flutter test` 22/22, `flutter build web` OK
 
-## Journal erreurs/découvertes
+ ### M10 — Retour tests : validations, capitaine, rafraîchissements, visibilité
+ - [x] M10.1 Login/inscription : validation du format d'email et du mot de
+       passe (8 caractères minimum, une majuscule, un caractère spécial) avec
+       tooltip explicatif ; champ d'initiales retiré des formulaires, `short`
+       auto-généré depuis le nom via `Joueur.genererShortDepuisNom`
+ - [x] M10.2 Icônes capitaine/membre dans le panel des membres
+       (`workspace_premium` / `person`) ; sous-titre de l'invitation = email
+ - [x] M10.3 Règles `estims` : le capitaine d'une équipe peut estimer pour
+       tous ses membres (sous-requêtes `team_membres`/`teams` dans
+       `pocketbase_schema.json` — **import manuel sur le serveur PB requis**)
+ - [x] M10.4 Point d'arrêt déconnexion : après `signOut`,
+       `Navigator.popUntil` jusqu'à la première route
+ - [x] M10.5 Rafraîchissements post-actions : `setState` après
+       création/invitation/suppression d'équipe et de membre,
+       `onStateChanged` après suppression d'une rencontre
+ - [x] M10.6 Visibilité globale : `getTeamsParticipatingInTournoi` (équipes
+       ayant au moins une rencontre dans le tournoi), dropdown de
+       sélection d'équipe dans `TeamsScreen`, équipe active par défaut =
+       première équipe de l'utilisateur
+ - [x] M10.7 Dédoublonnage de l'import texte : adversaires déjà présents
+       ignorés (`skippedDuplicateEncounterCount` ajouté au résumé snackbar)
+  - [x] M10.8 Matrice : réponse utilisateur « garder un visuel sur les
+        valeurs » — cellule appariée/bloquée affiche désormais toujours
+        l'appréciation, l'étoile et la fourchette (suppression de la branche
+        `SizedBox.shrink()` dans `team_dashboard_matrix_matchup_cell.dart`)
+  - [x] M10.9 Backend d'administration (périmètre confirmé « Oui exactement ») :
+        champ booléen `admin` sur `joueurs`, règles PB élargies
+        (joueurs update/delete + armées/choix create/update/delete →
+        `@request.auth.admin = true`), écran d'administration à 3 onglets
+        (Armées, Appréciations, Joueurs) accessible depuis le Profil si
+        `joueur.admin` — **import manuel du schéma sur le serveur PB requis**
+  - [x] M10.10 Validation 2026-08-26 :
+        `flutter analyze` sans problème, `flutter test` 22/22, `flutter build web` OK
+        (re-validé après M10.8 + M10.9)
+
+ ## Journal erreurs/découvertes
 [Date | Problème | Cause racine | Règle préventive]
 - 2026-08-21 | Code jamais compilé | pubspec sans supabase_flutter |
   toujours vérifier pubspec avant de supposer qu'un build passe
@@ -210,9 +245,26 @@ fixes), meta_adv, estims, matched.
   règles API PB (écritures inter-utilisateurs possibles pour le seed) |
   pour peupler des données réalistes multi-joueurs, passer par le token
    _superusers plutôt que dupliquer la logique de règles côté client
+- 2026-08-26 | Estimation du capitaine refusée (400 sur create estims) |
+  règles `estims` limitées au propriétaire de la ligne ; le capitaine n'était
+  pas couvert | règle capitaine par sous-requête `team_membres`/`teams`
+  dans le schéma ; tout changement de règle PB exige un import manuel dans
+  l'admin (pas de superuser côté agent)
 - 2026-08-24 | Ancienne échelle à 6 niveaux incohérente avec la nouvelle
   échelle fixe à 7 niveaux | le référentiel `choix` doit être la source
   unique de l'échelle | seed `tool/pocketbase_seed_records.dart` réécrit
   avec 7 records fixes ; `AppreciationScale.scaleChoices` filtre les codes
   inconnus dans l'UI ; les anciens records restent orphelins tant qu'un
   superuser n'exécute pas le seed
+- 2026-08-26 | 5 erreurs d'analyse au 1er passe du CRUD admin |
+  SDK pocketbase 0.25 : `create`/`update` prennent le corps en argument
+  Nommé `body:` (pas positionnel) ; `showDialog<T>` renvoie `T?` |
+  recopier les signatures déjà prouvées dans les services existants
+  (pocketbase_teams_service, pocketbase_team_invitations_service)
+  plutôt que de deviner l'API du SDK
+- 2026-08-26 | Backend admin M10.9 : limitation sécurité acceptée et
+  documentée | PB n'a pas de règles d'écriture par champ : un compte
+  authentifié peut s'autopasser `admin: true` via l'API brute
+  (updateRule `id = @request.auth.id || @request.auth.admin = true`
+  le permet) | documenté dans README (section Administration) ;
+  acceptable pour une application de hobby non publique

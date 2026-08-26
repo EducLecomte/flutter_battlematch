@@ -15,8 +15,11 @@ lib/
   config/app_config.dart                 # URL serveur + noms de collections
   models/models.dart                     # Modèles Dart ↔ RecordModel PocketBase
   services/pocketbase_data_service.dart  # Auth + CRUD + temps réel (singleton)
+  services/pocketbase_referentiels_service.dart # CRUD armées/choix
+  services/pocketbase_admin_service.dart # Administration des joueurs
   services/new_recruit_import_service.dart # Import API directe + parsing local
-  screens/                               # Tournois, Équipes, Dashboard, Profil
+  screens/                               # Tournois, Équipes, Dashboard, Profil, Administration
+  utils/hex_color_parser.dart            # Helpers couleurs hex
 tool/
   pocketbase_seed_records.dart           # Seed des référentiels armees/choix
 pocketbase_schema.json                   # Snapshot de schéma à importer
@@ -52,7 +55,14 @@ estimations par joueur, armées/choix) et règles d'accès.
 | Écriture équipes/tournois | créateur / capitaine uniquement |
 | Invitations | capitaine de l'équipe ; acceptation par l'invité |
 | Adversaires & appariements | capitaine de l'équipe de la rencontre |
-| Estimations | chaque joueur n'écrit que sa propre ligne |
+| Estimations | chaque joueur et le capitaine de son équipe |
+| Administration | compte `admin` : gestion des joueurs, armées et appréciations |
+
+> ⚠️ **Limitation de sécurité (instance hobby) :** PocketBase n'expose pas de
+> règles d'écriture par champ. Un compte authentifié peut modifier son propre
+> champ `admin` via l'API brute, puis obtenir les droits d'administration.
+> Cette auto-promotion est acceptée pour ce périmètre ; la promotion normale
+> se fait depuis l'écran Administration ou via l'admin PocketBase.
 
 > En cas d'échec d'import lié à une différence de version du serveur,
 > exporter un snapshot vide depuis l'UI admin et transposer les champs/règles.
@@ -66,7 +76,7 @@ l'application (CRUD `/api/collections/*/records`, `auth-with-password`,
 temps réel SSE, URLs de fichiers). La validation complète se fait à
 l'étape M7.3.
 
-### 2. Alimenter les référentiels (16 armées T9A + 6 choix)
+### 2. Alimenter les référentiels (16 armées T9A + 7 appréciations)
 
 Avec les identifiants super-utilisateur (`_superusers`) :
 
@@ -113,12 +123,23 @@ flutter analyze           # analyse statique
 
 ## Fonctionnalités
 
-- Inscription/connexion joueurs (collection dédiée `joueurs`, session web persistante)
-- Tournois → Équipes (invitations pending/accepted, recherche de joueurs)
+- Inscription/connexion joueurs (collection dédiée `joueurs`, session web
+  persistante, mot de passe : 8 caractères minimum, une majuscule,
+  un caractère spécial)
+- Tournois → Équipes (invitations pending/accepted, recherche de joueurs,
+  icônes capitaine/membre)
 - Rencontres (rondes) par équipe et tournoi
 - Matrice d'estimation temps réel joueur × adversaire (7 appréciations fixes,
-  symbole `Dicy` en gris, scores 20-0, confiance, commentaires)
+   symbole `Dicy` en gris, scores 20-0, confiance, commentaires, valeurs
+   visibles en cellule appariée/bloquée)
 - Mode Capitaine : appariements verrouillés (un duel unique par joueur
-  ET par adversaire, garanti par index uniques serveur)
+  ET par adversaire, garanti par index uniques serveur) et estimation
+  possible pour tous les membres de l'équipe
+- Équipes du tournoi visibles par tous (sélection de l'équipe active
+  depuis l'écran Équipes)
 - Import tournoi : texte ou JSON depuis l'écran Équipes, avec création des
-  rencontres et des adversaires, et comptage des armées inconnues
+   rencontres et des adversaires, dédoublonnage des adversaires déjà
+   importés et comptage des armées inconnues
+- Administration (compte `admin`, accessible depuis le Profil) :
+   promotion/rétrogradation et suppression des joueurs, gestion des armées et
+   des appréciations

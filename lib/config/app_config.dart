@@ -92,3 +92,19 @@ const List<String> estimConfianceOptions = [
 
 /// Nombre de décimales affiché pour les agrégats de score.
 const int scoreSummaryDecimalPlaces = 1;
+
+// ---------------------------------------------------------------------------
+// Règles de validation du formulaire de connexion / inscription
+// ---------------------------------------------------------------------------
+
+/// Longueur minimale du mot de passe à l'inscription.
+const int passwordMinimumLength = 8;
+
+/// Exige au moins une majuscule dans le mot de passe.
+final RegExp passwordUppercasePattern = RegExp(r'[A-Z]');
+
+/// Exige au moins un caractère spécial (hors lettres et chiffres).
+final RegExp passwordSpecialCharacterPattern = RegExp(r'[^A-Za-z0-9]');
+
+/// Format minimal attendu pour une adresse email.
+final RegExp emailValidationPattern = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');

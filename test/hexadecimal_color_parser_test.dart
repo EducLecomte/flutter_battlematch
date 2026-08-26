@@ -22,5 +22,17 @@ void main() {
       expect(HexColorParser.parseHexadecimalColor('#GGGGGG'), isNull);
       expect(HexColorParser.parseHexadecimalColor('#FBC02D1'), isNull);
     });
+
+    test('normalise une couleur en #RRGGBB majuscule', () {
+      expect(HexColorParser.normalizeHexadecimalColor('#fbC02d'), '#FBC02D');
+      expect(HexColorParser.normalizeHexadecimalColor('0a1b2c'), '#0A1B2C');
+      expect(HexColorParser.normalizeHexadecimalColor('  #FBC02D  '), '#FBC02D');
+    });
+
+    test('la normalisation renvoie null pour une valeur mal formée', () {
+      expect(HexColorParser.normalizeHexadecimalColor(''), isNull);
+      expect(HexColorParser.normalizeHexadecimalColor('#FFF'), isNull);
+      expect(HexColorParser.normalizeHexadecimalColor('#GGGGGG'), isNull);
+    });
   });
 }

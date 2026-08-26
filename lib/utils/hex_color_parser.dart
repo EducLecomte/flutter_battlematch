@@ -11,16 +11,33 @@ abstract final class HexColorParser {
 
   /// Renvoie la couleur correspondante, ou `null` si la valeur est invalide.
   static Color? parseHexadecimalColor(String hexadecimalColorValue) {
-    final normalizedColorValue =
-        hexadecimalColorValue.trim().replaceFirst('#', '');
-    if (normalizedColorValue.length != expectedHexadecimalDigitCount) {
-      return null;
-    }
     final int? colorValue =
-        int.tryParse(normalizedColorValue, radix: hexadecimalRadix);
+        parseHexadecimalColorValue(hexadecimalColorValue);
     if (colorValue == null) {
       return null;
     }
     return Color(fullOpacityMask | colorValue);
+  }
+
+  /// Normalise une valeur en `#RRGGBB` majuscule (format stocké dans
+  /// PocketBase), ou `null` si la valeur est invalide.
+  static String? normalizeHexadecimalColor(String hexadecimalColorValue) {
+    final int? colorValue =
+        parseHexadecimalColorValue(hexadecimalColorValue);
+    if (colorValue == null) {
+      return null;
+    }
+    return '#${colorValue.toRadixString(hexadecimalRadix).padLeft(
+        expectedHexadecimalDigitCount, '0').toUpperCase()}';
+  }
+
+  /// Extrait la valeur entière d'une couleur hexadécimale, ou `null`.
+  static int? parseHexadecimalColorValue(String hexadecimalColorValue) {
+    final String normalizedColorValue =
+        hexadecimalColorValue.trim().replaceFirst('#', '');
+    if (normalizedColorValue.length != expectedHexadecimalDigitCount) {
+      return null;
+    }
+    return int.tryParse(normalizedColorValue, radix: hexadecimalRadix);
   }
 }

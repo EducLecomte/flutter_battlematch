@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../../config/app_config.dart';
+
 /// Champs du formulaire de connexion / inscription
-/// (email, mot de passe, et pseudo + initiales en mode inscription).
+/// (email, mot de passe, et pseudo en mode inscription).
+/// Le champ d'initiales a été retiré : il est désormais généré
+/// automatiquement à partir du pseudo.
 class LoginFormFields extends StatelessWidget {
   final bool isSignUp;
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final TextEditingController nomController;
-  final TextEditingController shortController;
 
   const LoginFormFields({
     super.key,
@@ -15,8 +18,38 @@ class LoginFormFields extends StatelessWidget {
     required this.emailController,
     required this.passwordController,
     required this.nomController,
-    required this.shortController,
   });
+
+  /// Valide le format de l'adresse email.
+  String? _validerEmail(String? value) {
+    final String? email = value?.trim();
+    if (email == null || email.isEmpty) {
+      return "Veuillez renseigner votre email";
+    }
+    if (!emailValidationPattern.hasMatch(email)) {
+      return "Adresse email invalide";
+    }
+    return null;
+  }
+
+  /// Valide le mot de passe : simple non-vide en connexion,
+  /// règles complètes (longueur, majuscule, caractère spécial) à l'inscription.
+  String? _validerMotDePasse(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Veuillez renseigner votre mot de passe";
+    }
+    if (!isSignUp) return null;
+    if (value.length < passwordMinimumLength) {
+      return "Au moins $passwordMinimumLength caractères";
+    }
+    if (!passwordUppercasePattern.hasMatch(value)) {
+      return "Au moins une majuscule";
+    }
+    if (!passwordSpecialCharacterPattern.hasMatch(value)) {
+      return "Au moins un caractère spécial";
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +65,7 @@ class LoginFormFields extends StatelessWidget {
             prefixIcon: Icon(Icons.email_outlined),
             border: OutlineInputBorder(),
           ),
-          validator: (value) {
-            if (value == null || value.trim().isEmpty) {
-              return "Veuillez renseigner votre email";
-            }
-            return null;
-          },
+          validator: _validerEmail,
         ),
         const SizedBox(height: 16),
 
@@ -45,20 +73,20 @@ class LoginFormFields extends StatelessWidget {
         TextFormField(
           controller: passwordController,
           obscureText: true,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             labelText: "Mot de passe",
-            prefixIcon: Icon(Icons.lock_outline),
-            border: OutlineInputBorder(),
+            prefixIcon: const Icon(Icons.lock_outline),
+            border: const OutlineInputBorder(),
+            suffixIcon: isSignUp
+                ? Tooltip(
+                    message:
+                        "$passwordMinimumLength caractères minimum, au moins "
+                        "une majuscule et un caractère spécial.",
+                    child: const Icon(Icons.info_outline),
+                  )
+                : null,
           ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return "Veuillez renseigner votre mot de passe";
-            }
-            if (value.length < 6) {
-              return "Le mot de passe doit faire au moins 6 caractères";
-            }
-            return null;
-          },
+          validator: _validerMotDePasse,
         ),
 
         // Champs supplémentaires uniquement en cas d'inscription
@@ -76,26 +104,6 @@ class LoginFormFields extends StatelessWidget {
             validator: (value) {
               if (isSignUp && (value == null || value.trim().isEmpty)) {
                 return "Veuillez renseigner votre pseudo";
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 16),
-
-          // Champ Initiales (court)
-          TextFormField(
-            controller: shortController,
-            maxLength: 6,
-            textCapitalization: TextCapitalization.characters,
-            decoration: const InputDecoration(
-              labelText: "Initiales (Max 6 lettres)",
-              prefixIcon: Icon(Icons.badge_outlined),
-              border: OutlineInputBorder(),
-              helperText: "Exemple: Zur, Mando ...",
-            ),
-            validator: (value) {
-              if (isSignUp && (value == null || value.trim().isEmpty)) {
-                return "Veuillez renseigner vos initiales";
               }
               return null;
             },

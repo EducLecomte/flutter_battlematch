@@ -41,6 +41,11 @@ class _TeamsScreenState extends State<TeamsScreen> {
     if (mounted) setState(() {});
   }
 
+  Future<void> _handleTeamSelected(Team selectedTeam) async {
+    _controller.setActiveTeam(selectedTeam);
+    await _actions.loadEncounters(context, _refreshUserInterface);
+  }
+
   void _showAddEncounterDialog() {
     showDialog(
       context: context,
@@ -107,6 +112,8 @@ class _TeamsScreenState extends State<TeamsScreen> {
           children: [
             TeamsScreenTeamSelector(
               activeTeam: _controller.activeTeam,
+              selectableTeams: _controller.selectableTeams,
+              onTeamSelected: _handleTeamSelected,
             ),
             const SizedBox(height: 24),
             Text(
@@ -123,7 +130,8 @@ class _TeamsScreenState extends State<TeamsScreen> {
                 availableEncounters: _controller.availableEncounters,
                 onEncounterSelected: _openEncounterDashboard,
                 onDeleteRequested: (selectedEncounter) => _actions
-                    .deleteEncounter(context, selectedEncounter),
+                    .deleteEncounter(context, selectedEncounter,
+                        _refreshUserInterface),
               ),
             ),
           ],

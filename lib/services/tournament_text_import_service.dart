@@ -6,11 +6,13 @@ class TournamentTextImportSummary {
   final int createdEncounterCount;
   final int createdOpponentCount;
   final int unknownArmyCount;
+  final int skippedDuplicateEncounterCount;
 
   const TournamentTextImportSummary({
     required this.createdEncounterCount,
     required this.createdOpponentCount,
     required this.unknownArmyCount,
+    required this.skippedDuplicateEncounterCount,
   });
 }
 
@@ -38,16 +40,29 @@ class TournamentTextImportService {
           .add(importedPlayer);
     }
 
+    final Set<String> existingOpponentNames = await _loadExistingOpponentNames(
+      tournoiId,
+      targetTeamId,
+    );
+
     int createdEncounterCount = 0;
     int createdOpponentCount = 0;
     int unknownArmyCount = 0;
+    int skippedDuplicateEncounterCount = 0;
 
     for (final MapEntry<String, List<Map<String, dynamic>>> teamEntry
         in playersByTeamName.entries) {
       if (_isTargetTeam(teamEntry.key, targetTeamName)) continue;
 
+      final String normalizedTeamName = teamEntry.key.trim().toLowerCase();
+      if (existingOpponentNames.contains(normalizedTeamName)) {
+        skippedDuplicateEncounterCount++;
+        continue;
+      }
+
       final Rencontre createdEncounter = await _pocketbaseDataService
           .createRencontre(tournoiId, targetTeamId, teamEntry.key);
+      existingOpponentNames.add(normalizedTeamName);
       createdEncounterCount++;
 
       for (final Map<String, dynamic> importedPlayer in teamEntry.value) {
@@ -73,7 +88,20 @@ class TournamentTextImportService {
       createdEncounterCount: createdEncounterCount,
       createdOpponentCount: createdOpponentCount,
       unknownArmyCount: unknownArmyCount,
+      skippedDuplicateEncounterCount: skippedDuplicateEncounterCount,
     );
+  }
+
+  Future<Set<String>> _loadExistingOpponentNames(
+    String tournoiId,
+    String targetTeamId,
+  ) async {
+    final List<Rencontre> existingEncounters =
+        await _pocketbaseDataService.getRencontres(tournoiId, targetTeamId);
+    return {
+      for (final Rencontre existingEncounter in existingEncounters)
+        existingEncounter.nomAdversaire.trim().toLowerCase(),
+    };
   }
 
   bool _isTargetTeam(String teamName, String targetTeamName) =>

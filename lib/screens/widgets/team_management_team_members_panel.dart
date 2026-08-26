@@ -33,12 +33,16 @@ class TeamManagementTeamMembersPanel extends StatelessWidget {
               final String role = member['role'];
               final String status = member['statut'];
               final isPending = status == 'pending';
+              final isCaptain = role == 'captain';
 
               return Card(
                 margin: const EdgeInsets.only(bottom: 8),
                 child: ListTile(
                   leading: CircleAvatar(
-                    child: Text(player.short),
+                    child: Icon(
+                      isCaptain ? Icons.workspace_premium : Icons.person,
+                      size: 20,
+                    ),
                   ),
                   title: Text(player.nom),
                   subtitle: Text(role == 'captain' ? 'Capitaine' : 'Joueur'),

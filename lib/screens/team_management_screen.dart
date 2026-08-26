@@ -60,6 +60,7 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
     final errorMessage = await _controller.createNewTeam(teamName);
     if (!mounted) return;
     _teamNameController.clear();
+    setState(() {}); // Rafraîchit la liste des équipes
     Navigator.of(context).pop(); // Ferme la boîte de dialogue
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -78,6 +79,7 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
     final errorMessage = await _controller.sendInvite(playerId);
     if (!mounted) return;
     if (errorMessage == null) _searchController.clear();
+    setState(() {}); // Rafraîchit la liste des membres
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -148,6 +150,7 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
                     onRemoveMember: (player) async {
                       final errorMessage =
                           await _controller.removeMember(context, player);
+                      if (mounted) setState(() {}); // Rafraîchit les membres
                       if (errorMessage != null && context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -159,6 +162,7 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
                     onDeleteTeam: (team) async {
                       final errorMessage =
                           await _controller.deleteTeam(context, team);
+                      if (mounted) setState(() {}); // Rafraîchit les équipes
                       if (errorMessage != null && context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

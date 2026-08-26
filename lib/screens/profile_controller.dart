@@ -13,9 +13,9 @@ class ProfileController {
   final PocketbaseDataService _pocketbaseService =
       PocketbaseDataService.instance;
 
-  // Contrôleurs des champs de modification du profil
+  // Contrôleur du champ pseudo (le champ d'initiales a été retiré,
+  // `short` est régénéré automatiquement à partir du nom).
   final TextEditingController nomController = TextEditingController();
-  final TextEditingController shortController = TextEditingController();
 
   // Profil de l'utilisateur connecté
   Joueur? joueur;
@@ -41,7 +41,6 @@ class ProfileController {
       if (joueurCourant != null) {
         joueur = joueurCourant;
         nomController.text = joueurCourant.nom;
-        shortController.text = joueurCourant.short;
 
         invitations =
             await _pocketbaseService.getPendingInvitations(joueurCourant.id);
@@ -58,9 +57,8 @@ class ProfileController {
   // Sauvegarde les modifications de profil puis recharge les données.
   // Retourne null en succès, ou un message d'erreur.
   Future<String?> saveProfile({required VoidCallback onStateChanged}) async {
-    if (nomController.text.trim().isEmpty ||
-        shortController.text.trim().isEmpty) {
-      return "Les champs ne peuvent pas être vides";
+    if (nomController.text.trim().isEmpty) {
+      return "Le pseudo ne peut pas être vide";
     }
 
     isSaving = true;
@@ -69,7 +67,6 @@ class ProfileController {
     try {
       await _pocketbaseService.updateJoueurProfileFields(
         nom: nomController.text.trim(),
-        short: shortController.text.trim().toUpperCase(),
       );
       await loadProfileAndInvitations(onStateChanged: onStateChanged);
       return null;
@@ -113,6 +110,5 @@ class ProfileController {
   // Libère les contrôleurs de texte.
   void dispose() {
     nomController.dispose();
-    shortController.dispose();
   }
 }

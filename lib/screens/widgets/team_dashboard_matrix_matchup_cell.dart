@@ -1,8 +1,9 @@
 // ===========================================================================
 // Cellule de matchup de la matrice (team_dashboard_matrix_matchup_cell.dart)
 // Affiche pour un couple (joueur, adversaire) : le verrou d'appariement,
-// le blocage d'un partenaire déjà apparié, l'appréciation générale (Dicy en
-// gris si absente), la fourchette du score estimé et l'étoile de confiance.
+// l'appréciation générale (Dicy en gris si absente), la fourchette du score
+// estimé et l'étoile de confiance. Les valeurs restent visibles même quand
+// la cellule est verrouillée ou bloquée par un appariement ailleurs.
 // ===========================================================================
 
 import 'package:flutter/material.dart';
@@ -85,9 +86,7 @@ class MatrixMatchupCell extends StatelessWidget {
           child: Container(
             height: matchupCellHeight,
             alignment: Alignment.center,
-            child: isCellBlocked
-                ? const SizedBox.shrink()
-                : Column(
+            child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(

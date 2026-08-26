@@ -38,7 +38,6 @@ class PocketbaseAuthService {
     required String email,
     required String password,
     required String nom,
-    required String short,
   }) async {
     await _holder.clientPocketBase.collection(collectionNameJoueurs).create(
       body: {
@@ -47,7 +46,7 @@ class PocketbaseAuthService {
         'passwordConfirm': password,
         'emailVisibility': true,
         'nom': nom,
-        'short': short,
+        'short': Joueur.genererShortDepuisNom(nom),
       },
     );
 
@@ -99,9 +98,9 @@ class PocketbaseAuthService {
   }
 
   /// Met à jour les champs éditables du profil de l'utilisateur courant.
+  /// Le champ `short` est régénéré automatiquement à partir du nouveau nom.
   Future<void> updateJoueurProfileFields({
     required String nom,
-    required String short,
   }) async {
     final String? userId = currentUserId;
     if (userId == null) throw Exception("Non authentifié");
@@ -110,7 +109,7 @@ class PocketbaseAuthService {
       userId,
       body: {
         'nom': nom,
-        'short': short,
+        'short': Joueur.genererShortDepuisNom(nom),
       },
     );
   }

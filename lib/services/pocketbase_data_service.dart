@@ -5,6 +5,7 @@
 // ===========================================================================
 
 import '../models/models.dart';
+import 'pocketbase/pocketbase_admin_service.dart';
 import 'pocketbase/pocketbase_auth_service.dart';
 import 'pocketbase/pocketbase_client_holder.dart';
 import 'pocketbase/pocketbase_dashboard_adversaires_service.dart';
@@ -36,6 +37,7 @@ class PocketbaseDataService {
       PocketbaseDashboardEstimsService.instance;
   final PocketbaseDashboardMatchedService _serviceDashboardMatched =
       PocketbaseDashboardMatchedService.instance;
+  final PocketbaseAdminService _serviceAdmin = PocketbaseAdminService.instance;
 
   PocketbaseDataService._internal();
 
@@ -49,10 +51,8 @@ class PocketbaseDataService {
   Future<void> signUp(
           {required String email,
           required String password,
-          required String nom,
-          required String short}) =>
-      _serviceAuth.signUp(
-          email: email, password: password, nom: nom, short: short);
+          required String nom}) =>
+      _serviceAuth.signUp(email: email, password: password, nom: nom);
 
   Future<void> signIn(
           {required String email, required String password}) =>
@@ -66,9 +66,8 @@ class PocketbaseDataService {
   Future<Joueur?> getJoueurProfile(String userId) =>
       _serviceAuth.getJoueurProfile(userId);
 
-  Future<void> updateJoueurProfileFields(
-          {required String nom, required String short}) =>
-      _serviceAuth.updateJoueurProfileFields(nom: nom, short: short);
+  Future<void> updateJoueurProfileFields({required String nom}) =>
+      _serviceAuth.updateJoueurProfileFields(nom: nom);
 
   Future<List<Joueur>> searchJoueurs(String query) =>
       _serviceAuth.searchJoueurs(query);
@@ -111,6 +110,9 @@ class PocketbaseDataService {
   Future<void> deleteRencontre(String rencontreId) =>
       _serviceTournois.deleteRencontre(rencontreId);
 
+  Future<List<Team>> getTeamsParticipatingInTournoi(String tournoiId) =>
+      _serviceTournois.getTeamsParticipatingInTournoi(tournoiId);
+
   Future<List<Armee>> getArmees() => _serviceReferentiels.getArmees();
 
   Future<List<Choix>> getChoix() => _serviceReferentiels.getChoix();
@@ -150,4 +152,36 @@ class PocketbaseDataService {
 
   Stream<List<Matched>> streamMatched(String rencontreId) =>
       _serviceDashboardMatched.streamMatched(rencontreId);
+
+  // -------------------------------------------------------------------
+  // Administration (comptes marqués `admin`)
+  // -------------------------------------------------------------------
+
+  Future<List<Joueur>> getJoueursAdministration() =>
+      _serviceAdmin.listJoueurs();
+
+  Future<void> setJoueurAdmin(String joueurId, bool admin) =>
+      _serviceAdmin.setJoueurAdmin(joueurId, admin);
+
+  Future<void> deleteJoueur(String joueurId) =>
+      _serviceAdmin.deleteJoueur(joueurId);
+
+  Future<Armee> createArmee(String nom, String short) =>
+      _serviceReferentiels.createArmee(nom, short);
+
+  Future<Armee> updateArmee(String armeeId, String nom, String short) =>
+      _serviceReferentiels.updateArmee(armeeId, nom, short);
+
+  Future<void> deleteArmee(String armeeId) =>
+      _serviceReferentiels.deleteArmee(armeeId);
+
+  Future<Choix> createChoix(String libelle, String short, String couleurHex) =>
+      _serviceReferentiels.createChoix(libelle, short, couleurHex);
+
+  Future<Choix> updateChoix(String choixId, String libelle, String short,
+      String couleurHex) =>
+      _serviceReferentiels.updateChoix(choixId, libelle, short, couleurHex);
+
+  Future<void> deleteChoix(String choixId) =>
+      _serviceReferentiels.deleteChoix(choixId);
 }

@@ -110,14 +110,20 @@ class TeamsScreenEncounterActions {
     }
   }
   String _formatImportSummary(TournamentTextImportSummary importSummary) {
+    final String doublonsMessage =
+        importSummary.skippedDuplicateEncounterCount > 0
+            ? " ${importSummary.skippedDuplicateEncounterCount} doublon(s) ignoré(s)."
+            : "";
     return "Import terminé : ${importSummary.createdEncounterCount} "
         "rencontre(s), ${importSummary.createdOpponentCount} joueur(s), "
-        "${importSummary.unknownArmyCount} armée(s) inconnue(s).";
+        "${importSummary.unknownArmyCount} armée(s) inconnue(s)."
+        "$doublonsMessage";
   }
-  // Supprime la rencontre après confirmation.
+  // Supprime la rencontre après confirmation puis rafraîchit la liste.
   Future<void> deleteEncounter(
     BuildContext context,
     Rencontre selectedEncounter,
+    VoidCallback onStateChanged,
   ) async {
     final bool confirmationReceived =
         await showDeleteEncounterConfirmation(context);
@@ -126,6 +132,7 @@ class TeamsScreenEncounterActions {
     try {
       await controller.deleteEncounter(selectedEncounter.id);
       if (context.mounted) {
+        onStateChanged();
         showSnackBar(context, "Rencontre supprimée.",
             backgroundColor: Colors.green);
       }

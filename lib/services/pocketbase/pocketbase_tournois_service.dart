@@ -86,6 +86,34 @@ class PocketbaseTournoisService {
     }
   }
 
+  /// Récupère les équipes ayant au moins une rencontre dans le tournoi.
+  Future<List<Team>> getTeamsParticipatingInTournoi(String tournoiId) async {
+    try {
+      final List<RecordModel> records =
+          await _holder.clientPocketBase
+              .collection(collectionNameRencontres)
+              .getFullList(
+                filter:
+                    'tournoi_id = "${_holder.echapperFiltrePocketBase(tournoiId)}"',
+                expand: 'team_id',
+                sort: 'created',
+              );
+      final Map<String, Team> equipesUniques = {};
+      for (final RecordModel record in records) {
+        final RecordModel expandedTeam =
+            record.get<RecordModel>('expand.team_id');
+        equipesUniques.putIfAbsent(
+          expandedTeam.id,
+          () => Team.fromPocketBaseRecord(expandedTeam),
+        );
+      }
+      return equipesUniques.values.toList();
+    } catch (exception) {
+      debugPrint('Erreur de chargement des équipes du tournoi : $exception');
+      return [];
+    }
+  }
+
   /// Supprime une rencontre (adversaires/estims/matched purgés en cascade).
   Future<void> deleteRencontre(String rencontreId) async {
     await _holder.clientPocketBase

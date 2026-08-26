@@ -45,4 +45,58 @@ class PocketbaseReferentielsService {
       return [];
     }
   }
+
+  // -------------------------------------------------------------------
+  // CRUD d'administration (règles PocketBase : `@request.auth.admin`)
+  // -------------------------------------------------------------------
+
+  /// Crée une armée dans le référentiel.
+  Future<Armee> createArmee(String nom, String short) async {
+    final RecordModel recordArmee = await _holder.clientPocketBase
+        .collection(collectionNameArmees)
+        .create(body: {'nom': nom, 'short': short});
+    return Armee.fromPocketBaseRecord(recordArmee);
+  }
+
+  /// Modifie le nom ou l'initiale d'une armée.
+  Future<Armee> updateArmee(String armeeId, String nom, String short) async {
+    final RecordModel recordArmee = await _holder.clientPocketBase
+        .collection(collectionNameArmees)
+        .update(armeeId, body: {'nom': nom, 'short': short});
+    return Armee.fromPocketBaseRecord(recordArmee);
+  }
+
+  /// Supprime une armée du référentiel.
+  Future<void> deleteArmee(String armeeId) async {
+    await _holder.clientPocketBase.collection(collectionNameArmees).delete(armeeId);
+  }
+
+  /// Crée un choix d'estimation dans le référentiel.
+  Future<Choix> createChoix(
+      String libelle, String short, String couleurHex) async {
+    final RecordModel recordChoix = await _holder.clientPocketBase
+        .collection(collectionNameChoix)
+        .create(
+            body: {'libelle': libelle, 'short': short, 'couleur_hex': couleurHex});
+    return Choix.fromPocketBaseRecord(recordChoix);
+  }
+
+  /// Modifie le libellé, l'initiale ou la couleur d'un choix.
+  Future<Choix> updateChoix(String choixId, String libelle, String short,
+      String couleurHex) async {
+    final RecordModel recordChoix = await _holder.clientPocketBase
+        .collection(collectionNameChoix)
+        .update(choixId,
+            body: {
+              'libelle': libelle,
+              'short': short,
+              'couleur_hex': couleurHex,
+            });
+    return Choix.fromPocketBaseRecord(recordChoix);
+  }
+
+  /// Supprime un choix du référentiel.
+  Future<void> deleteChoix(String choixId) async {
+    await _holder.clientPocketBase.collection(collectionNameChoix).delete(choixId);
+  }
 }

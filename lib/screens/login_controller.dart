@@ -20,8 +20,8 @@ class LoginController {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController nomController =
       TextEditingController(); // Pseudo (utilisé à l'inscription)
-  final TextEditingController shortController =
-      TextEditingController(); // Initiales (utilisées à l'inscription)
+  // Le champ d'initiales a été retiré : `short` est généré automatiquement
+  // à partir du pseudo lors de l'inscription.
 
   // Indique si on est en mode Inscription (true) ou Connexion (false)
   bool isSignUp = false;
@@ -54,7 +54,6 @@ class LoginController {
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
           nom: nomController.text.trim(),
-          short: shortController.text.trim().toUpperCase(),
         );
 
         // Bascule automatique en mode connexion après inscription
@@ -82,6 +81,5 @@ class LoginController {
     emailController.dispose();
     passwordController.dispose();
     nomController.dispose();
-    shortController.dispose();
   }
 }

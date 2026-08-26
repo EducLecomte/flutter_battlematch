@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/models.dart';
+import 'admin_screen.dart';
 import 'profile_controller.dart';
 import 'widgets/profile_info_card.dart';
 import 'widgets/profile_invitations_section.dart';
@@ -34,6 +35,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message), backgroundColor: Colors.green),
     );
+  }
+
+  // Déconnecte puis remonte à la première route : si ce profil a été
+  // ouvert par push depuis un autre écran, la route est refermée et
+  // l'AuthGate peut afficher proprement l'écran de connexion.
+  Future<void> _handleSignOut() async {
+    await _controller.signOut();
+    if (mounted) {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    }
   }
 
   // Charge les données de profil et les invitations
@@ -103,7 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: const Text("Mon Profil"),
         actions: [
           IconButton(
-            onPressed: () => _controller.signOut(),
+            onPressed: _handleSignOut,
             icon: const Icon(Icons.logout),
             tooltip: "Se déconnecter",
           ),
@@ -117,10 +128,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ProfileInfoCard(
               email: _controller.joueur?.email ?? '',
               nomController: _controller.nomController,
-              shortController: _controller.shortController,
               isSaving: _controller.isSaving,
               onSave: _saveProfile,
             ),
+            if (_controller.joueur?.admin ?? false) ...[
+              const SizedBox(height: 24),
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.admin_panel_settings),
+                  title: const Text("Administration"),
+                  subtitle: const Text(
+                      "Gérer les armées, les appréciations et les comptes"),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (dialogContext) => const AdminScreen()),
+                    );
+                  },
+                ),
+              ),
+            ],
             const SizedBox(height: 24),
             ProfileInvitationsSection(
               invitations: _controller.invitations,

@@ -57,7 +57,7 @@ class TeamManagementTeamInvitePanel extends StatelessWidget {
                             final player = searchResults[index];
                             return ListTile(
                               title: Text(player.nom),
-                              subtitle: Text(player.short),
+                              subtitle: Text(player.email),
                               trailing: IconButton(
                                 icon: const Icon(Icons.person_add_alt_1, color: Colors.blueAccent),
                                 onPressed: () => onSendInvite(player.id),
