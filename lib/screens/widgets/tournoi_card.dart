@@ -43,9 +43,7 @@ class TournoiCard extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent,
-            ),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
             child: const Text("Supprimer"),
           ),
         ],
@@ -64,15 +62,10 @@ class TournoiCard extends StatelessWidget {
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 2,
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 8,
-        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         title: Text(
           tournoi.nom,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -101,16 +94,13 @@ class TournoiCard extends StatelessWidget {
           children: [
             if (estAdministrateur && importRequis)
               IconButton(
-                icon: const Icon(Icons.group, color: Colors.blueAccent),
+                icon: const Icon(Icons.download, color: Colors.blueAccent),
                 onPressed: onImportTeams,
                 tooltip: "Importer les équipes",
               ),
             if (estAdministrateur)
               IconButton(
-                icon: const Icon(
-                  Icons.delete_outline,
-                  color: Colors.redAccent,
-                ),
+                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
                 onPressed: () => _confirmDeletion(context),
                 tooltip: "Supprimer",
               ),

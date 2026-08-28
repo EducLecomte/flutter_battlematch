@@ -32,4 +32,4 @@ Another exception was thrown: Assertion failed: file:///home/gus/development/flu
 - le parseur semble en erreur (identifie 11 équipes sur 12, dans le nouveau @exemple_tournoi.txt)
 
 ## 4 
-- joueus, champs "short" inutile dans pocketbase
+- collection joueur, champs "short" inutile dans pocketbase

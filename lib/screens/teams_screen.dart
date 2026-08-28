@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../models/models.dart';
 import 'team_dashboard_screen.dart';
 import 'teams_screen_controller.dart';
@@ -88,14 +89,6 @@ class _TeamsScreenState extends State<TeamsScreen> {
         title: Text(widget.tournoi.nom),
         actions: [
           IconButton(
-            icon: const Icon(Icons.file_upload_outlined),
-            onPressed: _controller.activeTeam == null
-                ? null
-                : () => _actions.importTournamentText(
-                      context, _refreshUserInterface),
-            tooltip: "Importer le tournoi depuis un texte",
-          ),
-          IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _loadEncounters,
             tooltip: "Rafraîchir",
@@ -142,9 +135,7 @@ class _TeamsScreenState extends State<TeamsScreen> {
                   const SizedBox(height: 24),
                   Text(
                     "Rencontres / Rondes du tournoi",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
+                    style: Theme.of(context).textTheme.titleMedium
                         ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
@@ -153,10 +144,12 @@ class _TeamsScreenState extends State<TeamsScreen> {
                       activeTeam: _controller.activeTeam,
                       availableEncounters: _controller.availableEncounters,
                       onEncounterSelected: _openEncounterDashboard,
-                      onDeleteRequested: (selectedEncounter) => _actions
-                          .deleteEncounter(
-                              context, selectedEncounter,
-                              _refreshUserInterface),
+                      onDeleteRequested: (selectedEncounter) =>
+                          _actions.deleteEncounter(
+                            context,
+                            selectedEncounter,
+                            _refreshUserInterface,
+                          ),
                     ),
                   ),
                 ],
