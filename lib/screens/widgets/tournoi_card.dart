@@ -1,7 +1,7 @@
 // ===========================================================================
 // Carte d'un Tournoi (tournoi_card.dart)
 // Affiche le nom et le lien New Recruit d'un tournoi, avec actions
-// d'ouverture (vers les rencontres) et de suppression confirmée.
+// d'ouverture, d'import des équipes (admin) et de suppression (admin).
 // ===========================================================================
 
 import 'package:flutter/material.dart';
@@ -10,18 +10,24 @@ import '../../models/models.dart';
 
 class TournoiCard extends StatelessWidget {
   final Tournoi tournoi;
-  final ValueChanged<String> onDeleteTournoi;
-  final VoidCallback onOpenTournoi;
+  final bool estAdministrateur;
+  final ValueChanged<String>? onDeleteTournoi;
+  final VoidCallback? onOpenTournoi;
+  final VoidCallback? onImportTeams;
 
   const TournoiCard({
     super.key,
     required this.tournoi,
-    required this.onDeleteTournoi,
-    required this.onOpenTournoi,
+    required this.estAdministrateur,
+    this.onDeleteTournoi,
+    this.onOpenTournoi,
+    this.onImportTeams,
   });
 
-  // Demande la confirmation avant de déclencher la suppression
   Future<void> _confirmDeletion(BuildContext context) async {
+    final ValueChanged<String>? deleteHandler = onDeleteTournoi;
+    if (deleteHandler == null) return;
+
     final bool? confirmDelete = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -47,13 +53,14 @@ class TournoiCard extends StatelessWidget {
     );
 
     if (confirmDelete == true) {
-      onDeleteTournoi(tournoi.id);
+      deleteHandler(tournoi.id);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final String lienNewRecruit = tournoi.lienNr;
+    final bool importRequis = !tournoi.importEffectue;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -70,17 +77,44 @@ class TournoiCard extends StatelessWidget {
           tournoi.nom,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
-        subtitle: lienNewRecruit.isNotEmpty
-            ? Text(
-                "Lien: $lienNewRecruit",
-                style: const TextStyle(color: Colors.blueAccent),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              )
-            : const Text("Aucun lien New Recruit"),
-        trailing: IconButton(
-          icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-          onPressed: () => _confirmDeletion(context),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Lien: $lienNewRecruit",
+              style: const TextStyle(color: Colors.blueAccent),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            if (importRequis)
+              const Padding(
+                padding: EdgeInsets.only(top: 4),
+                child: Text(
+                  "Import des équipes requis",
+                  style: TextStyle(color: Colors.amber, fontSize: 12),
+                ),
+              ),
+          ],
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (estAdministrateur && importRequis)
+              IconButton(
+                icon: const Icon(Icons.group, color: Colors.blueAccent),
+                onPressed: onImportTeams,
+                tooltip: "Importer les équipes",
+              ),
+            if (estAdministrateur)
+              IconButton(
+                icon: const Icon(
+                  Icons.delete_outline,
+                  color: Colors.redAccent,
+                ),
+                onPressed: () => _confirmDeletion(context),
+                tooltip: "Supprimer",
+              ),
+          ],
         ),
         onTap: onOpenTournoi,
       ),

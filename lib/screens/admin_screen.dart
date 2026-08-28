@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../utils/error_snack_bar_presenter.dart';
 import 'admin_controller.dart';
 import 'widgets/admin_armees_tab.dart';
 import 'widgets/admin_choix_tab.dart';
@@ -29,10 +30,14 @@ class _AdminScreenState extends State<AdminScreen> {
   }
 
   void _showMessage(String message, {required bool isFailure}) {
+    if (isFailure) {
+      showErrorSnackBar(context, message);
+      return;
+    }
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: isFailure ? Colors.red : Colors.green,
+        backgroundColor: Colors.green,
       ),
     );
   }

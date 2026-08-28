@@ -3,8 +3,10 @@ import '../models/models.dart';
 import 'team_dashboard_screen.dart';
 import 'teams_screen_controller.dart';
 import 'teams_screen_encounter_actions.dart';
+import 'teams_screen_team_access_actions.dart';
 import 'widgets/add_encounter_dialog.dart';
 import 'widgets/teams_screen_encounter_list.dart';
+import 'widgets/teams_screen_team_access_panel.dart';
 import 'widgets/teams_screen_team_selector.dart';
 
 class TeamsScreen extends StatefulWidget {
@@ -19,12 +21,14 @@ class TeamsScreen extends StatefulWidget {
 class _TeamsScreenState extends State<TeamsScreen> {
   late final TeamsScreenController _controller;
   late final TeamsScreenEncounterActions _actions;
+  late final TeamsScreenTeamAccessActions _teamAccessActions;
 
   @override
   void initState() {
     super.initState();
     _controller = TeamsScreenController();
     _actions = TeamsScreenEncounterActions(_controller);
+    _teamAccessActions = TeamsScreenTeamAccessActions(_controller);
     _controller.bindTournoi(widget.tournoi.id);
     _loadTeams();
   }
@@ -107,35 +111,56 @@ class _TeamsScreenState extends State<TeamsScreen> {
             ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TeamsScreenTeamSelector(
-              activeTeam: _controller.activeTeam,
-              selectableTeams: _controller.selectableTeams,
-              onTeamSelected: _handleTeamSelected,
-            ),
-            const SizedBox(height: 24),
-            Text(
-              "Rencontres / Rondes du tournoi",
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            Expanded(
-              child: TeamsScreenEncounterList(
-                activeTeam: _controller.activeTeam,
-                availableEncounters: _controller.availableEncounters,
-                onEncounterSelected: _openEncounterDashboard,
-                onDeleteRequested: (selectedEncounter) => _actions
-                    .deleteEncounter(context, selectedEncounter,
-                        _refreshUserInterface),
+        child: _controller.utilisateurSansEquipe
+            ? TeamsScreenTeamAccessPanel(
+                equipesTournoi: _controller.availableTournoiTeams,
+                isLoading: _controller.isLoadingTeams,
+                onClaimTeam: (team) {
+                  _teamAccessActions.claimTeam(
+                    context,
+                    team,
+                    _refreshUserInterface,
+                  );
+                },
+                onJoinTeam: (team, motDePasse) {
+                  _teamAccessActions.joinTeam(
+                    context,
+                    team,
+                    motDePasse,
+                    _refreshUserInterface,
+                  );
+                },
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TeamsScreenTeamSelector(
+                    activeTeam: _controller.activeTeam,
+                    selectableTeams: _controller.selectableTeams,
+                    onTeamSelected: _handleTeamSelected,
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    "Rencontres / Rondes du tournoi",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  Expanded(
+                    child: TeamsScreenEncounterList(
+                      activeTeam: _controller.activeTeam,
+                      availableEncounters: _controller.availableEncounters,
+                      onEncounterSelected: _openEncounterDashboard,
+                      onDeleteRequested: (selectedEncounter) => _actions
+                          .deleteEncounter(
+                              context, selectedEncounter,
+                              _refreshUserInterface),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -20,8 +20,13 @@ lib/
   services/new_recruit_import_service.dart # Import API directe + parsing local
   screens/                               # Tournois, Équipes, Dashboard, Profil, Administration
   utils/hex_color_parser.dart            # Helpers couleurs hex
+  utils/error_snack_bar_presenter.dart   # SnackBar d'erreur (log debug + copie)
 tool/
   pocketbase_seed_records.dart           # Seed des référentiels armees/choix
+  pocketbase_seed_demo_records.dart      # Jeu de données de démonstration
+  pocketbase_tool_support.dart           # Support commun des scripts PocketBase
+  pocketbase_purge_meta_war_records.dart # Purge des données MetaWar
+  pocketbase_seed_test_accounts.dart     # Comptes de test test1 à test4
 pocketbase_schema.json                   # Snapshot de schéma à importer
 ```
 
@@ -52,8 +57,9 @@ estimations par joueur, armées/choix) et règles d'accès.
 | Règle | Principe |
 |---|---|
 | Lecture | tout utilisateur authentifié (référentiels publics) |
-| Écriture équipes/tournois | créateur / capitaine uniquement |
-| Invitations | capitaine de l'équipe ; acceptation par l'invité |
+| Tournois | création/suppression réservées aux admins ; ouverture bloquée pour les non-admins tant que l'import des équipes n'est pas effectué |
+| Équipes | création réservée aux admins ; réclamation d'une équipe sans capitaine ; join par mot de passe ; suppression admin ou capitaine |
+| Invitations | capitaine de l'équipe ; acceptation/refus par l'invité |
 | Adversaires & appariements | capitaine de l'équipe de la rencontre |
 | Estimations | chaque joueur et le capitaine de son équipe |
 | Administration | compte `admin` : gestion des joueurs, armées et appréciations |
@@ -106,6 +112,44 @@ Crée un univers de test **idempotent** rattaché à l'équipe `Les randomiques`
 Pour repartir de zéro : supprimer les enregistrements dont le nom commence
 par `[DEMO]` et les comptes `*.demo@pedagogeek.fr` depuis l'admin.
 
+### 4. Purger les données MetaWar (maintenance)
+
+Sans `--yes`, le script affiche uniquement les collections visées :
+
+```bash
+dart run tool/pocketbase_purge_meta_war_records.dart
+```
+
+Avec `--yes`, il supprime les données MetaWar dans l'ordre anti-orphelins :
+`matched`, `estims`, `meta_adv`, `rencontres`, `team_membres`, `teams`,
+`tournois`, `joueurs`. Les collections natives PocketBase (`users`,
+`_superusers`, fichiers) ne sont pas touchées.
+
+```bash
+dart run tool/pocketbase_purge_meta_war_records.dart --yes \
+  --email admin@exemple.fr --password 'motDePasse'
+```
+
+Ajouter `--purge-referentiels` pour supprimer aussi `armees` et `choix`.
+
+### 5. Comptes de test
+
+```bash
+dart run tool/pocketbase_seed_test_accounts.dart \
+  --email admin@exemple.fr --password 'motDePasse'
+```
+
+Le script est idempotent : il crée les comptes s'ils sont absents, sinon il
+met à jour `nom`, `short`, `admin` et le mot de passe. Les mots de passe sont
+courts et conformes à la politique d'inscription.
+
+| Identifiant | Mot de passe |
+|---|---|
+| `test1@pedagogeek.fr` | `Test1!23` |
+| `test2@pedagogeek.fr` | `Test2!23` |
+| `test3@pedagogeek.fr` | `Test3!23` |
+| `test4@pedagogeek.fr` | `Test4!23` |
+
 ## Lancer l'application
 
 ```bash
@@ -126,20 +170,31 @@ flutter analyze           # analyse statique
 - Inscription/connexion joueurs (collection dédiée `joueurs`, session web
   persistante, mot de passe : 8 caractères minimum, une majuscule,
   un caractère spécial)
-- Tournois → Équipes (invitations pending/accepted, recherche de joueurs,
-  icônes capitaine/membre)
+- Tournois gérés par les admins : création avec lien New Recruit, import des
+  équipes, suppression ; ouverture bloquée pour les non-admins si l'import des
+  équipes n'est pas effectué
+- Équipes : réclamation d'une équipe sans capitaine, join par mot de passe,
+  gestion du mot de passe, nomination d'un capitaine, invitations, retrait de
+  membres
 - Rencontres (rondes) par équipe et tournoi
 - Matrice d'estimation temps réel joueur × adversaire (7 appréciations fixes,
    symbole `Dicy` en gris, scores 20-0, confiance, commentaires, valeurs
    visibles en cellule appariée/bloquée)
 - Mode Capitaine : appariements verrouillés (un duel unique par joueur
-  ET par adversaire, garanti par index uniques serveur) et estimation
-  possible pour tous les membres de l'équipe
+   ET par adversaire, garanti par index uniques serveur), estimation possible
+   pour tous les membres, et association membre ↔ liste depuis la gestion
+   d'équipe
+- Profil : affichage des équipes et tournois de l'utilisateur
 - Équipes du tournoi visibles par tous (sélection de l'équipe active
-  depuis l'écran Équipes)
+   depuis l'écran Équipes)
 - Import tournoi : texte ou JSON depuis l'écran Équipes, avec création des
    rencontres et des adversaires, dédoublonnage des adversaires déjà
    importés et comptage des armées inconnues
-- Administration (compte `admin`, accessible depuis le Profil) :
-   promotion/rétrogradation et suppression des joueurs, gestion des armées et
-   des appréciations
+ - Administration (compte `admin`, accessible depuis le Profil) :
+    promotion/rétrogradation et suppression des joueurs, gestion des armées et
+    des appréciations
+  - Suppression de son compte depuis le Profil (confirmation, purge des équipes
+     capitaines et des tournois créés, déconnexion)
+  - Messages d'erreur copiables (log debug + bouton « Copier »)
+  - Maintenance PocketBase : purge sécurisée des données MetaWar et comptes de
+    test idempotents (`test1` à `test4`)

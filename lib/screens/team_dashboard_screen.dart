@@ -8,6 +8,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/models.dart';
+import '../utils/error_snack_bar_presenter.dart';
 import 'team_dashboard_controller.dart';
 import 'team_dashboard_estim_actions.dart';
 import 'widgets/add_opponent_dialog.dart';
@@ -53,9 +54,7 @@ class _TeamDashboardScreenState extends State<TeamDashboardScreen> {
       _isLoadingReferenceData = false;
     });
     if (loadError != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Erreur de chargement: $loadError")),
-      );
+      showErrorSnackBar(context, "Erreur de chargement: $loadError");
     }
   }
 
@@ -68,10 +67,9 @@ class _TeamDashboardScreenState extends State<TeamDashboardScreen> {
       }
     } catch (deleteError) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Erreur de suppression : ${deleteError.toString()}"),
-          ),
+        showErrorSnackBar(
+          context,
+          "Erreur de suppression : ${deleteError.toString()}",
         );
       }
     }

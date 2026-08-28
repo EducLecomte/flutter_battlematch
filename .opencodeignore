@@ -1,0 +1,27 @@
+# Configuration OpenCode & Git
+.git/
+.config/
+
+# Flutter / Dart générés
+.dart_tool/
+.fvm/
+.idea/
+.vscode/
+build/
+android/
+ios/
+web/
+macos/
+linux/
+windows/
+
+# Dépendances & Logs
+.packages
+pubspec.lock
+*.log
+*.core
+
+# Génération de code (Build Runner, Freezed, JsonSerializable)
+*.g.dart
+*.freezed.dart
+*.mocks.dart

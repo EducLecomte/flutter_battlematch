@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import '../models/models.dart';
 import '../services/pocketbase_data_service.dart';
 import '../services/tournament_text_import_service.dart';
+import '../utils/error_snack_bar_presenter.dart';
 import 'teams_screen_controller.dart';
 import 'widgets/rencontre_delete_confirmation.dart';
 import 'widgets/tournament_text_import_launcher.dart';
@@ -29,7 +30,7 @@ class TeamsScreenEncounterActions {
       );
     } catch (exceptionLoading) {
       if (context.mounted) {
-        showSnackBar(context, "Erreur de chargement: $exceptionLoading");
+        showErrorSnackBar(context, "Erreur de chargement: $exceptionLoading");
       }
     }
     if (context.mounted) onStateChanged();
@@ -45,7 +46,7 @@ class TeamsScreenEncounterActions {
       if (context.mounted) onStateChanged();
     } catch (exceptionLoading) {
       if (context.mounted) {
-        showSnackBar(context, "Erreur rencontres : $exceptionLoading");
+        showErrorSnackBar(context, "Erreur rencontres : $exceptionLoading");
       }
     }
   }
@@ -65,7 +66,7 @@ class TeamsScreenEncounterActions {
       }
     } catch (exceptionAdding) {
       if (context.mounted) {
-        showSnackBar(context, "Erreur d'ajout : $exceptionAdding");
+        showErrorSnackBar(context, "Erreur d'ajout : $exceptionAdding");
       }
     }
   }
@@ -78,7 +79,7 @@ class TeamsScreenEncounterActions {
   ) async {
     final Team? activeTeam = controller.activeTeam;
     if (activeTeam == null) {
-      showSnackBar(context, "Aucune équipe active pour importer le tournoi.");
+      showErrorSnackBar(context, "Aucune équipe active pour importer le tournoi.");
       return;
     }
 
@@ -105,7 +106,7 @@ class TeamsScreenEncounterActions {
       }
     } catch (exceptionImport) {
       if (context.mounted) {
-        showSnackBar(context, "Erreur d'import : $exceptionImport");
+        showErrorSnackBar(context, "Erreur d'import : $exceptionImport");
       }
     }
   }
@@ -138,7 +139,7 @@ class TeamsScreenEncounterActions {
       }
     } catch (exceptionDeleting) {
       if (context.mounted) {
-        showSnackBar(context, "Erreur de suppression : $exceptionDeleting");
+        showErrorSnackBar(context, "Erreur de suppression : $exceptionDeleting");
       }
     }
   }

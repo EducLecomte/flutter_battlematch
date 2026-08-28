@@ -58,11 +58,7 @@
         "system": false,
         "hidden": false,
         "presentable": false,
-        "default": false,
-        "values": {
-          "checked": true,
-          "unchecked": false
-        }
+        "default": false
       }
     ],
     "indexes": [],
@@ -120,9 +116,18 @@
         "system": false,
         "hidden": false,
         "presentable": false,
-        "required": false,
+        "required": true,
         "exceptDomains": null,
         "onlyDomains": null
+      },
+      {
+        "type": "bool",
+        "id": "f_importeff01",
+        "name": "import_effectue",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "default": false
       },
       {
         "type": "relation",
@@ -162,9 +167,9 @@
     "indexes": [],
     "listRule": "@request.auth.id != ''",
     "viewRule": "@request.auth.id != ''",
-    "createRule": "@request.auth.id != '' && created_by = @request.auth.id",
-    "updateRule": "created_by = @request.auth.id",
-    "deleteRule": "created_by = @request.auth.id"
+    "createRule": "@request.auth.admin = true && created_by = @request.auth.id",
+    "updateRule": "@request.auth.admin = true",
+    "deleteRule": "@request.auth.admin = true"
   },
   {
     "id": "mwteams00000001",
@@ -187,17 +192,44 @@
       },
       {
         "type": "relation",
+        "id": "f_tournoi0001",
+        "name": "tournoi_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "collectionId": "mwtournois00001",
+        "cascadeDelete": true,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "relation",
         "id": "f_capitaine01",
         "name": "capitaine_id",
         "system": false,
         "hidden": false,
         "presentable": false,
-        "required": true,
+        "required": false,
         "collectionId": "mwjoueurs000001",
         "cascadeDelete": false,
         "minSelect": null,
         "maxSelect": 1,
         "displayFields": null
+      },
+      {
+        "type": "text",
+        "id": "f_mdp0000001",
+        "name": "mot_de_passe",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "min": 0,
+        "max": 128,
+        "pattern": "",
+        "autogeneratePattern": ""
       },
       {
         "type": "autodate",
@@ -223,9 +255,9 @@
     "indexes": [],
     "listRule": "@request.auth.id != ''",
     "viewRule": "@request.auth.id != ''",
-    "createRule": "capitaine_id = @request.auth.id",
-    "updateRule": "capitaine_id = @request.auth.id",
-    "deleteRule": "capitaine_id = @request.auth.id"
+    "createRule": "@request.auth.admin = true",
+    "updateRule": "@request.auth.admin = true || capitaine_id = @request.auth.id || (capitaine_id = '' && @request.body.capitaine_id = @request.auth.id)",
+    "deleteRule": "@request.auth.admin = true || capitaine_id = @request.auth.id"
   },
   {
     "id": "mwteammembres01",
@@ -315,7 +347,7 @@
     ],
     "listRule": "@request.auth.id != ''",
     "viewRule": "@request.auth.id != ''",
-    "createRule": "@request.auth.id = team_id.capitaine_id",
+    "createRule": "(@request.auth.id = team_id.capitaine_id) || (joueur_id = @request.auth.id && team_id.capitaine_id = '' && role = 'captain' && statut = 'accepted') || (joueur_id = @request.auth.id && statut = 'accepted' && team_id.mot_de_passe != '' && team_id.mot_de_passe = @request.body.mot_de_passe)",
     "updateRule": "(statut = 'pending' && joueur_id = @request.auth.id) || @request.auth.id = team_id.capitaine_id",
     "deleteRule": "joueur_id = @request.auth.id || @request.auth.id = team_id.capitaine_id"
   },
@@ -760,9 +792,9 @@
     ],
     "listRule": "@request.auth.id != ''",
     "viewRule": "@request.auth.id != ''",
-    "createRule": "joueur_id = @request.auth.id || joueur_id IN (SELECT joueur_id FROM team_membres WHERE statut = 'accepted' AND team_id IN (SELECT id FROM teams WHERE capitaine_id = @request.auth.id))",
-    "updateRule": "joueur_id = @request.auth.id || joueur_id IN (SELECT joueur_id FROM team_membres WHERE statut = 'accepted' AND team_id IN (SELECT id FROM teams WHERE capitaine_id = @request.auth.id))",
-    "deleteRule": "joueur_id = @request.auth.id || joueur_id IN (SELECT joueur_id FROM team_membres WHERE statut = 'accepted' AND team_id IN (SELECT id FROM teams WHERE capitaine_id = @request.auth.id))"
+    "createRule": "joueur_id = @request.auth.id || (@collection.team_membres:member.joueur_id ?= joueur_id && @collection.team_membres:member.statut ?= 'accepted' && @collection.team_membres:member.team_id.capitaine_id ?= @request.auth.id)",
+    "updateRule": "joueur_id = @request.auth.id || (@collection.team_membres:member.joueur_id ?= joueur_id && @collection.team_membres:member.statut ?= 'accepted' && @collection.team_membres:member.team_id.capitaine_id ?= @request.auth.id)",
+    "deleteRule": "joueur_id = @request.auth.id || (@collection.team_membres:member.joueur_id ?= joueur_id && @collection.team_membres:member.statut ?= 'accepted' && @collection.team_membres:member.team_id.capitaine_id ?= @request.auth.id)"
   },
   {
     "id": "mwmatched000001",

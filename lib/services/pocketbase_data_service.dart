@@ -12,10 +12,12 @@ import 'pocketbase/pocketbase_dashboard_adversaires_service.dart';
 import 'pocketbase/pocketbase_dashboard_estims_service.dart';
 import 'pocketbase/pocketbase_dashboard_matched_service.dart';
 import 'pocketbase/pocketbase_referentiels_service.dart';
+import 'pocketbase/pocketbase_team_access_service.dart';
 import 'pocketbase/pocketbase_team_invitations_service.dart';
 import 'pocketbase/pocketbase_team_membres_service.dart';
 import 'pocketbase/pocketbase_teams_service.dart';
 import 'pocketbase/pocketbase_tournois_service.dart';
+import 'tournament_team_import_service.dart';
 
 class PocketbaseDataService {
   static final PocketbaseDataService instance =
@@ -38,6 +40,10 @@ class PocketbaseDataService {
   final PocketbaseDashboardMatchedService _serviceDashboardMatched =
       PocketbaseDashboardMatchedService.instance;
   final PocketbaseAdminService _serviceAdmin = PocketbaseAdminService.instance;
+  final PocketbaseTeamAccessService _serviceTeamAccess =
+      PocketbaseTeamAccessService.instance;
+  final TournamentTeamImportService _serviceTournamentTeamImport =
+      TournamentTeamImportService.instance;
 
   PocketbaseDataService._internal();
 
@@ -94,8 +100,14 @@ class PocketbaseDataService {
   Future<void> deleteTeam(String teamId) => _serviceTeams.deleteTeam(teamId);
   Future<List<Tournoi>> getTournois() => _serviceTournois.getTournois();
 
-  Future<Tournoi> createTournoi(String nom, String? lienNr) =>
+  Future<Tournoi> createTournoi(String nom, String lienNr) =>
       _serviceTournois.createTournoi(nom, lienNr);
+
+  Future<Tournoi> getTournoi(String tournoiId) =>
+      _serviceTournois.getTournoi(tournoiId);
+
+  Future<void> markTournoiImportEffectue(String tournoiId) =>
+      _serviceTournois.markTournoiImportEffectue(tournoiId);
 
   Future<void> deleteTournoi(String tournoiId) =>
       _serviceTournois.deleteTournoi(tournoiId);
@@ -112,6 +124,40 @@ class PocketbaseDataService {
 
   Future<List<Team>> getTeamsParticipatingInTournoi(String tournoiId) =>
       _serviceTournois.getTeamsParticipatingInTournoi(tournoiId);
+
+  Future<Team> getTeam(String teamId) => _serviceTeams.getTeam(teamId);
+
+  Future<List<Team>> getTeamsForTournoi(String tournoiId) =>
+      _serviceTeams.getTeamsForTournoi(tournoiId);
+
+  Future<Team> createTeamForTournoi(String tournoiId, String nomEquipe) =>
+      _serviceTeams.createTeamForTournoi(tournoiId, nomEquipe);
+
+  Future<Team> updateTeamMotDePasse(String teamId, String motDePasse) =>
+      _serviceTeams.updateTeamMotDePasse(teamId, motDePasse);
+
+  Future<Team> reclamerEquipeEnCapitaine(String teamId) =>
+      _serviceTeamAccess.reclamerEquipeEnCapitaine(teamId);
+
+  Future<Team> rejoindreEquipeAvecMotDePasse(
+          String teamId, String motDePasse) =>
+      _serviceTeamAccess.rejoindreEquipeAvecMotDePasse(teamId, motDePasse);
+
+  Future<Team> nommerNouveauCapitaine(
+          String teamId, String nouveauCapitaineJoueurId) =>
+      _serviceTeamAccess.nommerNouveauCapitaine(
+        teamId,
+        nouveauCapitaineJoueurId,
+      );
+
+  Future<TournamentTeamImportSummary> importTeamsForTournoi({
+    required String tournoiId,
+    required List<Map<String, dynamic>> importedPlayers,
+  }) =>
+      _serviceTournamentTeamImport.importTeamsForTournoi(
+        tournoiId: tournoiId,
+        importedPlayers: importedPlayers,
+      );
 
   Future<List<Armee>> getArmees() => _serviceReferentiels.getArmees();
 
@@ -165,6 +211,9 @@ class PocketbaseDataService {
 
   Future<void> deleteJoueur(String joueurId) =>
       _serviceAdmin.deleteJoueur(joueurId);
+
+  Future<void> deleteCurrentAccount() =>
+      _serviceAdmin.deleteCurrentAccount();
 
   Future<Armee> createArmee(String nom, String short) =>
       _serviceReferentiels.createArmee(nom, short);

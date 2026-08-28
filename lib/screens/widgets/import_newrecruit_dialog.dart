@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/models.dart';
+import '../../utils/error_snack_bar_presenter.dart';
 import 'import_newrecruit_api_failure_dialog.dart';
 import 'import_newrecruit_controller.dart';
 import 'import_newrecruit_import_tabs.dart';
@@ -45,9 +46,7 @@ class _ImportNewRecruitDialogState extends State<ImportNewRecruitDialog> {
   }
 
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    showErrorSnackBar(context, message);
   }
 
   // Lance l'importation automatique via l'API

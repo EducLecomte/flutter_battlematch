@@ -1,14 +1,16 @@
 // ===========================================================================
 // Écran de Gestion d'Équipe (team_management_screen.dart)
-// Permet de créer des équipes, lister ses membres et inviter d'autres joueurs.
+// Liste les équipes de l'utilisateur et permet de gérer membres,
+// invitations, mot de passe et capitainerie.
 // ===========================================================================
 
 import 'package:flutter/material.dart';
+import '../utils/error_snack_bar_presenter.dart';
 import 'profile_screen.dart';
 import 'team_management_controller.dart';
+import 'team_management_team_actions.dart';
 import 'widgets/team_management_team_list_sidebar.dart';
 import 'widgets/team_management_team_detail_panel.dart';
-import 'widgets/team_management_create_team_dialog.dart';
 
 class TeamManagementScreen extends StatefulWidget {
   const TeamManagementScreen({super.key});
@@ -19,7 +21,7 @@ class TeamManagementScreen extends StatefulWidget {
 
 class _TeamManagementScreenState extends State<TeamManagementScreen> {
   final TeamManagementController _controller = TeamManagementController();
-  final TextEditingController _teamNameController = TextEditingController();
+  final TeamManagementTeamActions _teamActions = TeamManagementTeamActions();
   final TextEditingController _searchController = TextEditingController();
   bool _isLoading = true;
 
@@ -31,9 +33,12 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
 
   @override
   void dispose() {
-    _teamNameController.dispose();
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _refreshUserInterface() {
+    if (mounted) setState(() {});
   }
 
   // Charge le profil du joueur connecté et ses équipes
@@ -44,34 +49,11 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
     final errorMessage = await _controller.loadInitialData();
     if (!mounted) return;
     if (errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Erreur de chargement : $errorMessage")),
-      );
+      showErrorSnackBar(context, "Erreur de chargement : $errorMessage");
     }
     setState(() {
       _isLoading = false;
     });
-  }
-
-  // Crée une nouvelle équipe depuis la boîte de dialogue
-  Future<void> _createNewTeam() async {
-    final teamName = _teamNameController.text.trim();
-    if (teamName.isEmpty) return;
-    final errorMessage = await _controller.createNewTeam(teamName);
-    if (!mounted) return;
-    _teamNameController.clear();
-    setState(() {}); // Rafraîchit la liste des équipes
-    Navigator.of(context).pop(); // Ferme la boîte de dialogue
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          errorMessage == null
-              ? "Équipe créée avec succès !"
-              : "Erreur de création : $errorMessage",
-        ),
-        backgroundColor: errorMessage == null ? Colors.green : Colors.redAccent,
-      ),
-    );
   }
 
   // Envoie une invitation et notifie l'utilisateur
@@ -80,16 +62,13 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
     if (!mounted) return;
     if (errorMessage == null) _searchController.clear();
     setState(() {}); // Rafraîchit la liste des membres
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          errorMessage == null
-              ? "Invitation envoyée !"
-              : "Erreur d'invitation : $errorMessage",
-        ),
-        backgroundColor: errorMessage == null ? Colors.green : Colors.redAccent,
-      ),
-    );
+    if (errorMessage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Invitation envoyée !"), backgroundColor: Colors.green),
+      );
+    } else {
+      showErrorSnackBar(context, "Erreur d'invitation : $errorMessage");
+    }
   }
 
   @override
@@ -121,56 +100,55 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
             selectedTeamId: _controller.selectedTeam?.id,
             onTeamSelected: (team) async {
               _controller.selectedTeam = team;
-              setState(() {});
+              _refreshUserInterface();
               await _controller.loadMembersForSelectedTeam();
-              if (mounted) setState(() {});
+              await _controller.loadEncountersForSelectedTeam();
+              _refreshUserInterface();
             },
-            onCreateTeamPressed: () => showTeamManagementCreateTeamDialog(
-              dialogContext: context,
-              teamNameController: _teamNameController,
-              onCreateTeamPressed: _createNewTeam,
-            ),
           ),
           Expanded(
             child: _controller.selectedTeam == null
                 ? const Center(
                     child: Text(
-                      "Sélectionnez ou créez une équipe pour commencer.",
+                      "Sélectionnez une équipe pour commencer.",
                       style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                   )
                 : TeamManagementTeamDetailPanel(
                     controller: _controller,
                     searchController: _searchController,
+                    onStateChanged: _refreshUserInterface,
                     onSearchTextChanged: (query) async {
                       await _controller.searchPlayers(query);
                       if (mounted) setState(() {});
                     },
                     onSendInvite: _sendInvite,
-                    onRemoveMember: (player) async {
-                      final errorMessage =
-                          await _controller.removeMember(context, player);
-                      if (mounted) setState(() {}); // Rafraîchit les membres
-                      if (errorMessage != null && context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Erreur de retrait : $errorMessage"),
-                          ),
-                        );
-                      }
-                    },
-                    onDeleteTeam: (team) async {
-                      final errorMessage =
-                          await _controller.deleteTeam(context, team);
-                      if (mounted) setState(() {}); // Rafraîchit les équipes
-                      if (errorMessage != null && context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Erreur de suppression : $errorMessage"),
-                          ),
-                        );
-                      }
-                    },
+                    onRemoveMember: (player) => _teamActions.removeMember(
+                      context,
+                      _controller,
+                      player,
+                      _refreshUserInterface,
+                    ),
+                    onDeleteTeam: (team) => _teamActions.deleteTeam(
+                      context,
+                      _controller,
+                      team,
+                      _refreshUserInterface,
+                    ),
+                    onUpdateMotDePasse: (motDePasse) => _teamActions
+                        .updateTeamMotDePasse(
+                          context,
+                          _controller,
+                          motDePasse,
+                          _refreshUserInterface,
+                        ),
+                    onNominateCaptain: (candidate) => _teamActions
+                        .nominateNewCaptain(
+                          context,
+                          _controller,
+                          candidate,
+                          _refreshUserInterface,
+                        ),
                   ),
           ),
         ],

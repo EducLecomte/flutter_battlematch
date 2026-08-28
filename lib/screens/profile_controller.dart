@@ -23,6 +23,12 @@ class ProfileController {
   // Liste des invitations d'équipe reçues
   List<Map<String, dynamic>> invitations = [];
 
+  // Équipes acceptées de l'utilisateur
+  List<Team> userTeams = [];
+
+  // Tournois distincts associés aux équipes de l'utilisateur
+  Map<String, Tournoi> userTournois = {};
+
   // États de chargement / sauvegarde
   bool isLoading = false;
   bool isSaving = false;
@@ -44,6 +50,9 @@ class ProfileController {
 
         invitations =
             await _pocketbaseService.getPendingInvitations(joueurCourant.id);
+        userTeams =
+            await _pocketbaseService.getTeamsForUser(joueurCourant.id);
+        await _loadUserTournois();
       }
       return null;
     } catch (loadError) {
@@ -51,6 +60,25 @@ class ProfileController {
     } finally {
       isLoading = false;
       onStateChanged();
+    }
+  }
+
+  // Charge les tournois distincts associés aux équipes de l'utilisateur.
+  Future<void> _loadUserTournois() async {
+    userTournois = {};
+    final Set<String> tournoiIds = userTeams
+        .map((team) => team.tournoiId)
+        .where((tournoiId) => tournoiId.isNotEmpty)
+        .toSet();
+
+    for (final String tournoiId in tournoiIds) {
+      try {
+        final Tournoi tournoi =
+            await _pocketbaseService.getTournoi(tournoiId);
+        userTournois[tournoiId] = tournoi;
+      } catch (_) {
+        // Tournoi introuvable : on ignore silencieusement.
+      }
     }
   }
 
@@ -105,6 +133,18 @@ class ProfileController {
   // Déconnecte l'utilisateur.
   Future<void> signOut() async {
     await _pocketbaseService.signOut();
+  }
+
+  // Supprime définitivement le compte courant, purge les contenus
+  // possédés puis déconnecte l'utilisateur.
+  Future<String?> deleteAccount() async {
+    try {
+      await _pocketbaseService.deleteCurrentAccount();
+      await _pocketbaseService.signOut();
+      return null;
+    } catch (deleteError) {
+      return "Erreur de suppression : ${deleteError.toString()}";
+    }
   }
 
   // Libère les contrôleurs de texte.

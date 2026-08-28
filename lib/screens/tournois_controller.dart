@@ -16,6 +16,11 @@ class TournoiController {
   // Liste des tournois chargés
   List<Tournoi> tournois = [];
 
+  // Profil de l'utilisateur courant (droits admin inclus)
+  Joueur? profilJoueurCourant;
+
+  bool get estAdministrateur => profilJoueurCourant?.admin ?? false;
+
   // Contrôleurs pour l'ajout
   final TextEditingController nomController = TextEditingController();
   final TextEditingController lienController = TextEditingController();
@@ -30,6 +35,7 @@ class TournoiController {
     onStateChanged();
 
     try {
+      profilJoueurCourant = await _pocketbaseService.getCurrentJoueurProfile();
       final listeTournois = await _pocketbaseService.getTournois();
       tournois = listeTournois;
       return null;
@@ -44,14 +50,15 @@ class TournoiController {
   // Crée un nouveau tournoi à partir des champs du formulaire.
   // Retourne null en succès, ou un message d'erreur.
   Future<String?> addTournoi({required VoidCallback onStateChanged}) async {
-    final tournoiNom = nomController.text.trim();
-    final tournoiLien = lienController.text.trim();
+    final String tournoiNom = nomController.text.trim();
+    final String tournoiLien = lienController.text.trim();
+
+    if (tournoiNom.isEmpty || tournoiLien.isEmpty) {
+      return "Le nom et le lien New Recruit sont obligatoires.";
+    }
 
     try {
-      await _pocketbaseService.createTournoi(
-        tournoiNom,
-        tournoiLien.isEmpty ? null : tournoiLien,
-      );
+      await _pocketbaseService.createTournoi(tournoiNom, tournoiLien);
 
       nomController.clear();
       lienController.clear();

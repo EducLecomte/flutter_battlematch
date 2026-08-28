@@ -193,7 +193,95 @@ fixes), meta_adv, estims, matched.
         `flutter analyze` sans problème, `flutter test` 22/22, `flutter build web` OK
         (re-validé après M10.8 + M10.9)
 
- ## Journal erreurs/découvertes
+### M11 — Fiabilité : erreurs traçables + suppression de compte
+- [x] M11.1 Helper central `showErrorSnackBar` : message affiché, `debugPrint`,
+      bouton « Copier » pour l'erreur
+- [x] M11.2 Refactoriser les SnackBar d'erreur existants vers le helper central
+- [x] M11.3 Bouton « Supprimer mon compte » dans `ProfileScreen` avec
+      `AlertDialog`, déconnexion, purge intégrée des équipes capitaines et
+      des tournois créés par l'utilisateur
+- [x] M11.4 Validation 2026-08-26 : `flutter analyze` sans problème,
+      `flutter test` 24/24, `flutter build web` OK, mise à jour
+      `DOC.md`/`README.md`, RAG et Discord
+
+### M12 — Scripts de maintenance superuser
+- [x] M12.1 Helper partagé `tool/pocketbase_tool_support.dart`
+       (lecture des identifiants superuser, sorties d'erreur normalisées)
+- [x] M12.2 `tool/pocketbase_purge_meta_war_records.dart`
+       (purge des données métier sans supprimer les comptes de test ni les
+       référentiels si l'option correspondante est utilisée)
+- [x] M12.3 `tool/pocketbase_seed_test_accounts.dart`
+       (comptes test1 à test4 avec identifiants connus, idempotent)
+- [x] M12.4 Validation : `flutter analyze` sans problème, `flutter test` 24/24,
+       `flutter build web` OK, scripts sans identifiants en erreur d'usage
+
+### M13 — Point 4 MEMO : refonte logique tournois / équipes ✅
+- [x] M13.1 Mettre à jour `TASKS.md` avec la présente milestone
+- [x] M13.2 Schéma PocketBase :
+        `tournois.lien_nr` obligatoire, `tournois.import_effectue`,
+        création/modification/suppression de tournoi réservées aux admins ;
+        `teams.tournoi_id` avec cascade delete, `teams.mot_de_passe`,
+        `teams.capitaine_id` optionnel, création d'équipe réservée aux admins,
+        réclamation d'équipe sans capitaine, suppression admin ou capitaine ;
+        `team_membres.createRule` pour invitation capitaine, réclamation
+        capitaine et join par mot de passe
+        → `pocketbase_schema.json` mis à jour et validé localement ;
+        import manuel sur l'instance PocketBase requis
+- [x] M13.3 Modèles Dart :
+        `Tournoi.importEffectue`, `Team.tournoiId`, et le champ mot de passe
+        d'équipe si la règle de visibilité est conservée côté client
+        → `tournoi.dart` et `team.dart` mis à jour
+- [x] M13.4 Services tournois / équipes / membres / façade :
+        lister les équipes d'un tournoi, créer un tournoi avec lien NR,
+        marquer l'import des équipes comme effectué, réclamer une équipe
+        en devenant capitaine, rejoindre une équipe avec le mot de passe,
+        modifier le mot de passe, nommer un nouveau capitaine, supprimer
+        un tournoi ou une équipe avec cascade
+        → services PocketBase + `TournamentTeamImportService` + façade
+        `PocketbaseDataService` écrits ; adaptation UI suivante
+- [x] M13.5 Import des équipes depuis la carte tournoi :
+       création des records `teams` manquants pour le tournoi, puis
+       `import_effectue = true` ; les rencontres importées plus tard par les
+       capitaines depuis `TeamsScreen`
+       → `TournamentTeamImportService.importTeamsForTournoi` + action dans
+       `TournoisScreen` (badge import, bouton admin)
+- [x] M13.6 Écrans tournois :
+       création/suppression admin-only, formulaire nom + lien NR obligatoires,
+       badge « import des équipes requis », ouverture bloquée pour les
+       non-admins tant que l'import n'est pas effectué
+       → `TournoiCard`, `TournoiAddDialog`, `TournoiTeamImportDialog`,
+       contrôle d'accès dans `TournoisScreen`
+- [x] M13.7 Écran équipes :
+       utilisateur sans équipe = liste des équipes du tournoi avec
+       « Devenir capitaine » ou « Rejoindre avec mot de passe » ;
+       utilisateur avec équipe = sélection parmi ses équipes du tournoi,
+       rencontres et import texte comme avant
+       → `TeamsScreenTeamAccessPanel`, `TeamsScreenTeamAccessActions`,
+       sélection d'équipe dans `TeamsScreenController`
+- [x] M13.8 Écran de gestion d'équipe :
+       supprimer la création d'équipe standalone, gérer le mot de passe,
+       nommer un capitaine parmi les membres, inviter/retirer des joueurs
+       → `TeamManagementTeamActions` (4 méthodes), `TeamManagementScreen`
+       refondu, `create_team_dialog` supprimé, `error_snack_bar_presenter`
+       avec `showErrorSnackBarUsingMessenger`
+- [x] M13.9 Profil utilisateur : afficher ses équipes et ses tournois
+       → `ProfileController` charge `getTeamsForUser` + tournois distincts,
+       `ProfileTeamsSection` widget, insertion dans `ProfileScreen`
+- [x] M13.10 Association membre/liste :
+       appariement d'un membre de l'équipe à l'une des listes importées
+       (`matched` existant)
+       → `TeamManagementController.loadEncountersForSelectedTeam` +
+       `toggleMatched`, `TeamManagementMatchedPanel` (ExpansionTile par
+       rencontre, dialog d'appariement), intégration dans
+       `TeamManagementTeamDetailPanel`
+- [x] M13.11 Validation finale :
+        `flutter analyze`, `flutter test`, `flutter build web`,
+        mise à jour `DOC.md`/`README.md`, RAG et Discord
+        → 2026-08-28 : `flutter analyze` sans problème,
+        `flutter test` 24/24, `flutter build web` OK ;
+        `DOC.md` et `README.md` mis à jour
+
+  ## Journal erreurs/découvertes
 [Date | Problème | Cause racine | Règle préventive]
 - 2026-08-21 | Code jamais compilé | pubspec sans supabase_flutter |
   toujours vérifier pubspec avant de supposer qu'un build passe
@@ -263,8 +351,25 @@ fixes), meta_adv, estims, matched.
   (pocketbase_teams_service, pocketbase_team_invitations_service)
   plutôt que de deviner l'API du SDK
 - 2026-08-26 | Backend admin M10.9 : limitation sécurité acceptée et
-  documentée | PB n'a pas de règles d'écriture par champ : un compte
-  authentifié peut s'autopasser `admin: true` via l'API brute
-  (updateRule `id = @request.auth.id || @request.auth.admin = true`
-  le permet) | documenté dans README (section Administration) ;
-  acceptable pour une application de hobby non publique
+   documentée | PB n'a pas de règles d'écriture par champ : un compte
+   authentifié peut s'autopasser `admin: true` via l'API brute
+   (updateRule `id = @request.auth.id || @request.auth.admin = true`
+   le permet) | documenté dans README (section Administration) ;
+   acceptable pour une application de hobby non publique
+- 2026-08-26 | Échec d'import `pocketbase_schema.json` : « Failed to
+   import collections » | Les règles `estims` utilisaient des sous-requêtes
+   SQL (`IN (SELECT ...)`) invalides dans le langage de filtres PocketBase ;
+   le bloc `values` du champ bool `admin` a aussi été retiré | règles
+    remplacées par `@collection.team_membres:member` avec `?=` ; reimport à
+    tester
+- 2026-08-26 | Erreurs d'analyse M11 (helper SnackBar + dialog suppression) |
+   `ScaffoldMessenger.of` retourne `ScaffoldMessengerState` (pas
+   `ScaffoldMessenger`) et `showDialog<bool>` retourne `Future<bool?>` |
+   typer le messenger en `ScaffoldMessengerState` et normaliser la valeur
+   du dialog avec `.then((confirmation) => confirmation ?? false)`
+- 2026-08-26 | Suppression de compte : données orphelines possibles sur
+   `teams.capitaine_id` et `tournois.created_by` | ces relations n'ont pas
+   `cascadeDelete: true` ; `deleteCurrentAccount` liste/supprime d'abord
+   les équipes capitaines puis les tournois créés avant la suppression
+   du joueur ; les autres relations (`team_membres`, `rencontres`,
+   `meta_adv`, `estims`, `matched`) sont nettoyées par cascade

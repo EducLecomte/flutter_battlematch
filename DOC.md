@@ -1,18 +1,41 @@
 # DOC.md — Cartographie technique MetaWar
 
-*[2026-08-26] Mise à jour après M10 : validations login/inscription
-(8 car + majuscule + spécial, tooltip), champ d'initiales retiré des
-formulaires (`short` auto-généré depuis le nom), icônes capitaine/membre,
-`popUntil` après déconnexion, rafraîchissements post-actions, équipes du
-tournoi visibles par tous (dropdown `TeamsScreen`), dédoublonnage de
-l'import texte, matrice : valeurs toujours visibles en cellule appariée
-(M10.8), backend d'administration complet (M10.9 : champ `admin` sur
-`joueurs`, règles PB élargies, écran admin 3 onglets — import manuel du
-schéma PB requis). Précédents M9 : `Dicy`, matrice enrichie, import tournoi.
+*[2026-08-28] Mise à jour M13 complète — refonte tournois/équipes terminée.
+M13.5 : import des équipes depuis la carte tournoi (`TournamentTeamImportService`).
+M13.6 : écrans tournois admin-only (création/suppression, badge import,
+ouverture bloquée non-admin). M13.7 : écran équipes avec claim/join par mot
+de passe (`TeamsScreenTeamAccessPanel`, `TeamsScreenTeamAccessActions`).
+M13.8 : gestion d'équipe refondue — `TeamManagementTeamActions` (retrait,
+suppression, mot de passe, capitainerie), `create_team_dialog` supprimé,
+`showErrorSnackBarUsingMessenger` pour les gaps async. M13.9 : profil
+affichant équipes et tournois de l'utilisateur (`ProfileTeamsSection`).
+M13.10 : association membre/liste via `matched` existant
+(`TeamManagementMatchedPanel` : ExpansionTile par rencontre, dialog
+d'appariement, `toggleMatched` dans le controller). Validation M13.11 :
+`flutter analyze` sans problème, `flutter test` 24/24, `flutter build web` OK.
+Précédent M13 (2026-08-27) : schéma PocketBase tournois/équipes,
+modèles, services. Précédent :
+*[2026-08-26] Mise à jour après M12 : scripts de maintenance PocketBase
+(`tool/pocketbase_purge_meta_war_records.dart` : `--yes` obligatoire,
+option `--purge-referentiels`, suppression feuilles → parents ;
+`tool/pocketbase_seed_test_accounts.dart` : comptes `test1` à `test4`
+idempotents) et support commun `tool/pocketbase_tool_support.dart`.
+M11 : helper `showErrorSnackBar` (log debug + bouton Copier presse-papiers),
+suppression de compte dans le Profil avec `AlertDialog`, purge explicite des
+équipes capitaine et des tournois créés par l'utilisateur avant suppression
+(`deleteCurrentAccount`), déconnexion post-suppression. M10 : validations
+login/inscription (8 car + majuscule + spécial, tooltip), `short`
+auto-généré, icônes capitaine/membre, `popUntil` après déconnexion,
+raîchissements post-actions, équipes du tournoi visibles par tous,
+dédoublonnage de l'import texte, matrice : valeurs toujours visibles en
+cellule appariée, backend d'administration complet (champ `admin` sur
+`joueurs`, écran admin 3 onglets — import manuel du schéma PB requis).
+Précédents M9 : `Dicy`, matrice enrichie, import tournoi.
 Précédents acceptés : team_management_controller 213,
-import_newrecruit_controller 198, admin_controller 186,
-team_management_screen 176, import_newrecruit_dialog 167, estim_dialog 157,
-tournois_screen 163, teams_screen_encounter_actions 154.*
+import_newrecruit_controller 198, pocketbase_data_service 190,
+admin_controller 186, team_management_screen 168, profile_screen 168,
+import_newrecruit_dialog 166, tournois_screen 159,
+teams_screen_encounter_actions 158, estim_dialog 157.*
 
 ## Structure
 
@@ -22,18 +45,23 @@ lib/
                                    # (NavigationBar 3 onglets : Tournois, Profil, Teams)
   config/
     app_config.dart                # URL PocketBase, noms de collections,
-                                   # clé session, bornes/scores/confiance
-                                   # d'estimation — zéro magic value
+                                    # clé session, bornes/scores/confiance
+                                    # d'estimation, teamPasswordMaxLength —
+                                    # zéro magic value
   models/                          # Modèles purs (IDs string PB, champs snake_case)
     models.dart                    # Barrel : ré-exporte les modèles ci-dessous
     appreciation_scale.dart        # Échelle fixe 7 appréciations + recherches
     armee.dart choix.dart estim.dart joueur.dart matched.dart
-    meta_adversaire.dart rencontre.dart team.dart team_membre.dart tournoi.dart
+     meta_adversaire.dart rencontre.dart team.dart team_membre.dart tournoi.dart
+                                    # M13 : Tournoi.importEffectue ;
+                                    # Team.tournoiId / Team.motDePasse
   logic/
     estim_score_calculator.dart    # Midpoint + label compact du score
     matched_score_summary.dart     # Total/moyenne des appariements scorés
   utils/
     hex_color_parser.dart          # Parsing sécurisé `#RRGGBB` → Color?
+    error_snack_bar_presenter.dart # `showErrorSnackBar` : log debug + bouton
+                                   # Copier presse-papiers
   screens/                         # Écrans = thin shell (init + build + refresh)
     *_controller.dart              # Logique d'écran : TextEditingControllers,
                                    # chargements, mutations ; onStateChanged (VoidCallback)
@@ -47,14 +75,18 @@ lib/
                                     # équipes du tournoi (dropdown) + sélection
     teams_screen_encounter_actions.dart  # Opérations données rencontres (snackbars,
                                    # import txt, confirmation suppression)
-    team_management_screen.dart    # CRUD équipes (sidebar + détail + invitations)
-    team_management_controller.dart # Logique gestion d'équipe (212 lg, accepté)
+    team_management_screen.dart    # Gestion équipes (sidebar + détail + appariements)
+    team_management_controller.dart # Logique gestion d'équipe : membres,
+                                    # rencontres, adversaires, appariements
+    team_management_team_actions.dart # Opérations d'écriture : retrait,
+                                      # suppression, mot de passe, capitainerie
     team_dashboard_screen.dart     # Tableau de bord d'un duel (shell)
     team_dashboard_controller.dart # Streams realtime opponents/estims/matched,
                                    # droits d'édition par rôle (joueur/capitaine)
     team_dashboard_estim_actions.dart  # Modales d'estimation + taps cellules matrice
     profile_screen.dart            # Profil + invitations en attente (shell)
-    profile_controller.dart        # Chargement profil/invitations, accept/refus
+    profile_controller.dart        # Chargement profil/invitations, accept/refus,
+                                   # deleteAccount
     admin_screen.dart              # Écran d'administration : 3 onglets
                                     # (Armées, Appréciations, Joueurs)
     admin_controller.dart          # Chargement des 3 listes + CRUD armées/
@@ -81,38 +113,49 @@ lib/
     team_dashboard_matrix_{matchup_cell,opponent_header_cell}.dart
     team_dashboard_mode_banner.dart
     team_dashboard_score_summary.dart # Bandeau appariements/total/moyenne
-    team_management_*              # 5 panels : sidebar, detail, invite, members,
-                                   # create_team_dialog
+    team_management_*              # 6 panels : sidebar, detail, invite, members,
+                                    # settings, matched_panel
     teams_screen_{encounter_list,team_selector}.dart
     rencontre_{list_tile,delete_confirmation}.dart
     add_encounter_dialog.dart
     add_opponent_dialog.dart       # Dialog ajout adversaire (top-level show*)
     opponent_details_dialog.dart   # Bottom sheet détail adversaire (top-level
                                    # show*, onDelete : Future<void> Function())
-    profile_{info_card,invitations_section}.dart
+    profile_{info_card,invitations_section,teams_section}.dart
+    profile_account_management_section.dart # Administration + suppression
+                                            # de compte (cartes profil)
+    profile_delete_account_dialog.dart      # Confirmation AlertDialog
+                                            # avant suppression de compte
     admin_{armeees,choix,joueurs}_tab.dart   # Onglets admin : list + actions
     admin_{armee,choix}_edit_dialog.dart     # Dialogues d'édition (contrôleurs
                                     # internes, aperçu couleur pour les choix)
   services/
-     pocketbase_data_service.dart   # Façade singleton : surface API historique
-                                    # (ex-SupabaseService) → délégation totale
-                                    # aux sous-services ci-dessous (~190 lg)
+      pocketbase_data_service.dart   # Façade singleton : surface API historique
+                                     # (ex-SupabaseService) → délégation totale
+                                     # aux sous-services ci-dessous (~236 lg)
     pocketbase/
       pocketbase_client_holder.dart    # Client PB + AsyncAuthStore + yield initial
                                        # du stream d'auth + échappement filtres
       pocketbase_auth_service.dart     # signIn/signUp/signOut, profil courant,
                                        # searchJoueurs
-      pocketbase_teams_service.dart    # CRUD teams (+ inscription capitaine)
-      pocketbase_team_membres_service.dart  # Membres : inscription accepté,
-                                       # listing avec profils
-      pocketbase_team_invitations_service.dart # Invitations : pending, invite,
-                                       # accept, decline/remove
-       pocketbase_tournois_service.dart # CRUD tournois + rencontres +
-                                        # équipes participantes du tournoi
+       pocketbase_teams_service.dart    # CRUD teams, équipes par tournoi,
+                                        # création pour un tournoi, mot de
+                                        # passe, capitaine
+       pocketbase_team_membres_service.dart  # Membres : inscription accepté,
+                                        # join mot de passe, listing, rôles
+       pocketbase_team_invitations_service.dart # Invitations : pending, invite,
+                                        # accept, decline/remove
+       pocketbase_team_access_service.dart # Claim capitaine, join mot de passe,
+                                        # nomination d'un nouveau capitaine
+        pocketbase_tournois_service.dart # CRUD tournois + rencontres +
+                                         # équipes participantes + import
+                                         # des équipes marqué
        pocketbase_referentiels_service.dart   # getArmees / getChoix (publics)
                                               # + CRUD admin armées/choix
-       pocketbase_admin_service.dart          # Admin joueurs : liste, toggle
-                                              # du rôle `admin`, suppression
+        pocketbase_admin_service.dart          # Admin joueurs : liste, toggle
+                                               # du rôle `admin`, suppression
+                                               # du compte courant (équipes
+                                               # capitaine + tournois créés)
       pocketbase_dashboard_adversaires_service.dart # CRUD + stream meta_adv
       pocketbase_dashboard_estims_service.dart      # CRUD + stream estims
       pocketbase_dashboard_matched_service.dart     # CRUD + stream matched
@@ -125,9 +168,12 @@ lib/
     new_recruit_armee_name_matcher.dart # matchArmeeInReference (normalisation)
     tournament_text_import_parser.dart  # Parser du format texte de tournoi
                                         # (équipes, joueurs, listes, armées)
-     tournament_text_import_service.dart # Import tournoi : rencontres,
-                                         # adversaires, armées inconnues,
-                                         # dédoublonnage, résumé
+      tournament_text_import_service.dart # Import tournoi : rencontres,
+                                          # adversaires, armées inconnues,
+                                          # dédoublonnage, résumé
+     tournament_team_import_service.dart # Import des équipes d'un tournoi :
+                                         # création des teams manquantes,
+                                         # mark import_effectue
 test/
   widget_test.dart                 # Tests des conversions PocketBase ↔ modèles
   tournament_text_import_parser_test.dart # Tests du parser (4 cas)
@@ -139,6 +185,10 @@ tool/
   pocketbase_seed_records.dart     # Seed idempotent 16 armées + 7 appréciations
                                    # fixes
   pocketbase_seed_demo_records.dart # Jeu de données démo multi-joueurs
+  pocketbase_tool_support.dart     # Arguments, connexion superuser, codes de
+                                   # sortie, suppression par collection
+  pocketbase_purge_meta_war_records.dart # Purge MetaWar sécurisée (--yes)
+  pocketbase_seed_test_accounts.dart # Comptes de test test1-test4 idempotents
 ```
 
 ## Flux de données
@@ -149,8 +199,9 @@ tool/
 2. **Écrans** : chaque écran = shell StatefulWidget qui instancie son
    `*_controller` dans `initState`, s'abonne à `onStateChanged`
    (`setState` si `mounted`) et délègue toute mutation. Les méthodes de
-   mutation retournent `Future<String?>` (null = succès) ; l'écran affiche
-   un SnackBar vert/rouge.
+   mutation retournent `Future<String?>` (null = succès) ; les erreurs
+   passent par `showErrorSnackBar` (log debug + bouton Copier), les succès
+   restent des SnackBar verts.
 3. **Services** : les écrans n'appellent JAMAIS PocketBase directement —
    toujours via la façade `PocketbaseDataService.instance` (sauf
    `PocketbaseTeamsService` qui invoque `PocketbaseTeamMembresService.
@@ -176,12 +227,42 @@ tool/
     `appreciation_scale.dart` (`--`, `-`, `=-`, `=`, `=+`, `+`, `++`);
     `choix.dart` est un simple modèle, sans constantes sentinelles.
 7. **Administration** : `ProfileScreen` affiche la carte « Administration »
-    seulement si `joueur.admin` (booléen, collection `joueurs`) → `AdminScreen`
-    → `AdminController` → façade → `PocketbaseAdminService` (joueurs) et
-    `PocketbaseReferentielsService` (CRUD armées/choix). Côté PocketBase :
-    règles d'écriture `@request.auth.admin = true` (armées, choix) et
-    `id = @request.auth.id || @request.auth.admin = true` (joueurs) —
-    `pocketbase_schema.json` doit être réimporté manuellement dans l'admin.
+   seulement si `joueur.admin` (booléen, collection `joueurs`) → `AdminScreen`
+   → `AdminController` → façade → `PocketbaseAdminService` (joueurs) et
+   `PocketbaseReferentielsService` (CRUD armées/choix). Côté PocketBase :
+   règles d'écriture `@request.auth.admin = true` (armées, choix) et
+   `id = @request.auth.id || @request.auth.admin = true` (joueurs) —
+   `pocketbase_schema.json` doit être réimporté manuellement dans l'admin.
+8. **Suppression de compte** : `ProfileScreen` →
+   `ProfileAccountManagementSection` → `showProfileDeleteAccountConfirmation`
+   (AlertDialog) → `ProfileController.deleteAccount()` →
+   `PocketbaseDataService.deleteCurrentAccount()` →
+   `PocketbaseAdminService.deleteCurrentAccount()`. Le service liste puis
+   supprime d'abord les équipes dont `capitaine_id` est l'utilisateur,
+   ensuite les tournois dont `created_by` est l'utilisateur, puis le joueur
+   et enfin déclenche `signOut`. Cascades PocketBase : `team_membres`,
+   `rencontres`, `meta_adv`, `estims`, `matched`. Suppression explicite des
+   équipes capitaines (champ `capitaine_id` sans cascade) et des tournois
+    créés (champ `created_by` sans cascade) pour éviter les données orphelines.
+9. **M13 tournois/équipes** : création/suppression de tournoi admin-only ;
+   `TournoiController.addTournoi` valide nom + lien New Recruit non vides ;
+   `TournamentTeamImportService` crée les équipes manquantes puis appelle
+   `markTournoiImportEffectue` ; `PocketbaseTeamAccessService` gère
+   claim/join/nomination. M13.8 : `TeamManagementTeamActions` extrait les
+   opérations d'écriture (retrait, suppression, mot de passe, capitainerie)
+   avec capture de `ScaffoldMessengerState` avant les gaps async. M13.9 :
+   `ProfileController` charge `getTeamsForUser` + tournois distincts,
+   `ProfileTeamsSection` affiche les équipes groupées par tournoi. M13.10 :
+   `TeamManagementController.loadEncountersForSelectedTeam` charge
+   rencontres/adversaires/appariements ; `TeamManagementMatchedPanel`
+   affiche les rencontres en `ExpansionTile` avec dialog d'appariement
+   membre ↔ liste via `toggleMatched`.
+10. **Maintenance PocketBase** : `tool/pocketbase_purge_meta_war_records.dart`
+   exige `--yes`, supprime `matched`, `estims`, `meta_adv`, `rencontres`,
+   `team_membres`, `teams`, `tournois`, `joueurs` (feuilles → parents), et
+   optionnellement `armees`/`choix` avec `--purge-referentiels` ;
+   `tool/pocketbase_seed_test_accounts.dart` crée ou met à jour les comptes
+   `test1` à `test4` dans `joueurs` avec des mots de passe conformes.
 
 ## Contraintes de code (voir AGENTS.md)
 

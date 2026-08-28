@@ -1,0 +1,222 @@
+import 'package:flutter/material.dart';
+
+import '../../models/models.dart';
+import '../team_management_controller.dart';
+
+/// Panel d'association membre ↔ liste d'armée par rencontre.
+class TeamManagementMatchedPanel extends StatelessWidget {
+  final TeamManagementController controller;
+  final VoidCallback onStateChanged;
+
+  const TeamManagementMatchedPanel({
+    super.key,
+    required this.controller,
+    required this.onStateChanged,
+  });
+
+  Joueur? _findPairedMember(
+    List<Matched> matched,
+    String metaAdvId,
+    List<Map<String, dynamic>> members,
+  ) {
+    for (final pairing in matched) {
+      if (pairing.metaAdvId != metaAdvId) continue;
+      for (final member in members) {
+        final Joueur player = member['joueur'];
+        if (player.id == pairing.joueurId) return player;
+      }
+    }
+    return null;
+  }
+
+  Future<void> _handlePairingTap(
+    BuildContext context,
+    Rencontre encounter,
+    MetaAdv opponent,
+  ) async {
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    final List<Map<String, dynamic>> members = controller.members;
+    final List<Matched> currentMatched =
+        controller.matchedByEncounter[encounter.id] ?? [];
+
+    final Set<String> pairedPlayerIds =
+        currentMatched.map((pairing) => pairing.joueurId).toSet();
+
+    final Joueur? selectedPlayer = await showDialog<Joueur>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text("Apparier à : ${opponent.listeAdv}"),
+        content: SizedBox(
+          width: 320,
+          child: members.isEmpty
+              ? const Text("Aucun membre dans l'équipe.")
+              : ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: members.length,
+                  itemBuilder: (context, index) {
+                    final member = members[index];
+                    final Joueur player = member['joueur'];
+                    final isAccepted = member['statut'] == 'accepted';
+                    final isAlreadyPaired =
+                        pairedPlayerIds.contains(player.id);
+                    final isCurrentlyAssigned = currentMatched.any(
+                      (pairing) =>
+                          pairing.joueurId == player.id &&
+                          pairing.metaAdvId == opponent.id,
+                    );
+
+                    if (!isAccepted) {
+                      return ListTile(
+                        title: Text(player.nom),
+                        subtitle: const Text("Invitation en attente"),
+                        enabled: false,
+                      );
+                    }
+
+                    return ListTile(
+                      leading: Icon(
+                        isCurrentlyAssigned
+                            ? Icons.radio_button_checked
+                            : Icons.radio_button_off,
+                        color: isCurrentlyAssigned
+                            ? Colors.green
+                            : Colors.grey,
+                      ),
+                      title: Text(player.nom),
+                      subtitle: isAlreadyPaired && !isCurrentlyAssigned
+                          ? const Text(
+                              "Déjà apparié ailleurs",
+                              style: TextStyle(color: Colors.orange),
+                            )
+                          : null,
+                      onTap: isAlreadyPaired && !isCurrentlyAssigned
+                          ? null
+                          : () => Navigator.of(dialogContext).pop(player),
+                    );
+                  },
+                ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text("Fermer"),
+          ),
+        ],
+      ),
+    );
+
+    if (selectedPlayer == null) return;
+
+    final bool success = await controller.toggleMatched(
+      encounter,
+      selectedPlayer,
+      opponent,
+    );
+
+    if (!context.mounted) return;
+
+    if (success) {
+      onStateChanged();
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            "Appariement : ${selectedPlayer.nom} → ${opponent.listeAdv}",
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Appariement impossible : joueur ou liste déjà engagé.",
+          ),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final encounters = controller.encounters;
+
+    if (encounters.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Rencontres & Appariements",
+          style: theme.textTheme.titleMedium
+              ?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        ...encounters.map((encounter) {
+          final opponents =
+              controller.opponentsByEncounter[encounter.id] ?? [];
+          final matched =
+              controller.matchedByEncounter[encounter.id] ?? [];
+
+          return Card(
+            margin: const EdgeInsets.only(bottom: 8),
+            child: ExpansionTile(
+              title: Text(
+                "Ronde : ${encounter.nomAdversaire}",
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              children: opponents.isEmpty
+                  ? const [
+                      Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text(
+                          "Aucun adversaire pour cette rencontre.",
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    ]
+                  : opponents.map((opponent) {
+                      final pairedMember = _findPairedMember(
+                        matched,
+                        opponent.id,
+                        controller.members,
+                      );
+                      return ListTile(
+                        title: Text(opponent.listeAdv),
+                        subtitle: pairedMember != null
+                            ? Text(
+                                "Apparié : ${pairedMember.nom}",
+                                style: const TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )
+                            : const Text(
+                                "Non apparié",
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                        trailing: controller.isCaptain()
+                            ? IconButton(
+                                icon: const Icon(Icons.link),
+                                tooltip: "Apparier",
+                                onPressed: () => _handlePairingTap(
+                                  context,
+                                  encounter,
+                                  opponent,
+                                ),
+                              )
+                            : pairedMember != null
+                                ? const Icon(Icons.lock, size: 16)
+                                : null,
+                      );
+                    }).toList(),
+            ),
+          );
+        }),
+      ],
+    );
+  }
+}

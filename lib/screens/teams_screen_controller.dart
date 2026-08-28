@@ -12,26 +12,23 @@ class TeamsScreenController {
 
   List<Armee>? _cachedReferenceArmies;
 
-  List<Team> get selectableTeams {
-    final Map<String, Team> teamById = {};
-    for (final Team team in availableTournoiTeams) {
-      teamById[team.id] = team;
-    }
-    for (final Team team in availableUserTeams) {
-      teamById.putIfAbsent(team.id, () => team);
-    }
-    return teamById.values.toList();
-  }
+  List<Team> get selectableTeams => availableUserTeams;
+
+  bool get utilisateurSansEquipe => availableUserTeams.isEmpty;
 
   Future<void> loadTeamsForUser(String? userId) async {
     isLoadingTeams = true;
     try {
       if (userId != null) {
-        availableUserTeams = await _pocketbaseService.getTeamsForUser(userId);
+        final List<Team> toutesEquipesUtilisateur =
+            await _pocketbaseService.getTeamsForUser(userId);
+        availableUserTeams = toutesEquipesUtilisateur
+            .where((team) => team.tournoiId == _tournoiId)
+            .toList();
       }
       if (_tournoiId.isNotEmpty) {
-        availableTournoiTeams = await _pocketbaseService
-            .getTeamsParticipatingInTournoi(_tournoiId);
+        availableTournoiTeams =
+            await _pocketbaseService.getTeamsForTournoi(_tournoiId);
       }
       _selectDefaultActiveTeam();
       await loadEncountersForActiveTeam();
@@ -41,13 +38,7 @@ class TeamsScreenController {
   }
 
   void _selectDefaultActiveTeam() {
-    if (availableUserTeams.isNotEmpty) {
-      activeTeam = availableUserTeams.first;
-    } else if (availableTournoiTeams.isNotEmpty) {
-      activeTeam = availableTournoiTeams.first;
-    } else {
-      activeTeam = null;
-    }
+    activeTeam = availableUserTeams.isEmpty ? null : availableUserTeams.first;
   }
 
   void setActiveTeam(Team selectedTeam) {
@@ -65,6 +56,12 @@ class TeamsScreenController {
   String _tournoiId = '';
 
   String get tournoiId => _tournoiId;
+
+  Future<Team> claimTeam(String teamId) =>
+      _pocketbaseService.reclamerEquipeEnCapitaine(teamId);
+
+  Future<Team> joinTeamWithPassword(String teamId, String motDePasse) =>
+      _pocketbaseService.rejoindreEquipeAvecMotDePasse(teamId, motDePasse);
 
   Future<void> createEncounter(String opponentName) async {
     if (activeTeam == null || opponentName.trim().isEmpty) return;

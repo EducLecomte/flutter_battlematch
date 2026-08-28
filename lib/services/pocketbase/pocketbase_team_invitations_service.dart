@@ -20,7 +20,7 @@ class PocketbaseTeamInvitationsService {
   PocketbaseClientHolder get _holder => PocketbaseClientHolder.instance;
 
   /// Rôle d'un joueur invité par le capitaine.
-  static const String roleJoueur = 'player';
+  static const String roleJoueur = PocketbaseTeamMembresService.roleJoueur;
 
   /// Statut d'une invitation en attente de réponse.
   static const String statutEnAttente = 'pending';

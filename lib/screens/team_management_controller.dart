@@ -1,10 +1,8 @@
 // ===========================================================================
 // Contrôleur de la gestion d'équipe (team_management_controller.dart)
-// Détient les équipes, la sélection, les membres et les règles métier
-// (création, recherche de joueurs, invitations, retrait, suppression).
+// Détient l'état courant : équipes, sélection, membres, profil et recherche.
 // ===========================================================================
 
-import 'package:flutter/material.dart';
 import '../models/models.dart';
 import '../services/pocketbase_data_service.dart';
 
@@ -30,8 +28,16 @@ class TeamManagementController {
   // Indique si une recherche de joueurs est en cours
   bool isSearching = false;
 
+  // Rencontres de l'équipe sélectionnée
+  List<Rencontre> encounters = [];
+
+  // Adversaires par rencontre
+  Map<String, List<MetaAdv>> opponentsByEncounter = {};
+
+  // Appariements par rencontre
+  Map<String, List<Matched>> matchedByEncounter = {};
+
   // Charge le profil du joueur connecté et ses équipes.
-  // Retourne un message d'erreur, ou null en cas de succès.
   Future<String?> loadInitialData() async {
     try {
       final profile = await _pocketbaseService.getCurrentJoueurProfile();
@@ -39,10 +45,9 @@ class TeamManagementController {
         currentUserProfile = profile;
         final list = await _pocketbaseService.getTeamsForUser(profile.id);
         teams = list;
-        if (list.isNotEmpty) {
-          selectedTeam = list.first;
-        }
+        selectedTeam = list.isEmpty ? null : list.first;
         await loadMembersForSelectedTeam();
+        await loadEncountersForSelectedTeam();
       }
       return null;
     } catch (loadError) {
@@ -50,8 +55,30 @@ class TeamManagementController {
     }
   }
 
+  // Charge les rencontres, adversaires et appariements de l'équipe sélectionnée.
+  Future<String?> loadEncountersForSelectedTeam() async {
+    final selectedTeam = this.selectedTeam;
+    if (selectedTeam == null) return null;
+    try {
+      encounters = await _pocketbaseService.getRencontres(
+        selectedTeam.tournoiId,
+        selectedTeam.id,
+      );
+      opponentsByEncounter = {};
+      matchedByEncounter = {};
+      for (final encounter in encounters) {
+        final opponents = await _pocketbaseService.getOpponents(encounter.id);
+        opponentsByEncounter[encounter.id] = opponents;
+        final matched = await _pocketbaseService.getMatched(encounter.id);
+        matchedByEncounter[encounter.id] = matched;
+      }
+      return null;
+    } catch (encountersError) {
+      return encountersError.toString();
+    }
+  }
+
   // Charge les membres de l'équipe sélectionnée.
-  // Retourne un message d'erreur, ou null en cas de succès.
   Future<String?> loadMembersForSelectedTeam() async {
     final selectedTeamId = selectedTeam?.id;
     if (selectedTeamId == null) return null;
@@ -63,25 +90,7 @@ class TeamManagementController {
     }
   }
 
-  // Crée une nouvelle équipe et la sélectionne.
-  Future<String?> createNewTeam(String teamName) async {
-    try {
-      final newTeam = await _pocketbaseService.createTeam(teamName);
-      await loadInitialData();
-      final Team newlyCreatedTeam = teams.firstWhere(
-        (team) => team.id == newTeam.id,
-        orElse: () => selectedTeam ?? newTeam,
-      );
-      selectedTeam = newlyCreatedTeam;
-      await loadMembersForSelectedTeam();
-      return null;
-    } catch (createError) {
-      return createError.toString();
-    }
-  }
-
-  // Effectue la recherche de joueurs à inviter, en excluant
-  // les membres actuels de l'équipe sélectionnée.
+  // Recherche des joueurs à inviter, en excluant les membres actuels.
   Future<void> searchPlayers(String query) async {
     if (query.trim().isEmpty) {
       searchResults = [];
@@ -93,20 +102,17 @@ class TeamManagementController {
       final results = await _pocketbaseService.searchJoueurs(query);
       searchResults = results
           .where((player) =>
-              !members.any(
-                (member) =>
-                    (member['joueur'] as Joueur).id == player.id,
-              ))
+              !members.any((member) =>
+                  (member['joueur'] as Joueur).id == player.id))
           .toList();
-    } catch (searchError) {
-      // Recherche sans résultat : on ignore l'erreur
+    } catch (_) {
+      // Recherche sans résultat : on ignore l'erreur réseau.
     } finally {
       isSearching = false;
     }
   }
 
   // Envoie une invitation au joueur donné.
-  // Retourne un message d'erreur, ou null en cas de succès.
   Future<String?> sendInvite(String playerId) async {
     final selectedTeamId = selectedTeam?.id;
     if (selectedTeamId == null) return null;
@@ -120,94 +126,74 @@ class TeamManagementController {
     }
   }
 
-  // Vérifie si l'utilisateur connecté est le capitaine de l'équipe sélectionnée
+  // Bascule l'appariement joueur ↔ adversaire pour une rencontre.
+  // Retourne false si l'appariement est impossible (contrainte unique).
+  Future<bool> toggleMatched(
+    Rencontre encounter,
+    Joueur player,
+    MetaAdv opponent,
+  ) async {
+    try {
+      await _pocketbaseService.toggleMatched(
+        encounter.id,
+        player.id,
+        opponent.id,
+      );
+      // Recharge les appariements pour cette rencontre.
+      final updatedMatched =
+          await _pocketbaseService.getMatched(encounter.id);
+      matchedByEncounter[encounter.id] = updatedMatched;
+      return true;
+    } catch (pairingError) {
+      return false;
+    }
+  }
+
+  // Vérifie si l'utilisateur connecté est capitaine de l'équipe sélectionnée.
   bool isCaptain() {
     if (selectedTeam == null || currentUserProfile == null) return false;
     return selectedTeam!.capitaineId == currentUserProfile!.id;
   }
 
-  // Vérifie si l'utilisateur courant peut retirer ce membre :
-  // le capitaine retire les joueurs (pas le capitaine), un joueur se retire lui-même.
+  // Vérifie si l'utilisateur courant peut retirer ce membre.
   bool canRemoveMember(Map<String, dynamic> member) {
     if (currentUserProfile == null) return false;
-    if (isCaptain()) {
-      return member['role'] != 'captain';
-    }
+    if (isCaptain()) return member['role'] != 'captain';
     final Joueur player = member['joueur'];
     return player.id == currentUserProfile!.id;
   }
 
-  // Retire un membre (ou quitte l'équipe) après confirmation.
-  Future<String?> removeMember(BuildContext context, Joueur player) async {
-    final selectedTeamId = selectedTeam?.id;
-    if (selectedTeamId == null) return null;
+  // Vérifie si l'utilisateur courant peut nommer ce candidat capitaine.
+  bool canNominateCaptain(Joueur candidate) {
+    if (!isCaptain()) return false;
+    final String? currentUserId = currentUserProfile?.id;
+    if (currentUserId == null || candidate.id == currentUserId) return false;
 
-    final bool isMyself = currentUserProfile?.id == player.id;
-    final String messageTitre =
-        isMyself ? "Quitter l'équipe ?" : "Retirer ${player.nom} de l'équipe ?";
-    final String messageDetail = isMyself
-        ? "Vous ne ferez plus partie de cette équipe."
-        : "Ce joueur ne fera plus partie de l'équipe.";
-
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(messageTitre),
-        content: Text(messageDetail),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text("Annuler"),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-            child: const Text("Retirer"),
-          ),
-        ],
-      ),
-    );
-
-    if (confirm != true) return null;
-    try {
-      await _pocketbaseService.declineOrRemoveTeamInvite(selectedTeamId, player.id);
-      await loadMembersForSelectedTeam();
-      return null;
-    } catch (removeError) {
-      return removeError.toString();
-    }
+    return members.any((member) {
+      final Joueur memberPlayer = member['joueur'];
+      return memberPlayer.id == candidate.id &&
+          member['role'] != 'captain' &&
+          member['statut'] == 'accepted';
+    });
   }
 
-  // Demande confirmation puis supprime l'équipe donnée.
-  Future<String?> deleteTeam(BuildContext context, Team team) async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text("Supprimer l'équipe ?"),
-        content: const Text(
-          "Cette action est irréversible et supprimera tous les appariements.",
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text("Annuler"),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-            child: const Text("Supprimer"),
-          ),
-        ],
-      ),
-    );
+  // Liste des membres acceptés pouvant devenir capitaine.
+  List<Joueur> get captainCandidates => members
+      .where((member) =>
+          member['role'] != 'captain' && member['statut'] == 'accepted')
+      .map((member) => member['joueur'] as Joueur)
+      .toList();
 
-    if (confirm != true) return null;
-    try {
-      await _pocketbaseService.deleteTeam(team.id);
-      await loadInitialData();
-      return null;
-    } catch (deleteError) {
-      return deleteError.toString();
+  // Remplace une équipe dans la liste et met à jour la sélection.
+  void replaceTeam(Team updatedTeam) {
+    final int teamIndex = teams.indexWhere((team) => team.id == updatedTeam.id);
+    if (teamIndex >= 0) {
+      teams[teamIndex] = updatedTeam;
+    } else {
+      teams.add(updatedTeam);
+    }
+    if (selectedTeam?.id == updatedTeam.id) {
+      selectedTeam = updatedTeam;
     }
   }
 }

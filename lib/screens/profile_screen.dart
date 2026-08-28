@@ -6,10 +6,14 @@
 import 'package:flutter/material.dart';
 
 import '../models/models.dart';
+import '../utils/error_snack_bar_presenter.dart';
 import 'admin_screen.dart';
 import 'profile_controller.dart';
+import 'widgets/profile_account_management_section.dart';
+import 'widgets/profile_delete_account_dialog.dart';
 import 'widgets/profile_info_card.dart';
 import 'widgets/profile_invitations_section.dart';
+import 'widgets/profile_teams_section.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -26,9 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    showErrorSnackBar(context, message);
   }
 
   void _showSuccessSnackBar(String message) {
@@ -44,6 +46,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await _controller.signOut();
     if (mounted) {
       Navigator.of(context).popUntil((route) => route.isFirst);
+    }
+  }
+
+  Future<void> _handleDeleteAccount() async {
+    final bool confirmed = await showProfileDeleteAccountConfirmation(context);
+    if (confirmed && mounted) {
+      final String? errorMessage = await _controller.deleteAccount();
+      if (!mounted) return;
+      if (errorMessage == null) {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      } else {
+        _showSnackBar(errorMessage);
+      }
     }
   }
 
@@ -131,24 +146,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
               isSaving: _controller.isSaving,
               onSave: _saveProfile,
             ),
-            if (_controller.joueur?.admin ?? false) ...[
-              const SizedBox(height: 24),
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.admin_panel_settings),
-                  title: const Text("Administration"),
-                  subtitle: const Text(
-                      "Gérer les armées, les appréciations et les comptes"),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (dialogContext) => const AdminScreen()),
-                    );
-                  },
-                ),
-              ),
-            ],
+            ProfileAccountManagementSection(
+              isAdmin: _controller.joueur?.admin ?? false,
+              onOpenAdmin: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (dialogContext) => const AdminScreen()),
+                );
+              },
+              onRequestAccountDeletion: _handleDeleteAccount,
+            ),
+            const SizedBox(height: 24),
+            ProfileTeamsSection(
+              userTeams: _controller.userTeams,
+              userTournois: _controller.userTournois,
+              currentUserId: _controller.joueur?.id,
+            ),
             const SizedBox(height: 24),
             ProfileInvitationsSection(
               invitations: _controller.invitations,

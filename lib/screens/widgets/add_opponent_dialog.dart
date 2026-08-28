@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/models.dart';
+import '../../utils/error_snack_bar_presenter.dart';
 import '../team_dashboard_controller.dart';
 
 void showAddOpponentDialog(
@@ -63,9 +64,7 @@ class _AddOpponentDialogState extends State<AddOpponentDialog> {
       );
     } catch (addError) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Erreur d'ajout : ${addError.toString()}")),
-        );
+        showErrorSnackBar(context, "Erreur d'ajout : ${addError.toString()}");
       }
     }
   }

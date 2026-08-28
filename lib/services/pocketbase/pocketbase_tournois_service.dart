@@ -32,16 +32,43 @@ class PocketbaseTournoisService {
     }
   }
 
-  /// Crée un tournoi au nom de l'utilisateur connecté.
-  Future<Tournoi> createTournoi(String nom, String? lienNr) async {
+  /// Crée un tournoi au nom de l'administrateur connecté.
+  Future<Tournoi> createTournoi(String nom, String lienNr) async {
+    final String? createdById = _holder.currentUserId;
+    if (createdById == null) throw Exception("Non authentifié");
+    final String nomNettoye = nom.trim();
+    final String lienNrNettoye = lienNr.trim();
+    if (nomNettoye.isEmpty) {
+      throw Exception("Le nom du tournoi est obligatoire.");
+    }
+    if (lienNrNettoye.isEmpty) {
+      throw Exception("Le lien New Recruit du tournoi est obligatoire.");
+    }
+
     final RecordModel record = await _holder.clientPocketBase
         .collection(collectionNameTournois)
         .create(body: {
-      'nom': nom,
-      'lien_nr': lienNr ?? '',
-      'created_by': _holder.currentUserId,
-    });
+       'nom': nomNettoye,
+       'lien_nr': lienNrNettoye,
+       'created_by': createdById,
+     });
     return Tournoi.fromPocketBaseRecord(record);
+  }
+
+  /// Récupère un tournoi par son identifiant PocketBase.
+  Future<Tournoi> getTournoi(String tournoiId) async {
+    final RecordModel record = await _holder.clientPocketBase
+        .collection(collectionNameTournois)
+        .getOne(tournoiId);
+    return Tournoi.fromPocketBaseRecord(record);
+  }
+
+  /// Marque le tournoi comme ayant reçu son import d'équipes.
+  Future<void> markTournoiImportEffectue(String tournoiId) async {
+    await _holder.clientPocketBase.collection(collectionNameTournois).update(
+      tournoiId,
+      body: {'import_effectue': true},
+    );
   }
 
   /// Supprime un tournoi (équipes/rencontres purgées en cascade).

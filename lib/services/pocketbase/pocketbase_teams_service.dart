@@ -43,6 +43,70 @@ class PocketbaseTeamsService {
     return team;
   }
 
+  /// Crée une équipe rattachée à un tournoi sans capitaine.
+  Future<Team> createTeamForTournoi(String tournoiId, String nomEquipe) async {
+    final String nomNettoye = nomEquipe.trim();
+    if (nomNettoye.isEmpty) {
+      throw Exception("Le nom de l'équipe est obligatoire.");
+    }
+    final RecordModel recordEquipe = await _holder.clientPocketBase
+        .collection(collectionNameTeams)
+        .create(body: {
+       'nom': nomNettoye,
+       'tournoi_id': tournoiId,
+     });
+    return Team.fromPocketBaseRecord(recordEquipe);
+  }
+
+  /// Récupère une équipe par son identifiant PocketBase.
+  Future<Team> getTeam(String teamId) async {
+    final RecordModel recordEquipe = await _holder.clientPocketBase
+        .collection(collectionNameTeams)
+        .getOne(teamId);
+    return Team.fromPocketBaseRecord(recordEquipe);
+  }
+
+  /// Récupère toutes les équipes rattachées à un tournoi.
+  Future<List<Team>> getTeamsForTournoi(String tournoiId) async {
+    try {
+      final List<RecordModel> recordsEquipes =
+          await _holder.clientPocketBase
+              .collection(collectionNameTeams)
+              .getFullList(
+                filter:
+                    'tournoi_id = "${_holder.echapperFiltrePocketBase(tournoiId)}"',
+                sort: 'nom',
+              );
+      return recordsEquipes.map(Team.fromPocketBaseRecord).toList();
+    } catch (exception) {
+      debugPrint('Erreur de chargement des équipes du tournoi : $exception');
+      return [];
+    }
+  }
+
+  /// Met à jour le mot de passe d'accès d'une équipe.
+  Future<Team> updateTeamMotDePasse(String teamId, String motDePasse) async {
+    if (motDePasse.length > teamPasswordMaxLength) {
+      throw Exception(
+        "Le mot de passe ne peut dépasser $teamPasswordMaxLength caractères.",
+      );
+    }
+    await _holder.clientPocketBase.collection(collectionNameTeams).update(
+      teamId,
+      body: {'mot_de_passe': motDePasse},
+    );
+    return getTeam(teamId);
+  }
+
+  /// Met à jour l'identifiant du capitaine d'une équipe.
+  Future<Team> updateTeamCapitaineId(String teamId, String capitaineId) async {
+    await _holder.clientPocketBase.collection(collectionNameTeams).update(
+      teamId,
+      body: {'capitaine_id': capitaineId},
+    );
+    return getTeam(teamId);
+  }
+
   /// Récupère les équipes dont l'utilisateur est membre ayant ACCEPTÉ.
   Future<List<Team>> getTeamsForUser(String userId) async {
     try {

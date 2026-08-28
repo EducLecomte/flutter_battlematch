@@ -1,25 +1,33 @@
 import 'package:flutter/material.dart';
 import '../../models/models.dart';
 import '../team_management_controller.dart';
+import 'team_management_matched_panel.dart';
 import 'team_management_team_members_panel.dart';
 import 'team_management_team_invite_panel.dart';
+import 'team_management_team_settings_panel.dart';
 
 class TeamManagementTeamDetailPanel extends StatelessWidget {
   final TeamManagementController controller;
   final TextEditingController searchController;
+  final VoidCallback onStateChanged;
   final ValueChanged<String> onSearchTextChanged;
   final ValueChanged<String> onSendInvite;
   final ValueChanged<Joueur> onRemoveMember;
   final ValueChanged<Team> onDeleteTeam;
+  final ValueChanged<String> onUpdateMotDePasse;
+  final ValueChanged<Joueur> onNominateCaptain;
 
   const TeamManagementTeamDetailPanel({
     super.key,
     required this.controller,
     required this.searchController,
+    required this.onStateChanged,
     required this.onSearchTextChanged,
     required this.onSendInvite,
     required this.onRemoveMember,
     required this.onDeleteTeam,
+    required this.onUpdateMotDePasse,
+    required this.onNominateCaptain,
   });
 
   @override
@@ -52,6 +60,22 @@ class TeamManagementTeamDetailPanel extends StatelessWidget {
           ),
           const Divider(),
           const SizedBox(height: 16),
+          if (controller.isCaptain()) ...[
+            TeamManagementTeamSettingsPanel(
+              key: ValueKey(selectedTeam.id),
+              controller: controller,
+              onUpdateMotDePasse: onUpdateMotDePasse,
+              onNominateCaptain: onNominateCaptain,
+            ),
+            const SizedBox(height: 16),
+          ],
+          if (controller.encounters.isNotEmpty) ...[
+            TeamManagementMatchedPanel(
+              controller: controller,
+              onStateChanged: onStateChanged,
+            ),
+            const SizedBox(height: 16),
+          ],
           Expanded(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,

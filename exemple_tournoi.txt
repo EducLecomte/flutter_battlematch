@@ -1,322 +1,1625 @@
-AOC ona
+1DTROYES 
 
-Albin Bouchet (Cahuete) - Vampire Covenant
-785 - Necromancer, General and The Dead Arise, Cadaver Wagon, Wizard Master (Lich), Evocation (Whispers of the Veil, Danse Macabre, Chorus of the Damned, Spectral Blades, Soul Blight), Necromantic Staff
-430 - Vampire Courtier, Battle Standard Bearer, Strigoi, Mysteries of the Night, Light Troops, Wizard Adept, Shamanism (Swarm of Insects, Savage Fury, Awaken the Beast), Halberd
-65 - Barrow King, Captain, Light Troops, Great Weapon
-315 - 25 Skeletons, Spear and Shield, Standard Bearer (Banner of Eldritch Might), Musician
-280 - 25 Skeletons, Shield, Standard Bearer (Flaming Standard), Musician
-255 - 20 Ghouls, Standard Bearer, Musician
-160 - 20 Zombies, Standard Bearer
+1DTROYES  - Caratte
+Vampire Covenant
+900 - Vampire Count, Vetala, Unbreakable Will, Colossal Zombie Dragon, Wizard Adept, Occultism (Hand of Glory, Blood Curse, Pentagram of Pain), Paired Weapons (Touch of Greatness)
+690 - Vampire Count, General, Disciplined, and The Dead Arise, Lahmia, Commandment, Light Troops, Wizard Adept, Evocation (Whispers of the Veil, Danse Macabre, Chorus of the Damned), Destiny's Call, Necromantic Staff, Gates of the Netherworld
+430 - 31 Ghouls, Standard Bearer
+390 - 40 Skeletons, Spear and Shield, Standard Bearer (Banner of Eldritch Might)
+180 - 20 Skeletons, Shield, Standard Bearer
+490 - 30 Barrow Guard, Halberd, Standard Bearer
 300 - Court of the Damned
-300 - Altar of Undeath
-300 - Altar of Undeath
-205 - 15 Barrow Guard, Shield, Standard Bearer, Musician
-315 - 4 Vampire Spawn
-290 - 3 Vampire Knights, Standard Bearer
+310 - 4 Vampire Spawn
+310 - 4 Vampire Spawn
+4000
+
+Jonathan Blot (Kroxi38) - Daemon Legions
+860 - Maw of Akaan, Wizard Adept, Evocation (Whispers of the Veil, Danse Macabre, Chorus of the Damned), Hammer Hand, Digestive Vomit, Unholy Appetite
+730 - Miser of Sugulag, General, Wizard Adept, Divination (Foresight, Chance of Redemption, The Stars Align), Unnatural Roots, Mirrored Scales
+390 - 17 Succubi, Mesmerising Plumage, Standard Bearer
+370 - 16 Succubi, Mesmerising Plumage, Standard Bearer
+255 - 10 Imps, All-Seeing Eye, Standard Bearer (Firestarter - Smite the Unbeliever)
+495 - 6 Clawed Fiends, Standard Bearer
+360 - Blazing Glory, Fly
+360 - Blazing Glory, Fly
+180 - 5 Furies
 4000
 
 
-mael plouzane (Darth Mael) - Beast Herds
-485 - Soothsayer, General, Light Troops, Wizard Master, Shamanism (Savage Fury, Awaken the Beast, Predator's Instinct, Wild Guardian, Totemic Summon), Talisman of the Void
-370 - Centaur Chieftain, Greater Totem Bearer, Battle Standard Bearer, Shield (Obscuring Fog), Hand Weapon (Hawthorne Curse)
-220 - Centaur Chieftain, Captain and Attached, Throwing Weapons, Great Weapon, Horn of Bragh, Dragon's Brew
-205 - Centaur Chieftain, Captain and Attached, Throwing Weapons, Paired Weapons (King Slayer), Potion of Swiftness
-300 - 25 Mongrel Herd, Spear, Standard Bearer (Banner of the Wild Herd), Musician
-300 - 25 Mongrel Herd, Spear, Standard Bearer (Banner of the Wild Herd), Musician
-206 - 19 Wildhorn Herd, Paired Weapons, Standard Bearer, Musician
-448 - 14 Centaurs, Great Weapon, Throwing Weapons, Standard Bearer, Musician
-448 - 14 Centaurs, Paired Weapons, Throwing Weapons, Standard Bearer, Musician
-396 - 14 Centaurs, Paired Weapons, Standard Bearer
-180 - 10 Longhorn Herd, Ambush, Halberd, Standard Bearer
-95 - 5 Feral Hounds
-95 - 5 Feral Hounds
-250 - Beast Giant, Uprooted Tree
-3998
+-- (Ludmar) - Infernal Dwarves
+565 - Prophet, Prophet of Nezibkesh, Light Troops, Wizard Master, Alchemy (Living Steel, Wall of Lead, Molten Copper, Word of Iron, Quicksilver Lash), Shield, Ghostly Guard, Talisman of the Void
+325 - Vizier, Battle Standard Bearer, Trusted Adviser, Light Troops, Shield, Blunderbuss, Blaze of Protection, Hand Weapon (Flame of the East), Golden Idol of Shamut
+509 - 21 Infernal Warriors, Shield, Great Weapon, Blunderbuss, Standard Bearer (Banner of the Twice-Branded), Musician
+499 - 21 Infernal Warriors, Shield, Great Weapon, Blunderbuss, Standard Bearer (Banner of the Twice-Branded)
+467 - 19 Immortals, Spear, Standard Bearer (Banner of Shamut)
+417 - 19 Immortals, Spear, Standard Bearer
+295 - 7 Taurukh Enforcers, Infernal Weapon, Shield, Standard Bearer
+200 - Gunnery Team, Rocket Battery
+200 - Gunnery Team, Rocket Battery
+180 - 5 Vassal Cavalry
+170 - Infernal Artillery, Naphtha Thrower
+170 - Infernal Artillery, Naphtha Thrower
+3997
+
+
+Manu10 (Manudu10) - Warriors of the Dark Gods
+850 - Chosen Lord, General, Wasteland Dragon, Trophy Rack, Paired Weapons (Touch of Greatness), Immortal Gauntlets, Wyrd Stone, Sloth, Dark Prelate
+560 - Sorcerer, Light Troops, Wizard Master, Alchemy (Living Steel, Wall of Lead, Molten Copper, Word of Iron, Quicksilver Lash), Thrice-Forged, Dark Familiar
+540 - 23 Warriors, Paired Weapons, Standard Bearer (Zealots' Banner), Musician
+130 - 8 Warhounds
+130 - 8 Warhounds
+530 - 4 Chosen Knights, Greed, Standard Bearer
+530 - 4 Chosen Knights, Greed, Standard Bearer
+410 - 5 Forsworn, Great Weapon, Damnation, Standard Bearer
+320 - Battleshrine, Whispers of the Veil, Danse Macabre
+4000
+
+
+Pierre-Alain (Morgianna) - Sylvan Elves
+460 - Druid, General, Light Troops, Wizard Master, Cosmology (Altered Sight, Truth of Time, Weal and Woe, Ice and Fire, Thunder and Lightning), Mimic Cloak
+275 - Forest Prince, Light Troops, Sylvan Bow, Great Weapon and Elven Finesse, Pathfinder
+275 - Forest Prince, Light Troops, Sylvan Bow, Great Weapon and Elven Finesse, Pathfinder
+210 - Chieftain, Battle Standard Bearer, Light Troops, Binding Scroll
+345 - 30 Forest Guard, Standard Bearer
+345 - 30 Forest Guard, Standard Bearer
+195 - 5 Heath Riders, Heath Lancers, Standard Bearer
+195 - 5 Heath Riders, Heath Lancers, Standard Bearer
+450 - 23 Forest Rangers, Standard Bearer
+450 - 23 Forest Rangers, Standard Bearer
+400 - 10 Pathfinders
+400 - 10 Pathfinders
+4000
+
+
+Guillaume Heredia (Vollen) - Dwarven Holds
+485 - King, Light Troops, 2x Rune of Iron, Hand Weapon (Rune of Destruction, Rune of Might, Rune of Craftsmanship), 2x Rune of Shielding, Battle Rune (Rune of Resolve)
+300 - Runic Smith, General, Shield Wall, Rune of Iron, Rune of Channelling, 3x Battle Rune (Rune of Resolve, Rune of Gleaming, Rune of Resilience)
+510 - 20 Greybeards, Shield Wall, Throwing Weapons, Standard Bearer (Runic Standard of the Hold), Musician
+510 - 20 Greybeards, Shield Wall, Throwing Weapons, Standard Bearer (Runic Standard of the Hold), Musician
+342 - 19 Deep Watch, Standard Bearer
+306 - 17 Deep Watch, Standard Bearer
+280 - Grudge Buster
+280 - Grudge Buster
+220 - 10 Miners, Great Weapon, Pistol, Standard Bearer
+220 - 10 Miners, Great Weapon, Pistol, Standard Bearer
+200 - Anvil of Power, Rune of Resolve, Rune of Gleaming, Rune of Resilience
+170 - Field Artillery, Flame Cannon
+170 - Field Artillery, Flame Cannon
+3993
+
+
+alexandre paul (polasky) - Beast Herds
+660 - Minotaur Warlord, General, Battleline Hero, Destiny's Call, Paired Weapons (Twin Hungers), Rain Augur Brew
+510 - Soothsayer, Light Troops, Wizard Master, Evocation (Whispers of the Veil, Danse Macabre, Touch of the Reaper, Spectral Blades, Soul Blight), Talisman of the Void, Seed of the Dark Forest
+320 - Wildhorn Chieftain, Greater Totem Bearer, Battle Standard Bearer, Trusted Adviser, Light Troops, Shield, Wild Form, Binding Scroll
+360 - 35 Mongrel Herd, Spear, Standard Bearer (Banner of the Wild Herd)
+320 - 3 Raiding Chariots
+120 - 10 Mongrel Raiders
+405 - 6 Minotaurs, Shield, Standard Bearer
+405 - 6 Minotaurs, Shield, Standard Bearer
+230 - Razortusk Chariot
+190 - 10 Longhorn Herd, Ambush, Halberd, Standard Bearer (Banner of Courage)
+120 - Briar Beast
+120 - Briar Beast
+120 - Briar Beast
+120 - Briar Beast
+4000
+
+
+Flavien Lefevre (radagast10) - Empire of Sonnstahl
+250 - Battlefield Wizard, Light Troops, Wizard Adept, Divination (Foresight, The Stars Align, Fate's Judgement)
+250 - Battlefield Wizard, Light Troops, Wizard Adept, Alchemy (Corruption of Tin, Wall of Lead, Molten Copper)
+165 - Marshal, Battle Standard Bearer and Imperial Authority, Light Troops, Shield, Repeater Pistol, Blacksteel
+145 - Marshal, General, Imperial Authority, and +1 Cou, Light Troops, Shield, Repeater Pistol, Ghostly Guard
+110 - Artificer, Horse, Repeater Gun
+110 - Artificer, Horse, Repeater Gun
+350 - 34 State Infantry, Spear, Standard Bearer
+350 - 34 State Infantry, Halberd, Standard Bearer
+201 - 18 Local Militia
+181 - 19 State Detachment, Standard Bearer
+210 - 3 Knights of the Sun Griffon, Halberd, Standard Bearer
+210 - 3 Knights of the Sun Griffon, Halberd, Standard Bearer
+284 - 9 Reiters, Repeater Gun
+284 - 9 Reiters, Repeater Gun
+240 - Blackpowder Artillery, Cannon
+240 - Blackpowder Artillery, Cannon
+420 - Steam Tank
+4000
 
 
 Les Chevaliers de la Table Rase
 
-Adrien (Ikit976) - Daemon Legions
-920 - Courtesan of Cibaresh, General, Wizard Adept, Witchcraft (Mind Fog, Illusory Paths, Shrouded Steps), Kaleidoscopic Flesh, Centipede Legs, Hammer Hand, Mesmerising Plumage, Hot Blood
-390 - Harbinger of Father Chaos, Wizard Adept, Evocation (Whispers of the Veil, Danse Macabre, Touch of the Reaper), Captain and Attached, Dark Pulpit, Guiding Mirrored Scales
-502 - 24 Succubi, Standard Bearer, Musician
-426 - 22 Lemures, Golden Helm, Standard Bearer, Musician
-304 - 12 Imps, All-Seeing Eye, Standard Bearer, Firestarter - Smite the Unbeliever
-370 - Threshing Engine, Horns of Hubris, Legion Thresher, Standard Bearer
-368 - 4 Clawed Fiends, Unholy Appetite, Standard Bearer
-310 - 9 Succubi Tempters, Kaleidoscopic Flesh, Hidden Knives, Favoured of Lust, Standard Bearer
-240 - 5 Mageblight Gremlins
-170 - 5 Eidolons, Incendiary Ichor
-4000
+Louis-Marie (Aegitru) - Warriors of the Dark Gods
+585 - Sorcerer, General, Trusted Adviser, Light Troops, Wizard Master, Occultism (Hand of Glory, Blood Curse, Pentagram of Pain, Umbral Majesty, The Grave Calls), Thrice-Forged, Dark Familiar
+498 - 19 Warriors, Paired Weapons, Pride, Standard Bearer (Zealots' Banner), Musician
+195 - 8 Fallen
+150 - 5 Fallen
+590 - 10 Chosen, Greed, Standard Bearer
+580 - 10 Warrior Knights, Great Weapon, Standard Bearer (Stalker's Standard)
+570 - 4 Chosen Knights, Wrath, Standard Bearer (Icon of the Infinite)
+490 - 6 Forsworn, Great Weapon, Damnation, Standard Bearer
+340 - Hellmaw
+3998
 
 
-Erwann (Tutu) - Empire of Sonnstahl
-400 - Battlefield Wizard, Light Troops, Wizard Master, Pyromancy (Fireball, Flaming Swords, Dragon's Roar, Pyroclastic Flow, Pillars of Fire)
-270 - Marshal, Solitary, Great Griffon, Great Weapon, Repeater Pistol
-270 - Marshal, Solitary, Great Griffon, Great Weapon, Repeater Pistol
-130 - Marshal, Battle Standard Bearer and Imperial Authority, Light Troops, Shield, Repeater Pistol
-110 - Marshal, General, Imperial Authority, and +1 Dis, Light Troops, Shield, Repeater Pistol
-135 - Inquisitor, Light Troops, Paired Weapons (Death Warrant), Potion of Swiftness, Hidden
-90 - Artificer, Light Troops, Repeater Gun
-90 - Artificer, Light Troops, Repeater Gun
-231 - 15 State Marksmen, Crossbow, Standard Bearer
-175 - 12 State Marksmen, Handgun, Standard Bearer (Marksman's Pennant)
-165 - 12 State Marksmen, Handgun, Standard Bearer
-215 - 20 State Detachment, Spear, Standard Bearer
-215 - 20 Local Militia, Musician
-260 - 20 Imperial Guard, Shield, Standard Bearer
-180 - 15 Imperial Guard, Shield, Standard Bearer
-175 - 5 Reiters, Brace of Pistols and Fire on Impact
-130 - Blackpowder Artillery, Imperial Rocketeer
-130 - Blackpowder Artillery, Imperial Rocketeer
-460 - Steam Tank
-160 - 15 Flagellants
-3991
+Jimmy Tiffay (Corvax) - Highborn Elves
+500 - Mage, Asfad Scholar, Light Troops, Wizard Master, Cosmology (Altered Sight, Weal and Woe, Ice and Fire, Cosmic Scales, Thunder and Lightning)
+420 - High Prince, General, Trusted Adviser, Light Troops, Destiny's Call, Spear (Sliver of the Blazing Dawn)
+185 - Commander, Battle Standard Bearer, Queen's Companion (Moonlight Arrows), Light Troops, Longbow, Halberd
+442 - 24 Sea Guard, Standard Bearer
+380 - 30 Citizen Spears, Standard Bearer
+180 - 5 Erlein Reavers
+500 - 22 Lion Guard, Standard Bearer (Navigator's Banner)
+470 - 8 Knights of Rymâ, Standard Bearer (Stalker's Standard)
+460 - 20 Queen's Guard, Standard Bearer (Aether Icon)
+230 - Sky Sloop
+230 - Sky Sloop
+3997
 
 
-Les Chiennes du désert d'Al Grodard
-
-Pierre MALET (Angrym) - Infernal Dwarves
-515 - Prophet, General, Prophet of Nezibkesh, Light Troops, Wizard Master, Alchemy (Living Steel, Chalice of Gold, Silver Spike, Word of Iron, Quicksilver Lash), Flintlock Axe, Tablet of Vezodinezh
-335 - Lamassu Scholar, Golden Idol of Shamut, Living Steel, Dragon's Roar, Mirror Image
-285 - Vizier, Battle Standard Bearer, Light Troops, Blaze of Protection, Great Weapon (Flame of the East)
-455 - 20 Citadel Guard, Flintlock Axe, Standard Bearer (Banner of the Twice-Branded), Musician
-370 - 40 Vassal Levies, Spear and Shield, Musician, Standard Bearer (Their Master's Banner)
-180 - 20 Vassal Levies, Shield, Standard Bearer
-475 - 20 Immortals, Spear, Standard Bearer
-414 - 4 Taurukh Anointed, Infernal Weapon, Shield, Standard Bearer
-310 - Infernal Artillery, Rocket Battery
-240 - Kadim Chariot, Great Weapon
-420 - Infernal Engine, Rocket Battery
-3999
-
-
-Matkempo (Matkempo) - Warriors of the Dark Gods
-545 - Feldrak Ancestor, General, Halberd
-430 - Barbarian Chief, Solitary, Wasteland Behemoth, Trophy Rack, Great Weapon, Rod of Battle
-425 - Barbarian Chief, Solitary, Wasteland Behemoth, Trophy Rack, Great Weapon, Crown of the Wizard King
-470 - 38 Barbarians, Spear and Shield, Standard Bearer (Banner of Speed)
-170 - 5 Barbarian Horsemen, Standard Bearer
-170 - 5 Barbarian Horsemen, Standard Bearer
-350 - 3 Feldraks, Halberd, Standard Bearer (Icon of the Infinite)
-310 - 3 Feldraks, Halberd, Standard Bearer
-325 - Marauding Giant, Monstrous Familiar (Hellfire), Big Brother
-310 - Marauding Giant, Giant Club, Big Brother
-280 - Chosen Chariot, Envy
-210 - Chimera
-3995
-
-
-Les fruits secs
-
-Brice (CDB) - Highborn Elves
-685 - High Prince, Fleet Officer, Griffon, Longbow, Dragonforged Armour, Lance (Nova Flare), Diadem of Protection
-455 - Commander, Battle Standard Bearer, Master of Canreig Tower (Favour of Meladys, Living Steel, Predator's Instinct), Light Troops, Dragonforged Armour, Protection of Dorac, Halberd (King Slayer)
-430 - 30 Citizen Spears, Standard Bearer (War Banner of Rymâ)
-380 - 30 Citizen Spears, Standard Bearer (Aether Icon)
-200 - 5 Highborn Lancers, Standard Bearer
-550 - 23 Lion Guard, Standard Bearer (War Banner of Rymâ)
-405 - 15 Flame Wardens, Standard Bearer (Banner of Becalming)
-395 - Phoenix, Frost Phoenix, Warden's Bond
-250 - Sky Sloop
-250 - Sky Sloop
-4000
-
-
-Jean-Luc (djayhell) - Undying Dynasties
-545 - Death Cult Hierarch, Light Troops, Wizard Master, Divination (Foresight, Immortal's Bane, The Stars Align, Augury of Triumph, Inescapable Doom), Talisman of the Void, Scroll of Power, Soul Conduit and Hierophant
-535 - Nomarch, Battle Standard Bearer, Deathless Noble, Sha Guardian, Great Weapon, Crown of the Pharaohs
-450 - Pharaoh, General, Skeletal Horse, Jackal's Blessing, Great Weapon (Godslayer), Blessed Wrappings
-478 - 47 Skeleton Warriors, Spear and Shield, Standard Bearer (Banner of Speed), Musician
-330 - 3 Skeleton Chariots, Lance, Legion Charioteers, Standard Bearer (Banner of the Entombed)
-197 - 19 Skeleton Archers, Bow, Standard Bearer (Aether Icon)
-400 - Dread Sphinx
-245 - 15 Necropolis Guard, Paired Weapons, Standard Bearer, Musician
-210 - 3 Shabti Archers, Standard Bearer
-210 - 3 Shabti Archers, Standard Bearer
-400 - Dread Sphinx
-4000
-
-
-MOGA 
-
-Lionel Cauvy (Desd) - Daemon Legions
-800 - Vanadra's Scourge, General, Wizard Adept, Evocation (Whispers of the Veil, Danse Macabre, Chorus of the Damned), Centipede Legs, Incendiary Ichor
-790 - Courtesan of Cibaresh, Wizard Adept, Divination (Foresight, The Stars Align, Fate's Judgement), Centipede Legs
-330 - 16 Myrmidons, Bronze Backbone, Standard Bearer
-250 - 10 Succubi, Dark Hide, Standard Bearer
-220 - 10 Lemures, Centipede Legs, Standard Bearer
-220 - 10 Lemures, Centipede Legs, Standard Bearer
-390 - 8 Eidolons, Incendiary Ichor, Wizard Conclave (Whispers of the Veil, Touch of the Reaper)
-250 - 4 Mageblight Gremlins, Venom Sacs
-250 - 4 Mageblight Gremlins, Venom Sacs
-250 - 3 Hoarders, Standard Bearer
-250 - 10 Hellhounds, Incendiary Ichor
-4000
-
-
-Alex A (Scorbol) - Empire of Sonnstahl
-465 - Battlefield Wizard, Light Troops, Wizard Master, Alchemy (Living Steel, Corruption of Tin, Chalice of Gold, Silver Spike, Word of Iron), Talisman of the Void
-420 - Prelate, Altar of Battle, Great Weapon
-325 - Knight Commander, General, Horse, Shield (Witchfire Guard), Hand Weapon (The Light of Sonnstahl), Scroll of Conquest
-155 - Marshal, Battle Standard Bearer and Imperial Authority, Light Troops, Shield, Great Tactician
-120 - Inquisitor, Light Troops, Paired Weapons (Hero's Heart), Hidden
-115 - Inquisitor, Light Troops, Shield, Hand Weapon (Hammer of Witches), Hidden
-464 - 19 Electoral Cavalry, Great Weapon, Standard Bearer (Stalker's Standard)
-410 - 35 State Infantry, Spear, Standard Bearer (Banner of Unity)
-180 - 15 Local Militia
-180 - 15 Imperial Guard, Shield, Standard Bearer
-180 - 15 Imperial Guard, Shield, Standard Bearer
-180 - 15 Imperial Guard, Shield, Standard Bearer
-180 - 15 Imperial Guard, Shield, Standard Bearer
-160 - Blackpowder Artillery, Volley Gun
-460 - Steam Tank
-3994
-
-
-Orga Chocola'Team 
-
-Damian Populin (Elrania) - Kingdom of Equitaine
-485 - Damsel, General, Light Troops, Wizard Master, Druidism (Fountain of Youth, Entwining Roots, Stone Skin, Shield of Thorns, Mud Slide), Talisman of the Void
-330 - Folk Hero, Heraldic Steed, Shield (Fortress of Faith), Longbow with Shots 3, Lance (Uther's Mettle), Basalt Infusion, Sainted, Castellan
-150 - Folk Hero, Light Troops, Shield, Attached, Bannerman, Minstrel (Divination (Foresight))
-425 - 15 Mounted Serjeants, Great Weapon, Musician, Standard Bearer
-310 - 9 Hedge Knights, Musician, Standard Bearer (Aether Icon)
-265 - 6 Knights of the Realm, Musician, Standard Bearer
-650 - 9 Knights Penitent, Standard Bearer
-475 - 9 Knights of the Court, Musician, Standard Bearer
-360 - 24 Men-at-Arms, Ordo Wardens, Standard Bearer (Relic Shroud)
-170 - Sacred Reliquary
+Elliott (Elliott) - Kingdom of Equitaine
+550 - Damsel, General, Destrier, Wizard Master, Shamanism (Predator's Instinct, Awaken the Beast, Swarm of Insects, Wild Spikes, Totemic Summon), Talisman of the Void, Sainted
+345 - Paladin, Pegasus Charger, Paired Weapons (Touch of Greatness), Ghostly Guard
+235 - Folk Hero, Destrier, Shield, Attached, Bannerman, Cleric
+495 - 12 Knights of the Realm, Standard Bearer (Flaming Standard)
+260 - 8 Mounted Serjeants, Light Lance, Standard Bearer
+260 - 8 Mounted Serjeants, Light Lance, Standard Bearer
+595 - 9 Knights of the Quest, Standard Bearer (Stalker's Standard)
+560 - 8 Knights of the Quest, Standard Bearer (Stalker's Standard), Knight Banneret
+320 - 4 Knights Penitent, Standard Bearer
 380 - Fey Knight, Chosen of the Snow Childe
 4000
 
 
-Orga Chocola'Team  - Kirazon/Trehka
-Sylvan Elves
-285 - Forest Prince, Light Troops, Sylvan Bow, Spear, Pathfinder
-215 - Dryad Ancient, Captain and Attached, Wizard Adept, Druidism (Fountain of Youth, Veil of Mist, Stone Skin)
-215 - Dryad Ancient, Captain and Attached, Wizard Adept, Divination (Foresight, The Stars Align, Fate's Judgement)
-200 - Chieftain, General, Light Troops, Sylvan Bow, Pathfinder
-340 - 10 Heath Riders, Heath Hunters
-282 - 8 Heath Riders, Heath Hunters
-194 - 11 Dryads, Standard Bearer
-194 - 11 Dryads, Standard Bearer
-372 - 18 Forest Rangers, Vanguard, Standard Bearer
-220 - 10 Forest Rangers, Vanguard, Standard Bearer
-300 - 4 Thicket Beasts, Standard Bearer
-280 - 3 Kestrel Knights, Lance and Shield, Standard Bearer
-260 - 4 Forest Eagles
-220 - 5 Wild Huntsmen, Sylvan Blades, Standard Bearer
-420 - 10 Pathfinders
+Les Chevaliers de la Table Rase - Ikit976
+Beast Herds
+495 - Soothsayer, Light Troops, Wizard Master, Evocation (Whispers of the Veil, Chorus of the Damned, Touch of the Reaper, Spectral Blades, Soul Blight), Mimic Cloak, Scroll of Power
+335 - Wildhorn Lord, General (Hunting Call), Light Troops, Aaghor's Affliction, Paired Weapons (Touch of Greatness)
+310 - Wildhorn Chieftain, Greater Totem Bearer, Battle Standard Bearer, Light Troops, Flaming Standard, Destiny's Call, Great Weapon
+155 - Wildhorn Chieftain, Captain and Attached, Light Troops and Ambush, Throwing Weapons, Wild Form, Paired Weapons (Hero's Heart)
+150 - Wildhorn Chieftain, Captain and Attached, Light Troops and Ambush, Warding of Unity, Great Weapon, Dragon's Brew
+503 - 47 Wildhorn Herd, Shield, Standard Bearer (Banner of Speed), Musician
+306 - 24 Wildhorn Herd, Paired Weapons, Ambush, Standard Bearer, Musician (Totem Bearer (Blooded Horn Totem))
+358 - 19 Longhorn Herd, Ambush, Halberd, Standard Bearer, Musician (Totem Bearer (Blooded Horn Totem))
+170 - 10 Longhorn Herd, Ambush, Halberd, Standard Bearer
+177 - 7 Gargoyles
+120 - Briar Beast
+120 - Briar Beast
+120 - Briar Beast
+340 - Cyclops
+340 - Cyclops
+3999
+
+
+Pascal (Niluge) - Saurian Ancients
+595 - Anurarch Archmage, Trusted Adviser, Light Troops and Closely Guarded, Alchemy (Corruption of Tin, Wall of Lead, Molten Copper, Word of Iron, Quicksilver Lash), Talisman of the Void, Farseeing Mastery, Guiding Mastery
+280 - Skink Veteran, Pouakai Sky Tyrant, Poisoned Javelin, Paired Weapons (Serpent's Nest Charm)
+160 - Skink Veteran, Light Troops and Strider, Magnetic Short Bow (Alchemical Arrows), Halberd, Carved Tablet (Touch of the Reaper), Chameleon and Hard Target
+515 - 30 Tegu Warriors, Spear, Standard Bearer
+495 - 30 Tegu Warriors, Wizard Conclave (Awaken the Beast), Standard Bearer
+549 - 24 Tegu Guards, Standard Bearer (Koru Stone)
+420 - 10 Raptor Riders, Standard Bearer
+240 - 2 Weapon Beasts, Spearback
+233 - 13 Skink Guerrillas, Magnetic Short Bow, Chameleon
+200 - 3 Pteradon Riders, Magnetic Short Bow
+310 - 2 Stygiosaur Pack, Standard Bearer
 3997
 
-Pirates et tentacules
 
-Guillaume (DoubleDose) - Highborn Elves
-450 - Commander, Solitary, Fleet Officer, Sky Sloop, Shield, Light Lance, Talisman of the Void
-445 - Commander, Battle Standard Bearer, Master of Canreig Tower (Living Steel, Fountain of Youth, Whispers of the Veil), Light Troops, Destiny's Call, Great Weapon and Elven Finesse
-385 - Commander, General, Fleet Officer, Sky Sloop, Shield, Light Lance
-215 - Commander, Captain and Attached, Royal Huntsman, Light Troops, Protection of Dorac, Great Weapon and Elven Finesse (Eldritch Inscriptions)
-408 - 28 Citizen Spears, Standard Bearer (Navigator's Banner)
-347 - 18 Sea Guard, Standard Bearer
-290 - 15 Sea Guard, Standard Bearer
-390 - 18 Queen's Guard, Standard Bearer
-360 - Initiate of the Fiery Heart, Dragon's Roar, Pyroclastic Flow
-360 - 15 Flame Wardens, Standard Bearer
-350 - Phoenix, Frost Phoenix
+Erwann (Tutu) - Empire of Sonnstahl
+410 - Battlefield Wizard, Arcane Engine (Ice and Fire), Wizard Adept, Alchemy (Living Steel, Corruption of Tin, Molten Copper), Pyromancy (Flaming Swords, Dragon's Roar, Pyroclastic Flow), Essence of a Free Mind
+270 - Marshal, General, Imperial Authority, and +1 Cou, Battleline Hero, Light Troops, Great Weapon, Imperial Seal, Talisman of Shielding
+230 - Marshal, Battle Standard Bearer and Imperial Authority, Trusted Adviser, Light Troops, Great Weapon, Warding of Unity, Talisman of the Void
+100 - Marshal, Captain and Attached, Light Troops, Paired Weapons (Hero's Heart)
+95 - Artificer, Light Troops, Long Rifle
+95 - Artificer, Light Troops, Long Rifle
+510 - 50 State Infantry, Spear, Standard Bearer
+410 - 39 State Infantry, Spear, Standard Bearer, Musician
+282 - 18 State Marksmen, Crossbow, Standard Bearer (Marksman's Pennant)
+431 - 28 Imperial Guard, Great Weapon, Standard Bearer
+210 - 3 Knights of the Sun Griffon, Halberd, Standard Bearer
+180 - 5 Reiters, Brace of Pistols and Fire on Impact
+175 - Blackpowder Artillery, Volley Gun
+175 - Blackpowder Artillery, Volley Gun
+420 - Steam Tank
+3993
+
+
+William (Valnor) - Ogre Khans
+480 - Shaman, General, Wizard Master, Shamanism (Predator's Instinct, Awaken the Beast, Swarm of Insects, Wild Spikes, Totemic Summon), Iron Fist, Gut Roarer
+290 - Khan, Battle Standard Bearer, Iron Fist (Eldritch Inscriptions), Ogre Crossbow, Rottenjaw
+498 - 11 Tribesmen, Iron Fist, Standard Bearer, Musician
+170 - 4 Tribesmen, Standard Bearer
+332 - 41 Scraplings, Shield, Standard Bearer (Skull of Qenghet)
+455 - 4 Tusker Cavalry, Standard Bearer (Stalker's Standard)
+425 - 5 Mercenary Gunners, Ogre Crossbow and Accurate, Magic Resistance, Standard Bearer (Aether Icon)
+300 - Thunder Cannon
+260 - Scratapult
+150 - Kin-Eater
+150 - Kin-Eater
+110 - 3 Sabretooth Tigers
+110 - 3 Sabretooth Tigers
+270 - Mercenary Giant, Iron Fist, Devastating Charge
+4000
+
+
+schilardi jason (jason) - Vermin Swarm
+395 - Swarm Priest, Light Troops, Wizard Master, Occultism (The Devouring Dark, Hand of Glory, Umbral Majesty, The Grave Calls), Mimic Cloak, Cult of Errahman
+250 - Swarm Priest, Light Troops, Wizard Adept, Thaumaturgy (Smite the Unbeliever, Holy Affliction), Talisman of the Void, Caelysian Pantheon
+220 - Vermin Senator, General, Battleline Hero, Light Troops, Pistol (Storm Rocket)
+200 - Bloodfur Legate, Battle Standard Bearer, Light Troops
+190 - House Prefect, Captain and Attached, Skorchit Alchemist, Deepfire Thrower, Hand Weapon (Swarm Master)
+170 - House Prefect, Captain and Attached, Skorchit Alchemist, Deepfire Thrower
+410 - 55 Vermin Legionaries, Spear, Standard Bearer
+410 - 55 Vermin Legionaries, Spear, Standard Bearer
+180 - 20 Vermin Slingers, Musician, Standard Bearer
+420 - 9 Vermin Brutes
+415 - 6 Thunder Brutes, Jezail and Shield, Standard Bearer
+90 - 10 Giant Rats
+195 - Vermin Artillery, Rakachit Mauss Rifle
+195 - Vermin Artillery, Rakachit Mauss Rifle
+260 - Stygian Earthbreaker
+4000
+
+
+Les Ptits Beurrés
+
+Alinar (Alinar) - Infernal Dwarves
+510 - Prophet, General, Prophet of Nezibkesh, Light Troops, Wizard Master, Alchemy (Living Steel, Corruption of Tin, Molten Copper, Word of Iron, Quicksilver Lash), Mimic Cloak
+285 - Vizier, Battle Standard Bearer, Trusted Adviser, Light Troops, Shield (Sigil of Protection), Hand Weapon (Flame of the East), Golden Idol of Shamut
+125 - Vizier, Captain and Attached, Light Troops, Shield, Talisman of the Void
+561 - 24 Citadel Guard, Pistol and Spear, Standard Bearer (Banner of the Twice-Branded), Musician
+260 - 20 Vassal Levies, Spear and Shield, Bow, Standard Bearer
+240 - 20 Vassal Levies, Paired Weapons, Bow, Standard Bearer
+557 - 24 Immortals, Spear, Standard Bearer (Flaming Standard)
+417 - 19 Immortals, Spear, Standard Bearer
+285 - Infernal Artillery, Rocket Battery
+170 - Infernal Artillery, Naphtha Thrower
+170 - Infernal Artillery, Naphtha Thrower
+220 - Kadim Chariot, Paired Weapons
+200 - Gunnery Team, Rocket Battery
+4000
+
+
+Nicolas (AshBanzai) - Orcs and Goblins
+495 - Goblin Witch, Light Troops, Wizard Master, Pyromancy (Fireball, Flaming Swords, Dragon's Roar, Pyroclastic Flow, Cage of Embers), Skull Fetish
+195 - Goblin Demagogue, Battle Standard Bearer, Trusted Adviser, Light Troops, Monster Munch
+165 - Goblin Demagogue, Captain and Attached, Beastie, Great Weapon (Attack Gnasher), Mask of Mindless Violence
+60 - Goblin Demagogue, General (Darrmu and Goblin Gardens), Light Troops
+55 - Mad Git
+55 - Mad Git
+55 - Mad Git
+55 - Mad Git
+50 - Gogtuk Initiate, Headhunter
+50 - Gogtuk Initiate, Headhunter
+50 - Gogtuk Initiate, Headhunter
+50 - Gogtuk Initiate, Headhunter
+50 - Gogtuk Initiate, Headhunter
+50 - Gogtuk Initiate, Headhunter
+45 - Gogtuk Initiate, Netter
+45 - Gogtuk Initiate, Netter
+331 - 25 Goblin Reavers, Lance and Shield, Standard Bearer (Goga Cauldron)
+323 - 24 Goblin Reavers, Lance and Shield, Standard Bearer (Goga Cauldron)
+280 - 40 Goblin Rabble, Spear and Shield, Standard Bearer (Goga Cauldron)
+200 - 25 Goblin Rabble, Spear and Shield, Standard Bearer (Banner of Courage)
+180 - Goblin Artillery, Splatterer
+170 - Goblin Artillery, Git Launcher
+170 - Goblin Artillery, Git Launcher
+160 - 10 Gogtuk Neophytes, Standard Bearer
+160 - 10 Gogtuk Neophytes, Standard Bearer
+150 - 10 Gnasher Dashers
+150 - 10 Gnasher Dashers
+100 - Wrecking Team
+100 - Wrecking Team
+3999
+
+
+Les Ptits Beurrés - Chareos
+Empire of Sonnstahl
+400 - Battlefield Wizard, Light Troops, Wizard Master, Alchemy (Living Steel, Corruption of Tin, Molten Copper, Word of Iron, Quicksilver Lash)
+260 - Battlefield Wizard, Light Troops, Wizard Adept, Divination (Chance of Redemption, The Stars Align, Fate's Judgement), Pyromancy (Fireball, Flaming Swords, Pyroclastic Flow), Essence of a Free Mind
+350 - Marshal, Battle Standard Bearer and Imperial Authority, Trusted Adviser, Great Griffon, Halberd, Winter Cloak
+330 - Marshal, General, Imperial Authority, and +1 Cou, Battleline Hero, Great Griffon, Halberd, Repeater Pistol, Talisman of Shielding
+95 - Artificer, Light Troops, Long Rifle
+244 - 16 State Marksmen, Crossbow, Standard Bearer
+217 - 23 State Infantry, Standard Bearer
+180 - 15 Local Militia
+180 - 15 Local Militia
+180 - 15 Local Militia
+440 - 5 Knights of the Sun Griffon, Lance, Standard Bearer (Stalker's Standard)
+240 - 3 Knights of the Sun Griffon, Lance, Standard Bearer
+175 - Blackpowder Artillery, Volley Gun
+175 - Blackpowder Artillery, Volley Gun
+110 - 8 Imperial Rangers
+420 - Steam Tank
+
+3996
+
+Emile (Mymile) - Undying Dynasties
+430 - Death Cult Hierarch, General, Ark of Ages, Wizard Adept, Divination (Foresight, The Stars Align, Fate's Judgement), Talisman of the Void, Soul Conduit
+280 - Death Cult Hierarch, Light Troops, Wizard Adept, Divination (Foresight, Chance of Redemption, The Stars Align), Soul Conduit
+320 - 4 Skeleton Chariots, Aspis Arrows and Bow
+320 - 4 Skeleton Chariots, Aspis Arrows and Bow
+245 - 25 Skeleton Archers, Bow, Standard Bearer, Musician
+225 - 20 Skeleton Warriors, Shield, Standard Bearer (Banner of the Entombed)
+360 - 5 Shabti Archers, Standard Bearer
+360 - 5 Shabti Archers, Standard Bearer
+230 - Casket of Phatep, Thunder and Lightning, Soul Blight
+140 - Sand Scorpion
+140 - Sand Scorpion
+475 - 3 Tomb Reapers, Paired Weapons
+475 - 3 Tomb Reapers, Paired Weapons
+4000
+
+
+Théo Vintaer (Thyrion) - Vampire Covenant
+690 - Vampire Count, General, Disciplined, and The Dead Arise, Lahmia, Commandment, Light Troops, Wizard Adept, Occultism (The Devouring Dark, Hand of Glory, Blood Curse), Destiny's Call, Great Weapon (Eldritch Inscriptions), Night's Crown
+530 - Necromancer, Light Troops, Wizard Master (Lich), Evocation (Danse Macabre, Chorus of the Damned, Touch of the Reaper, Spectral Blades, Soul Blight), Necromantic Staff
+155 - Barrow King, Captain, Light Troops, Warding of Unity, Great Weapon, Hypnotic Pendant
+490 - 35 Ghouls, Standard Bearer
+342 - 34 Skeletons, Spear and Shield, Standard Bearer (Banner of Eldritch Might)
+180 - 20 Skeletons, Shield, Standard Bearer
+583 - 32 Barrow Guard, Halberd, Standard Bearer (Black Standard of Zagvozd)
+300 - Court of the Damned
+105 - 3 Great Bats
+310 - 4 Vampire Spawn
+310 - 4 Vampire Spawn
+3995
+
+
+Baptiste (Uriel Ventris) - Dwarven Holds
+110 - Engineer, General
+210 - 10 Greybeards, Shield Wall, Standard Bearer
+210 - 10 Greybeards, Shield Wall, Standard Bearer
+210 - 10 Greybeards, Shield Wall, Standard Bearer
+190 - 10 Greybeards, Standard Bearer
+190 - 10 Greybeards, Standard Bearer
+285 - Field Artillery, Dwarf Cannon (Flaming Shot, Rune Crafted towards Height 5))
+285 - Field Artillery, Dwarf Cannon (Flaming Shot, Rune Crafted towards Height 5))
+170 - Field Artillery, Flame Cannon
+280 - Grudge Buster
+280 - Grudge Buster
+260 - 3 Hold Guardians, Standard Bearer
+260 - 3 Hold Guardians, Standard Bearer
+230 - 10 Miners, Great Weapon, Paired Weapons, Pistol, Standard Bearer
+230 - 10 Miners, Great Weapon, Paired Weapons, Pistol, Standard Bearer
+200 - 10 Forge Wardens
+200 - 10 Forge Wardens
+200 - 10 Forge Wardens
+4000
+
+
+Quentin (WarZaZat) - Warriors of the Dark Gods
+700 - Exalted Herald, General
+200 - Barbarian Chief, Captain and Attached, Trusted Adviser, Light Troops, Trophy Rack (Aether Icon), Shield (Wild Warding), Binding Scroll
+540 - 23 Warriors, Paired Weapons, Standard Bearer (Zealots' Banner), Musician
+130 - 8 Warhounds
+130 - 8 Warhounds
+569 - 9 Chosen, Halberd, Wrath, Standard Bearer, Musician
+530 - 6 Forsworn, Great Weapon, Damnation, Standard Bearer (Icon of the Infinite)
+540 - 4 Chosen Knights, Lust, Standard Bearer, Musician
+320 - Battleshrine, Whispers of the Veil, Hellfire
+340 - Hellmaw
+3999
+
+
+El Yanno (Wismerhell) - Dread Elves
+480 - Sanctioned Warlock, General, Light Troops, Wizard Master, Evocation (Whispers of the Veil, Chorus of the Damned, Touch of the Reaper, Spectral Blades, Soul Blight), Ring of the Obsidian Thrones
+410 - 25 Temple Militants, Musician, Standard Bearer (Sheltering Standard)
+215 - 12 Corsairs, Repeater Handbow
+185 - 10 Corsairs, Repeater Handbow
+190 - 5 Shadow Riders, Light Lance
+375 - 15 Judicators, Musician, Standard Bearer (Banner of Urlain)
+375 - 15 Judicators, Musician, Standard Bearer (Banner of Urlain)
+370 - 15 Obsidian Guard, Standard Bearer (Banner of Urlain)
+316 - 8 Dread Acolytes, Temple Acolytes
+240 - Divine Altar, Altar of Nabh
+210 - Hunting Chariot
+210 - Hunting Chariot
+190 - Raptor Chariot, Halberd
+230 - Mist Leviathan
+3996
+
+
+Les Randomiques
+
+Mathieu (Arwarn) - Warriors of the Dark Gods
+575 - Sorcerer, General, Trusted Adviser, Light Troops, Wizard Master, Occultism (The Devouring Dark, Hand of Glory, Blood Curse, Umbral Majesty, The Grave Calls), Dark Familiar, Binding Scroll
+554 - 22 Warriors, Paired Weapons, Gluttony, Standard Bearer (Zealots' Banner)
+250 - 12 Warriors, Paired Weapons, Standard Bearer
+570 - 4 Chosen Knights, Greed, Standard Bearer (Stalker's Standard)
+480 - Feldrak Elder, Halberd
+480 - Feldrak Elder, Halberd
+410 - 4 Feldraks, Halberd, Standard Bearer
+240 - 3 Forsworn, Great Weapon, Damnation
+240 - 3 Forsworn, Great Weapon, Damnation
+100 - 5 Warhounds
+100 - 5 Warhounds
+3999
+
+
+ceddur (Ceddur) - Infernal Dwarves
+335 - Prophet, Prophet of Nezibkesh, Light Troops, Wizard Adept, Pyromancy (Fireball, Flaming Swords, Pyroclastic Flow), Shield
+300 - Lamassu Scholar, Mists of Invisibility, Hand of Glory, Curse of Nezibkesh
+270 - Vizier, Battle Standard Bearer, Trusted Adviser, Light Troops, Stalker's Standard, Blaze of Protection, Paired Weapons
+524 - 23 Infernal Warriors, Great Weapon, Blunderbuss, Standard Bearer (Banner of the Twice-Branded), Musician
+496 - 22 Infernal Warriors, Great Weapon, Blunderbuss, Standard Bearer (Banner of the Twice-Branded)
+442 - 19 Immortals, Infernal Weapon, Standard Bearer (Flaming Standard)
+442 - 19 Immortals, Infernal Weapon, Standard Bearer (Flaming Standard)
+200 - Gunnery Team, Rocket Battery
+200 - Gunnery Team, Rocket Battery
+180 - 5 Vassal Cavalry
+170 - Infernal Artillery, Naphtha Thrower
+440 - Infernal Engine, Naphtha Thrower
+3999
+
+
+Romain (Domane) - Kingdom of Equitaine
+715 - Duke, General, Trusted Adviser, Hippogriff, Halberd (Touch of Greatness), Prayer Etched, Potion of Healing, Sainted and Gallantry, Excellence
+410 - Duke, Battle Standard Bearer, Destrier, Lance (Uther's Mettle), Stalker's Standard, Sigil of Protection, Faith
+260 - Folk Hero, Destrier, Shield, Light Lance, Binding Scroll, Attached, Cleric, Minstrel (Divination (Foresight))
+600 - 11 Knights of the Realm, Solemn Oath, Standard Bearer (Flaming Standard), Knight Banneret
+407 - 12 Mounted Serjeants, Great Weapon, Standard Bearer (Relic Shroud)
+360 - 6 Knights of the Quest, Standard Bearer
+320 - 4 Knights Penitent, Standard Bearer
+250 - 3 Knights Penitent, Standard Bearer
+425 - The Lady's Courtier, Courtier of the Dusk (Fountain of Youth, Stone Skin)
+250 - 5 Naiads, Wizard Conclave (Illusory Paths, Fountain of Youth)
+3997
+
+
+Augustin (Gus) - Daemon Legions
+790 - Maw of Akaan, General, Wizard Adept, Evocation (Whispers of the Veil, Danse Macabre, Chorus of the Damned), Digestive Vomit
+725 - Courtesan of Cibaresh, Trusted Adviser, Wizard Adept, Divination (Foresight, Chance of Redemption, The Stars Align)
+540 - 24 Succubi, Mesmerising Plumage, Standard Bearer, Musician
+230 - 10 Lemures, Centipede Legs, Standard Bearer
+230 - 10 Lemures, Centipede Legs, Standard Bearer
+570 - 6 Hoarders, Unnatural Roots, Standard Bearer
+375 - Blazing Glory, Fly, Horns of Hubris
+360 - Blazing Glory, Fly
+180 - 5 Furies
+4000
+
+
+Julien (Kasterian) - Dwarven Holds
+150 - Engineer, General, Trusted Adviser, Rune of Storms
+370 - 20 Greybeards, Great Weapon, Standard Bearer
+190 - 10 Greybeards, Standard Bearer
+190 - 10 Greybeards, Standard Bearer
+270 - 15 Clan Warriors, Great Weapon, Throwing Weapons, Vanguard, Standard Bearer
+360 - 20 Deep Watch, Standard Bearer
+320 - 15 Deep Watch, Standard Bearer (Runic Standard of the Hold)
+320 - 15 Deep Watch, Standard Bearer (Runic Standard of the Hold)
+320 - 15 Deep Watch, Standard Bearer (Runic Standard of the Hold)
+280 - Grudge Buster
+280 - Grudge Buster
+245 - Field Artillery, Dwarf Cannon
+245 - Field Artillery, Dwarf Cannon
+230 - 10 Miners, Great Weapon, Throwing Weapons, Standard Bearer
+230 - 10 Miners, Great Weapon, Throwing Weapons, Standard Bearer
+4000
+
+
+Guy Solvignon (Oramak) - Dread Elves
+540 - Sanctioned Warlock, General, Battleline Hero, Trusted Adviser, Light Troops, Wizard Master, Evocation (Danse Macabre, Chorus of the Damned, Touch of the Reaper, Spectral Blades, Soul Blight), Paired Weapons, Ceinran's Scales
+320 - Temple Exarch, Battle Standard Bearer, Wizard Apprentice, Alchemy (Living Steel), Spear (Mastery of Slaughter)
+376 - 24 Silexian Spears, Standard Bearer (Caedhren's Pennon)
+220 - 10 Silexian Auxiliaries, Standard Bearer
+220 - 10 Silexian Auxiliaries, Standard Bearer
+185 - 10 Corsairs, Repeater Handbow
+512 - 21 Temple Militants, Dancers of Yema, Standard Bearer (Sheltering Standard)
+344 - 14 Judicators, Standard Bearer (Banner of Urlain)
+344 - 14 Judicators, Standard Bearer (Banner of Urlain)
+279 - 7 Dread Acolytes, Temple Acolytes
+240 - Divine Altar, Altar of Nabh
+210 - Hunting Chariot
+210 - Hunting Chariot
+4000
+
+
+Caudrelier (Quentin) - Vampire Covenant
+615 - Vampire Courtier, Battle Standard Bearer, Trusted Adviser, Vetala, Court of the Damned, Wizard Apprentice, Evocation, Great Weapon (Eldritch Inscriptions), Gates of the Netherworld
+335 - Vampire Courtier, Vetala, Flying Horror, Light Troops, Wizard Apprentice, Evocation, Destiny's Call, Paired Weapons, Gates of the Netherworld
+550 - Necromancer, General and The Dead Arise, Light Troops, Wizard Master (Lich), Evocation (Danse Macabre, Chorus of the Damned, Touch of the Reaper, Spectral Blades, Soul Blight), Necromantic Staff
+85 - Barrow King, Captain, Skeletal Steed, Lance
+390 - 40 Skeletons, Standard Bearer (Stalker's Standard), Musician
+390 - 40 Skeletons, Standard Bearer (Stalker's Standard), Musician
+225 - 33 Zombies, Standard Bearer
+475 - 14 Barrow Knights, Standard Bearer (Flaming Standard), Musician
+95 - 2 Great Bats
+420 - Shrieking Horror
+420 - Shrieking Horror
+4000
+
+
+Mathieu (Zur) - Sylvan Elves
+475 - Druid, Light Troops, Wizard Master, Shamanism (Predator's Instinct, Savage Fury, Awaken the Beast, Swarm of Insects, Wild Spikes), Sylvan Bow, Binding Scroll
+335 - Chieftain, Battle Standard Bearer, Light Troops, Shielding Bark, Great Weapon and Elven Finesse, Forest Guardian
+210 - Chieftain, General, Trusted Adviser, Light Troops, Sylvan Bow, Great Weapon and Elven Finesse, Pathfinder
+405 - 25 Dryads, Standard Bearer
+335 - 15 Sylvan Archers, Standard Bearer
+335 - 15 Sylvan Archers, Standard Bearer
+558 - 24 Forest Rangers, Vanguard, Standard Bearer (Stalker's Standard)
+254 - 12 Forest Rangers, Vanguard, Standard Bearer
+250 - 5 Wild Huntsmen, Shield, Lance
+250 - 5 Wild Huntsmen, Shield, Lance
+210 - 8 Blade Dancers, Standard Bearer
+200 - 5 Pathfinders
+180 - 5 Briar Maidens
+3997
+
+
+NORAGE1
+
+fabien (Fabou) - Kingdom of Equitaine
+715 - Duke, General, Hippogriff, Halberd (Touch of Greatness), Prayer Etched, Sacred Chalice, Black Knight's Tonic, Sainted and Gallantry, Excellence
+350 - Folk Hero, Trusted Adviser, Destrier, Shield, Light Lance, Stalker's Standard, Binding Scroll, Attached, Bannerman, Cleric
+300 - Damsel, Fey Steed, Wizard Adept, Shamanism (Predator's Instinct, Savage Fury, Awaken the Beast)
+595 - 11 Knights of the Realm, Solemn Oath, Standard Bearer (Banner of Courage), Knight Banneret
+407 - 12 Mounted Serjeants, Great Weapon, Standard Bearer (Relic Shroud)
+325 - 20 Men-at-Arms, Knights Forlorn, Standard Bearer (Stalker's Standard)
+170 - 15 Men-at-Arms, Ordo Wardens, Standard Bearer
+320 - 4 Knights Penitent, Standard Bearer
+180 - Sacred Reliquary
+380 - Fey Knight, Chosen of the Snow Childe
+250 - 5 Naiads, Wizard Conclave (Illusory Paths, Fountain of Youth)
+3992
+
+
+Xavier Prioux (Goupil) - Vampire Covenant
+900 - Vampire Count, General, Disciplined, and The Dead Arise, Strigoi, Unbreakable Will, Shrieking Horror, Wizard Apprentice, Evocation, Hand Weapon (Reaper's Harvest), Necromantic Staff, Gates of the Netherworld
+545 - Vampire Courtier, Battle Standard Bearer, Strigoi, Unbreakable Will, Light Troops, Wizard Adept, Evocation (Danse Macabre, Chorus of the Damned, Touch of the Reaper), Hand Weapon (True Thirst), Binding Scroll, Gates of the Netherworld
+155 - Barrow King, Captain, Light Troops, Warding of Unity, Great Weapon, Hypnotic Pendant
+520 - 55 Skeletons, Spear and Shield, Standard Bearer (Banner of Eldritch Might), Musician
+230 - 25 Skeletons, Shield, Standard Bearer, Musician
+250 - 36 Zombies, Standard Bearer, Musician
+585 - 30 Barrow Guard, Great Weapon, Standard Bearer (Black Standard of Zagvozd), Musician
+95 - 2 Great Bats
+300 - Court of the Damned
+420 - Shrieking Horror
+4000
+
+
+Camille Capelle (Hebus) - Dwarven Holds
+105 - Thane, Captain and Attached, Trusted Adviser, Light Troops, Rune of Mining
+390 - 20 Greybeards, Shield Wall, Standard Bearer
+190 - 10 Greybeards, Standard Bearer
+190 - 10 Greybeards, Standard Bearer
+250 - 15 Clan Warriors, Vanguard, Standard Bearer, Musician
+405 - 20 Deep Watch, Standard Bearer (Runic Standard of Swiftness)
+360 - 20 Deep Watch, Standard Bearer
+360 - 20 Deep Watch, Standard Bearer
+360 - 20 Deep Watch, Standard Bearer
+350 - 15 King's Guard, Standard Bearer (Runic Standard of Grudges)
+280 - Grudge Buster
+280 - Grudge Buster
+240 - 10 Miners, Great Weapon, Paired Weapons, Throwing Weapons, Standard Bearer
+240 - 10 Miners, Great Weapon, Paired Weapons, Throwing Weapons, Standard Bearer
+4000
+
+
+Pierre Maigniel (Hortz) - Vermin Swarm
+420 - Swarm Priest, Trusted Adviser, Light Troops, Wizard Master, Occultism (Hand of Glory, Blood Curse, Umbral Majesty, The Grave Calls), Mimic Cloak, Cult of Errahman
+355 - Bloodfur Legate, General, Battleline Hero, Praetorian Brute, Death Cheater, Halberd, Rod of Battle
+345 - Bloodfur Legate, Battle Standard Bearer, Praetorian Brute, Stalker's Standard, Warding of Unity, Halberd
+230 - House Prefect, Captain and Attached, Skorchit Alchemist, Deepfire Thrower, Hand Weapon (Swarm Master), Shield (Wild Warding)
+115 - House Prefect, Captain and Attached, Fetthis Fleshmaster, Praetorian Brute
+441 - 58 Vermin Legionaries, Spear, Musician, Standard Bearer
+285 - 30 Vermin Legionaries, Musician, Standard Bearer (Stalker's Standard)
+274 - 24 Blackfur Veterans, Standard Bearer
+480 - 6 Gladiator Brutes, Musician, Standard Bearer (Sacred Aquila)
+420 - 9 Vermin Brutes
+165 - 3 Experimental Weapon Teams, Deepfire Thrower
+90 - 10 Fire Rats
+80 - Legionary Drill Team
+300 - Arena Beast, Underworld Beast
+4000
+
+
+John S. (Humblr) - Warriors of the Dark Gods
+680 - Chosen Lord, General, Recruiting Officer, War Dais, Trophy Rack (Banner of Speed), Hand Weapon (Burning Portent), Immortal Gauntlets, Wrath, Idol of Spite
+560 - Sorcerer, Trusted Adviser, Light Troops, Wizard Master, Occultism (The Devouring Dark, Hand of Glory, Blood Curse, Umbral Majesty, The Grave Calls), Paired Weapons, Mimic Cloak, Binding Scroll
+490 - 21 Warriors, Paired Weapons, Standard Bearer (Zealots' Banner)
+180 - 5 Barbarian Horsemen, Light Lance, Standard Bearer
+150 - 5 Fallen
+500 - 7 Forsworn, Great Weapon, Standard Bearer
+490 - 6 Forsworn, Great Weapon, Damnation, Standard Bearer
+490 - 6 Forsworn, Great Weapon, Damnation, Standard Bearer
+460 - Feldrak Elder, Great Weapon
+4000
+
+
+Yohann JOLLY (Touba) - Infernal Dwarves
+545 - Prophet, Trusted Adviser, Prophet of Lugar, Light Troops, Wizard Master, Occultism (The Devouring Dark, Hand of Glory, Blood Curse, Umbral Majesty, The Grave Calls), Paired Weapons, Binding Scroll
+310 - Vizier, Solitary, Bull of Shamut, Paired Weapons (Touch of Greatness)
+245 - Vizier, Battle Standard Bearer, Light Troops, Destiny's Call, Spear, Golden Idol of Shamut
+504 - 21 Citadel Guard, Pistol and Spear, Standard Bearer (Banner of the Twice-Branded), Musician
+504 - 21 Citadel Guard, Pistol and Spear, Standard Bearer (Banner of the Twice-Branded), Musician
+440 - 20 Immortals, Spear, Standard Bearer
+440 - 20 Immortals, Spear, Standard Bearer
+200 - Gunnery Team, Rocket Battery
+200 - Gunnery Team, Rocket Battery
+170 - Gunnery Team, Naphtha Thrower
+440 - Infernal Engine, Naphtha Thrower
+3998
+
+
+Lionel PALUDETTO (Wingaal) - Undying Dynasties
+570 - Death Cult Hierarch, Trusted Adviser, Light Troops, Wizard Master, Cosmology (Altered Sight, Truth of Time, Weal and Woe, Cosmic Scales, Thunder and Lightning), Sandstorm Cloak, Mimic Cloak, Scroll of Power, Soul Conduit
+440 - Pharaoh, General, Light Troops, Jackal's Blessing, Great Aspis Bow, Great Weapon (Godslayer), Blessed Wrappings
+185 - Nomarch, Captain and Attached, Deathless Noble, Light Troops, Longbow, Shield (Sun's Embrace), Ghostly Guard, Book of the Dead
+155 - Nomarch, Captain and Attached, Tomb Harbinger, Light Troops, Destiny's Call, Paired Weapons (Scourge of Kings)
+510 - 50 Skeleton Warriors, Spear and Shield, Standard Bearer (Sheltering Standard), Musician
+500 - 50 Skeleton Warriors, Spear and Shield, Standard Bearer (Sheltering Standard)
+225 - 20 Skeleton Warriors, Shield, Standard Bearer (Banner of the Entombed)
+225 - 20 Skeleton Warriors, Shield, Standard Bearer (Banner of the Entombed)
+310 - 3 Tomb Cataphracts, Ambush, Standard Bearer, Musician
+140 - Sand Scorpion
+140 - Sand Scorpion
+140 - Sand Scorpion
+460 - Battle Sphinx
+4000
+
+
+Josselin Coellier (joss) - Orcs and Goblins
+500 - Iron Orc Loner, Wyvern (Big Wing), Talisman of Shielding, Dragon's Brew
+340 - Iron Orc Loner, Light Troops and Hand-and-a-Half, Death Cheater, Paired Weapons (Attack Gnasher), Troll Hide
+420 - Orc Shaman, General (Tribe Leader), Trusted Adviser, Grunter, Wizard Adept, Pyromancy (Flaming Swords, Dragon's Roar, Pyroclastic Flow), Paired Weapons, Monster Munch, Spell Scroll (Awaken the Beast)
+255 - Brood Alpha, Battle Standard Bearer, Grunter, Shield, Lance, Talisman of the Void, Binding Scroll
+370 - 10 Veteran Orc Marauders, Musician, Standard Bearer (Banner of Courage)
+370 - 10 Veteran Orc Marauders, Musician, Standard Bearer (Banner of Courage)
+260 - 10 Feral Orc Marauders, Standard Bearer (Banner of Courage)
+375 - 20 Iron Orcs, Standard Bearer
+280 - 15 Iron Orcs, Standard Bearer
+280 - 15 Iron Orcs, Standard Bearer
+200 - Iron Orc Chariots
+200 - Iron Orc Chariots
+150 - 10 Gnasher Dashers
+4000
+
+
+Nowhere United
+
+Tof56 (Engra56) - Warriors of the Dark Gods
+630 - Feldrak Ancestor, General, Paired Weapons
+595 - Feldrak Ancestor, Trusted Adviser, Great Weapon
+460 - 15 Warriors, Halberd, Wrath, Standard Bearer
+230 - 10 Warriors, Gluttony, Standard Bearer
+165 - 6 Fallen
+510 - 5 Feldraks, Great Weapon, Standard Bearer
+510 - 4 Chosen Knights, Gluttony, Standard Bearer
+490 - 6 Forsworn, Great Weapon, Damnation, Standard Bearer
+410 - 5 Forsworn, Great Weapon, Damnation, Standard Bearer
+4000
+
+
+Julien (Grom) - Vampire Covenant
+700 - Vampire Count, General, Disciplined, and The Dead Arise, Battleline Hero, Mysteries of the Night, Skeletal Steed, Wizard Adept, Shamanism (Predator's Instinct, Awaken the Beast, Swarm of Insects), Legend of the Black King, Paired Weapons (Touch of Greatness), Gates of the Netherworld
+285 - Vampire Courtier, Flying Horror, Bestial Bulk, Light Troops, Wizard Apprentice, Occultism (The Devouring Dark), Halberd, Rod of Battle, Gates of the Netherworld
+255 - Vampire Courtier, Flying Horror, Bestial Bulk, Light Troops, Wizard Apprentice, Occultism (The Devouring Dark), Halberd, Gates of the Netherworld
+520 - 37 Ghouls, Standard Bearer
+370 - 40 Skeletons, Shield, Standard Bearer (Sheltering Standard)
+165 - 21 Zombies, Standard Bearer
+495 - 14 Barrow Knights, Standard Bearer (Black Standard of Zagvozd)
+200 - 6 Spectral Hunters
+540 - 6 Vampire Knights, Standard Bearer (Stalker's Standard)
+470 - 6 Vampire Spawn
+4000
+
+
+Guilhem (Gyem) - Sylvan Elves
+300 - Thicket Shepherd, Battle Standard Bearer, Scarred Bark
+280 - Dryad Ancient, Captain and Attached, Wizard Adept, Divination (Foresight, Chance of Redemption, The Stars Align), Toxic Spores
+220 - Chieftain, General, Trusted Adviser, Light Troops, Sylvan Bow, Rod of Battle, Pathfinder
+190 - Chieftain, Captain and Attached, Light Troops, Sylvan Bow, Hail Shot, Pathfinder
+405 - 25 Dryads, Standard Bearer
+405 - 25 Dryads, Standard Bearer
+200 - 5 Heath Riders, Heath Hunters, Standard Bearer
+410 - 5 Thicket Beasts, Standard Bearer
+260 - 5 Wild Huntsmen, Shield, Lance, Standard Bearer
+190 - 7 Blade Dancers, Standard Bearer
+190 - 7 Blade Dancers, Standard Bearer
+320 - 8 Pathfinders
+320 - 8 Pathfinders
+310 - 5 Briar Maidens, Wizard Conclave (Weal and Woe, Swarm of Insects), Standard Bearer
+4000
+
+
+Pierre (Kayou) - Infernal Dwarves
+335 - Prophet, General, Prophet of Nezibkesh, Light Troops, Wizard Adept, Pyromancy (Fireball, Flaming Swords, Pyroclastic Flow), Shield
+300 - Lamassu Scholar, Living Steel, Hand of Glory, Curse of Nezibkesh
+205 - Vizier, Battle Standard Bearer, Trusted Adviser, Light Troops, Shield, Spear, Golden Idol of Shamut
+496 - 22 Infernal Warriors, Great Weapon, Blunderbuss, Standard Bearer (Banner of the Twice-Branded)
+270 - 21 Vassal Levies, Spear and Shield, Bow, Standard Bearer
+240 - 20 Vassal Levies, Paired Weapons, Bow, Standard Bearer
+460 - 5 Kadim Incarnates
+348 - 16 Immortals, Spear, Standard Bearer
+200 - Gunnery Team, Titan Mortar
+170 - Infernal Artillery, Naphtha Thrower
+500 - Kadim Titan, Walking Earthquake
+470 - Infernal Engine, Rocket Battery
+3994
+
+
+Clément (Kingtiger) - Daemon Legions
+780 - Maw of Akaan, Wizard Adept, Evocation (Danse Macabre, Chorus of the Damned, Touch of the Reaper), Unholy Appetite
+780 - Miser of Sugulag, General, Wizard Adept, Thaumaturgy (Smite the Unbeliever, Weight of Judgement, Holy Affliction), Trampling Hooves, Unnatural Roots, Smothering Coils
+487 - 23 Succubi, Horrifying Visage, Standard Bearer
+295 - 10 Imps, Sorcerous Antennae, Standard Bearer (Firestarter - Smite the Unbeliever)
+245 - 10 Imps, Standard Bearer (Firestarter - Spear of Infinity)
+562 - 6 Hoarders, Clinging Ichor, Chitinous Scales, Favoured of Greed, Standard Bearer
+370 - 3 Brazen Beasts, Standard Bearer
+300 - 2 Threshing Engine, Standard Bearer
+180 - 5 Furies
+3999
+
+
+Arnaud Burban (Nono Bubu) - Saurian Ancients
+460 - Anurarch Archmage, Light Troops and Closely Guarded, Alchemy (Living Steel, Corruption of Tin, Molten Copper, Word of Iron, Quicksilver Lash)
+555 - 30 Tegu Warriors, Spear, Wizard Conclave (Awaken the Beast), Standard Bearer
+170 - 12 Skink Hunters, Poisoned Javelin
+170 - 12 Skink Hunters, Poisoned Javelin
+160 - 6 Raptor Pack
+549 - 24 Tegu Guards, Standard Bearer (Koru Stone)
+495 - 6 Caiman Elders, Standard Bearer
+470 - 4 Weapon Beasts, Spearback
+485 - Taurosaur, Magnetic Great Bow
+485 - Taurosaur, Magnetic Great Bow
+3999
+
+
+julienP (Ratsmassesmiettes) - Vermin Swarm
+545 - Bloodfur Legate, Battle Standard Bearer, Triumphal Platform, Distortion Emblem, Halberd (Eldritch Inscriptions), Rod of Battle
+305 - Bloodfur Legate, General, Praetorian Brute, Basalt Infusion, Hand Weapon (King Slayer), Potion of Swiftness
+280 - Swarm Priest, Light Troops, Wizard Adept, Thaumaturgy (Smite the Unbeliever, Holy Affliction), Magical Heirloom, Spell Scroll (Rain of Fire), Caelysian Pantheon
+170 - House Prefect, Captain and Attached, Skorchit Alchemist, Deepfire Thrower
+170 - House Prefect, Captain and Attached, Skorchit Alchemist, Deepfire Thrower
+390 - 45 Vermin Legionaries, Spear, Musician, Standard Bearer (Stalker's Standard)
+390 - 45 Vermin Legionaries, Spear, Musician, Standard Bearer (Stalker's Standard)
+220 - 25 Vermin Legionaries, Spear, Musician, Standard Bearer (Aether Icon)
+360 - 8 Vermin Brutes
+360 - 8 Vermin Brutes
+80 - Legionary Drill Team
+80 - Legionary Drill Team
+195 - Vermin Artillery, Rakachit Mauss Rifle
+195 - Vermin Artillery, Rakachit Mauss Rifle
+260 - 3 Dreadmill Chariots
+4000
+
+
+Alexandre (Seven) - Beast Herds
+510 - Soothsayer, Light Troops, Wizard Master, Shamanism (Predator's Instinct, Awaken the Beast, Swarm of Insects, Wild Spikes, Totemic Summon), Pillager Icon, Seed of the Dark Forest
+325 - Wildhorn Lord, General, Light Troops, Aaghor's Affliction, Paired Weapons (King Slayer)
+285 - Wildhorn Chieftain, Greater Totem Bearer, Battle Standard Bearer, Light Troops, Destiny's Call, Great Weapon
+381 - 21 Wildhorn Herd, Paired Weapons and Throwing Weapons, Ambush, Standard Bearer (Banner of the Wild Herd), Musician (Totem Bearer (Black Wing Totem))
+160 - 15 Wildhorn Herd, Shield, Standard Bearer
+320 - 3 Raiding Chariots
+512 - 27 Longhorn Herd, Halberd, Standard Bearer (Banner of Speed), Musician (Totem Bearer (Blooded Horn Totem))
+281 - 4 Minotaurs, Paired Weapons, Standard Bearer
+281 - 4 Minotaurs, Paired Weapons, Standard Bearer
+230 - Razortusk Chariot
+230 - Razortusk Chariot
+120 - Briar Beast
+120 - Briar Beast
+120 - Briar Beast
+120 - Briar Beast
+3995
+
+
+NW2 - Nowhere No Wine
+
+Logan Berny (Agrael) - Dread Elves
+485 - Sanctioned Warlock, General, Light Troops, Wizard Master, Evocation (Whispers of the Veil, Chorus of the Damned, Touch of the Reaper, Spectral Blades, Soul Blight), Paired Weapons, Ceinran's Scales
+443 - 32 Silexian Spears, Standard Bearer
+360 - 20 Silexian Auxiliaries, Standard Bearer
+360 - 20 Silexian Auxiliaries, Standard Bearer
+326 - 8 Dread Acolytes, Temple Acolytes, Standard Bearer
+326 - 8 Dread Acolytes, Temple Acolytes, Standard Bearer
+230 - 10 Obsidian Guard, Standard Bearer
+230 - 10 Obsidian Guard, Standard Bearer
+210 - Repeater Battery
+210 - Hunting Chariot
+210 - Hunting Chariot
+190 - Raptor Chariot, Halberd
+190 - Raptor Chariot, Halberd
+230 - Mist Leviathan
+4000
+
+
+RacoonBlack (BlackRacoon) - Orcs and Goblins
+380 - Goblin Witch, General (Darrmu), Battleline Hero, Light Troops, Wizard Adept, Witchcraft (Soured Luck, Illusory Paths, Cauldron's Curse), Talisman of the Void
+310 - Goblin Witch, Light Troops, Wizard Adept, Pyromancy (Flaming Swords, Dragon's Roar, Pyroclastic Flow), Mimic Cloak
+195 - Goblin Demagogue, Battle Standard Bearer, Trusted Adviser, Light Troops, Monster Munch
+55 - Mad Git
+55 - Mad Git
+55 - Mad Git
+55 - Mad Git
+335 - 40 Goblin Rabble, Poisoned Spear and Shield, Standard Bearer
+305 - 45 Goblin Rabble, Shield, Standard Bearer (Goga Cauldron)
+200 - 25 Goblin Rabble, Shield, Standard Bearer (Banner of Courage)
+186 - 8 Goblin Reavers, Bow and Spies, Musician
+545 - 9 Trolls, Cave Troll
+383 - 18 Iron Orcs, Crossbow, Musician, Standard Bearer
+270 - 20 Gogtuk Neophytes, Musician, Standard Bearer
+180 - Goblin Artillery, Splatterer
+170 - Goblin Artillery, Git Launcher
+170 - Goblin Artillery, Git Launcher
+150 - 10 Gnasher Dashers
+3999
+
+
+Julien Tirole (Juvin) - Dwarven Holds
+200 - Thane, Captain and Attached, Light Troops, Shield Wall, Rune of Denial, 2x Rune of Mining
+270 - 10 Greybeards, Shield Wall, Vanguard, Throwing Weapons, Standard Bearer, Musician
+250 - 10 Greybeards, Shield Wall, Throwing Weapons, Standard Bearer, Musician
+240 - 10 Greybeards, Shield Wall, Throwing Weapons, Standard Bearer
+240 - 10 Greybeards, Shield Wall, Throwing Weapons, Standard Bearer
+320 - 15 Deep Watch, Standard Bearer (Runic Standard of the Hold)
+320 - 15 Deep Watch, Standard Bearer (Runic Standard of the Hold)
+320 - 15 Deep Watch, Standard Bearer (Runic Standard of the Hold)
+310 - 15 Deep Watch, Standard Bearer (Runic Standard of Grudges)
+280 - Grudge Buster
+280 - Grudge Buster
+245 - Field Artillery, Dwarf Cannon
+245 - Field Artillery, Dwarf Cannon
+240 - 10 Miners, Great Weapon, Paired Weapons, Pistol, Standard Bearer, Musician
+120 - Vengeance Seeker
+120 - Vengeance Seeker
+4000
+
+
+Marc (Kolrhil) - Highborn Elves
+585 - Mage, General, Asfad Scholar, Light Troops, Wizard Master, Pyromancy (Fireball, Flaming Swords, Dragon's Roar, Pyroclastic Flow, Cage of Embers), Gleaming Robe, Rod of Battle
+475 - Commander, Solitary, Fleet Officer, Griffon, Dragonforged Armour, Great Weapon and Elven Finesse (Touch of Greatness), Talisman of Shielding
+190 - Commander, Battle Standard Bearer, Queen's Companion (Moonlight Arrows), Light Troops, Longbow, Great Weapon and Elven Finesse
+516 - 38 Citizen Spears, Standard Bearer (Stalker's Standard)
+246 - 18 Citizen Archers, Standard Bearer
+240 - 8 Erlein Reavers, Bow, Standard Bearer
+495 - 23 Lion Guard, Standard Bearer (Flaming Standard)
+470 - 20 Queen's Guard, Shield, Standard Bearer
+440 - Phoenix, Fire Phoenix, Warden's Bond
+340 - Phoenix, Frost Phoenix
+3997
+
+
+Nicolas (Kragg) - Daemon Legions
+780 - Maw of Akaan, Recruiting Officer, General, Wizard Adept, Witchcraft (Evil Eye, Soured Luck, Illusory Paths), Unholy Appetite
+730 - Miser of Sugulag, Trusted Adviser, Wizard Adept, Evocation (Danse Macabre, Chorus of the Damned, Touch of the Reaper), Trampling Hooves
+555 - 25 Myrmidons, Bronze Backbone, Standard Bearer
+448 - 22 Lemures, Golden Helm, Standard Bearer
+520 - 6 Hoarders, Standard Bearer
+400 - 3 Brazen Beasts, Whipcrack Tail, Standard Bearer
+340 - 10 Succubi Tempters, Standard Bearer
+220 - Titanslayer Chariot
+3993
+
+
+Geoffroy (Lgh) - Infernal Dwarves
+520 - Prophet, Prophet of Nezibkesh, Light Troops, Wizard Master, Pyromancy (Fireball, Flaming Swords, Dragon's Roar, Pyroclastic Flow, Cage of Embers), Talisman of the Void
+285 - Vizier, Battle Standard Bearer, Trusted Adviser, Light Troops, Blaze of Protection, Great Weapon, Golden Idol of Shamut
+513 - 22 Citadel Guard, Pistol and Spear, Standard Bearer (Banner of the Twice-Branded)
+513 - 22 Citadel Guard, Pistol and Spear, Standard Bearer (Banner of the Twice-Branded)
+560 - 25 Disciples of Lugar, Great Weapon, Standard Bearer
+505 - 5 Taurukh Anointed, Paired Weapons, Standard Bearer
+200 - Gunnery Team, Rocket Battery
+200 - Gunnery Team, Rocket Battery
+180 - 5 Vassal Cavalry
+180 - 5 Vassal Cavalry
+170 - Infernal Artillery, Naphtha Thrower
+170 - Infernal Artillery, Naphtha Thrower
+3996
+
+
+Fournier Robin (Velux) - Undying Dynasties
+370 - Death Cult Hierarch, General, Battleline Hero, Light Troops, Wizard Adept, Divination (Foresight, Chance of Redemption, The Stars Align), Mimic Cloak, Scroll of Desiccation, Soul Conduit
+290 - Nomarch, Captain and Attached, Tomb Architect, Amuut, Shield, Lance, Talisman of the Void
+245 - Nomarch, Battle Standard Bearer, Deathless Noble, Light Troops, Shield (Wild Warding), Book of the Dead
+145 - Nomarch, Captain and Attached, Tomb Architect, Light Troops, Shield
+550 - 55 Skeleton Warriors, Spear and Shield, Standard Bearer (Flaming Standard), Musician
+225 - 20 Skeleton Warriors, Shield, Standard Bearer (Banner of the Entombed)
+225 - 20 Skeleton Warriors, Shield, Standard Bearer (Banner of the Entombed)
+520 - 5 Tomb Cataphracts, Standard Bearer, Musician
+510 - 5 Tomb Cataphracts, Standard Bearer
+460 - Battle Sphinx
+460 - Battle Sphinx
+4000
+
+
+Julien Schilovitz (schilo) - Sylvan Elves
+305 - Dryad Ancient, Captain and Attached, Trusted Adviser, Wizard Adept, Divination (Foresight, Chance of Redemption, The Stars Align), Toxic Spores
+300 - Thicket Shepherd, Battle Standard Bearer, Scarred Bark
+195 - Chieftain, General, Light Troops, Sylvan Bow, Rod of Battle, Pathfinder
+140 - Chieftain, Captain and Attached, Light Troops, Sylvan Bow, Pathfinder
+405 - 25 Dryads, Standard Bearer
+405 - 25 Dryads, Standard Bearer
+190 - 5 Heath Riders, Heath Hunters
+510 - 6 Thicket Beasts, Standard Bearer
+250 - 5 Wild Huntsmen, Shield, Lance
+180 - 7 Blade Dancers
+180 - 7 Blade Dancers
+320 - 8 Pathfinders
+320 - 8 Pathfinders
+300 - 5 Briar Maidens, Wizard Conclave (Weal and Woe, Swarm of Insects)
+4000
+
+
+Pepito
+
+Marco (ALAKHAI) - Beast Herds
+390 - Centaur Chieftain, Greater Totem Bearer, Battle Standard Bearer, Shield (Obscuring Fog), Hand Weapon (Hawthorne Curse)
+355 - Centaur Chieftain, Greater Totem Bearer, Captain and Attached, Throwing Weapons, Paired Weapons (King Slayer), Horn of Bragh, Potion of Swiftness
+380 - Wildhorn Lord, General (Hunting Call), Light Troops, Throwing Weapons, Destiny's Call, Paired Weapons (Touch of Greatness), Talisman of the Void
+110 - Wildhorn Chieftain, Captain and Attached, Light Troops and Ambush, Great Weapon, Dragon's Brew
+70 - Wildhorn Chieftain, Captain and Attached, Light Troops and Ambush, Great Weapon
+65 - Wildhorn Chieftain, Captain and Attached, Recruiting Officer, Light Troops, Great Weapon
+464 - 48 Mongrel Herd, Spear, Standard Bearer (Banner of the Wild Herd)
+456 - 47 Mongrel Herd, Spear, Standard Bearer (Banner of the Wild Herd)
+359 - 19 Wildhorn Herd, Paired Weapons and Throwing Weapons, Ambush, Standard Bearer (Banner of the Wild Herd), Musician (Totem Bearer (Blooded Horn Totem))
+446 - 12 Centaurs, Paired Weapons, Throwing Weapons, Standard Bearer (Stalker's Standard)
+417 - 12 Centaurs, Light Lance, Throwing Weapons, Standard Bearer (Distortion Emblem), Musician
+333 - 19 Longhorn Herd, Ambush, Halberd, Standard Bearer, Musician
+155 - 5 Gargoyles
+4000
+
+
+YannNG (Batcat) - Infernal Dwarves
+590 - Prophet, General, Prophet of Lugar, Light Troops, Wizard Master, Pyromancy (Fireball, Flaming Swords, Dragon's Roar, Pyroclastic Flow, Cage of Embers), Paired Weapons (Flame of the East), Breath of the Brass Bull
+280 - Vizier, Battle Standard Bearer, Light Troops, Blaze of Protection, Paired Weapons (Shield Breaker), Mask of Ages
+365 - 40 Vassal Levies, Spear and Shield, Standard Bearer (Flaming Standard)
+365 - 40 Vassal Levies, Spear and Shield, Standard Bearer (Flaming Standard)
+270 - 21 Vassal Levies, Spear and Shield, Bow, Standard Bearer
+330 - 15 Disciples of Lugar, Paired Weapons, Standard Bearer
+325 - 15 Immortals, Spear, Standard Bearer
+325 - 15 Immortals, Spear, Standard Bearer
+325 - 15 Immortals, Spear, Standard Bearer
+325 - 15 Immortals, Spear, Standard Bearer
+170 - Gunnery Team, Naphtha Thrower
+170 - Gunnery Team, Naphtha Thrower
+80 - Vassal Slingshot
+80 - Vassal Slingshot
+4000
+
+
+Albin Bouchet (Cahuete) - Undying Dynasties
+515 - Death Cult Hierarch, General, Battleline Hero, Light Troops, Wizard Master, Divination (Foresight, Chance of Redemption, The Stars Align, Augury of Despair, Inescapable Doom), Mimic Cloak, Soul Conduit
+210 - Nomarch, Battle Standard Bearer, Deathless Noble, Light Troops, Longbow, Shield (Wild Warding)
+495 - 50 Skeleton Warriors, Spear and Shield, Standard Bearer (Flaming Standard)
+225 - 20 Skeleton Warriors, Shield, Standard Bearer (Banner of the Entombed)
+284 - 3 Skeleton Chariots, Halberd, Lance, Aspis Arrows and Bow, Legion Charioteers, Standard Bearer
+445 - 6 Shabti Archers, Standard Bearer
+445 - 6 Shabti Archers, Standard Bearer
+460 - Battle Sphinx
+460 - Battle Sphinx
+460 - Battle Sphinx
+3999
+
+
+Manu (Dolboth) - Orcs and Goblins
+460 - Goblin Witch, Light Troops, Wizard Master, Pyromancy (Flaming Swords, Dragon's Roar, Pyroclastic Flow, Pillars of Fire, Cage of Embers), Mimic Cloak
+300 - Goblin Demagogue, General (Darrmu and Goblin Gardens), Beastie (Creepy-Crawlies), Great Weapon (Attack Gnasher), Tazrek's Guard, Mask of Mindless Violence, Dragon's Brew
+250 - Goblin Demagogue, Battle Standard Bearer, Beastie (Creepy-Crawlies), Banner of Courage, Great Weapon, Destiny's Call
+55 - Mad Git
+55 - Mad Git
+55 - Mad Git
+50 - Gogtuk Initiate, Headhunter
+50 - Gogtuk Initiate, Headhunter
+50 - Gogtuk Initiate, Headhunter
+50 - Gogtuk Initiate, Headhunter
+50 - Gogtuk Initiate, Headhunter
+50 - Gogtuk Initiate, Headhunter
+45 - Gogtuk Initiate, Netter
+45 - Gogtuk Initiate, Netter
+384 - 23 Goblin Reavers, Lance and Shield, Creepy-Crawlies, Standard Bearer (Flaming Standard)
+384 - 23 Goblin Reavers, Lance and Shield, Creepy-Crawlies, Standard Bearer (Flaming Standard)
+284 - 34 Goblin Rabble, Shield, Bow, Standard Bearer (Goga Cauldron)
+370 - 2 Iron Orc Chariots, Standard Bearer
+210 - 2 Goblin Chariots
+170 - Goblin Artillery, Git Launcher
+170 - Goblin Artillery, Git Launcher
+160 - 10 Gogtuk Neophytes, Standard Bearer
+160 - 10 Gogtuk Neophytes, Standard Bearer
+140 - 3 Grotlings
+3997
+
+
+Guillaume (DoubleDose) - Vampire Covenant
+700 - Vampire Count, General, Disciplined, and The Dead Arise, Battleline Hero, Strigoi, Unbreakable Will, Light Troops, Wizard Adept, Evocation (Whispers of the Veil, Danse Macabre, Chorus of the Damned), Warding of Unity, Paired Weapons (Touch of Greatness), Necromantic Staff
+630 - Necromancer, Cadaver Wagon, Wizard Master, Alchemy (Living Steel, Corruption of Tin, Wall of Lead, Molten Copper, Quicksilver Lash)
+520 - 37 Ghouls, Standard Bearer
+310 - 30 Skeletons, Spear and Shield, Standard Bearer (Banner of Eldritch Might)
+180 - 20 Skeletons, Standard Bearer
+580 - 8 Ghasts, Standard Bearer
+500 - 7 Ghasts, Standard Bearer
+300 - Court of the Damned
+280 - 2 Winged Reapers, Halberd
+4000
+
+
+Alberto (IlBae) - Ogre Khans
+320 - Shaman, Wizard Adept, Shamanism (Predator's Instinct, Savage Fury, Awaken the Beast), Gut Roarer
+310 - Shaman, General, Wizard Adept, Pyromancy (Flaming Swords, Dragon's Roar, Pyroclastic Flow), Firebrand
+225 - Khan, Battle Standard Bearer, Iron Fist
+513 - 12 Tribesmen, Paired Weapons, Standard Bearer (Pennant of the Great Grass Sky), Musician
+493 - 12 Tribesmen, Paired Weapons, Standard Bearer (Flaming Standard), Musician
+565 - 5 Tusker Cavalry, Paired Weapons, Standard Bearer (Stalker's Standard)
+565 - 5 Tusker Cavalry, Paired Weapons, Standard Bearer (Stalker's Standard)
+110 - 3 Sabretooth Tigers
+135 - 8 Scrapling Trappers
+380 - Frost Mammoth, Hunting Spear
+380 - Frost Mammoth, Hunting Spear
+3996
+
+
+Antoine JASPARD (JaJa) - Empire of Sonnstahl
+400 - Battlefield Wizard, Light Troops, Wizard Master, Pyromancy (Fireball, Flaming Swords, Dragon's Roar, Pyroclastic Flow, Cage of Embers)
+295 - Marshal, Solitary, Great Griffon, Great Weapon, Winter Cloak
+235 - Marshal, General, Imperial Authority, and +1 Cou (Imperial Prince), Battleline Hero, Light Troops, Shield, Blacksteel
+120 - Marshal, Battle Standard Bearer and Imperial Authority, Light Troops, Shield
+495 - 46 State Infantry, Spear, Standard Bearer (Flaming Standard)
+210 - 15 State Marksmen, Handgun, Standard Bearer (Marksman's Pennant)
+180 - 15 Local Militia
+180 - 15 Local Militia
+180 - 15 Local Militia
+415 - 29 Imperial Guard, Shield, Standard Bearer (Flaming Standard)
+210 - 3 Knights of the Sun Griffon, Halberd, Standard Bearer
+210 - 15 Imperial Detachment, Great Weapon, Standard Bearer
+210 - 15 Imperial Detachment, Great Weapon, Standard Bearer
+240 - Blackpowder Artillery, Cannon
+240 - Blackpowder Artillery, Cannon
+180 - 5 Reiters, Brace of Pistols and Fire on Impact
+4000
+
+
+Fred (Zapan) - Warriors of the Dark Gods
+555 - Doomlord, General, Light Troops, Trophy Rack, Basalt Infusion, Dusk Forged, Paired Weapons (Touch of Greatness), Immortal Gauntlets
+480 - Doomlord, Light Troops, Trophy Rack (Flaming Standard), Sigil of Protection, Paired Weapons (Symbol of Slaughter), Rod of Battle
+550 - Sorcerer, Scythed Skywheel, Wizard Master, Evocation (Whispers of the Veil, Chorus of the Damned, Touch of the Reaper, Spectral Blades, Soul Blight), Thrice-Forged
+400 - 15 Warriors, Paired Weapons, Lust, Standard Bearer (Zealots' Banner)
+400 - 15 Warriors, Paired Weapons, Lust, Standard Bearer (Zealots' Banner)
+540 - 7 Forsworn, Great Weapon, Standard Bearer (Stalker's Standard)
+540 - 7 Forsworn, Great Weapon, Standard Bearer (Stalker's Standard)
+340 - Hellmaw
+195 - 6 Flayers, Light Lance, Musician
+4000
+
+
+Team BE 
+
+Kaj Geenen (ChosenofSigmar) - Highborn Elves
+540 - Mage, General, Asfad Scholar, Light Troops, Wizard Master, Pyromancy (Fireball, Flaming Swords, Dragon's Roar, Pyroclastic Flow, Cage of Embers), Mimic Cloak
+230 - Commander, Battle Standard Bearer, Queen's Companion (Moonlight Arrows), Light Troops, Longbow, Talisman of the Void
+530 - 40 Citizen Spears, Standard Bearer (Sheltering Standard)
+240 - 8 Erlein Reavers, Bow, Musician
+240 - 8 Erlein Reavers, Bow, Musician
+558 - 24 Flame Wardens, Standard Bearer
+550 - 10 Knights of Rymâ, Standard Bearer (Stalker's Standard)
+470 - 20 Queen's Guard, Shield, Standard Bearer
+230 - Sky Sloop
+230 - Sky Sloop
+182 - 7 Grey Watchers
+4000
+
+
+Guy Demeyere (Guy Demeyere) - Undying Dynasties
+460 - Pharaoh, General, Skeletal Horse, Shield, Jackal's Blessing, Great Weapon (Godslayer), Blessed Wrappings
+360 - Death Cult Hierarch, Skeletal Horse, Wizard Adept, Divination (Foresight, Chance of Redemption, The Stars Align), Kherp Sceptre, Scroll of Desiccation, Soul Conduit
+320 - 3 Skeleton Chariots, Halberd, Aspis Arrows and Bow, Legion Charioteers, Standard Bearer (Banner of the Entombed)
+320 - 3 Skeleton Chariots, Halberd, Aspis Arrows and Bow, Legion Charioteers, Standard Bearer (Banner of the Entombed)
+275 - 3 Skeleton Chariots, Halberd, Aspis Arrows and Bow, Legion Charioteers, Standard Bearer
+275 - 3 Skeleton Chariots, Halberd, Aspis Arrows and Bow, Legion Charioteers, Standard Bearer
+170 - 10 Skeleton Cavalry, Standard Bearer
+300 - 3 Tomb Cataphracts, Ambush, Standard Bearer
+140 - Sand Scorpion
+460 - Battle Sphinx
+460 - Battle Sphinx
+460 - Battle Sphinx
+4000
+
+
+Pierre Hockers (Lastshadows) - Vampire Covenant
+650 - Vampire Count, General, Disciplined, and The Dead Arise, Trusted Adviser, Lahmia, Commandment, Light Troops, Wizard Adept, Occultism (Hand of Glory, Blood Curse, Pentagram of Pain), Destiny's Call, Paired Weapons (Touch of Greatness)
+445 - Necromancer, Light Troops, Wizard Master (Lich), Evocation (Whispers of the Veil, Chorus of the Damned, Touch of the Reaper, Spectral Blades, Soul Blight)
+120 - Barrow King, Battle Standard Bearer, Light Troops
+80 - Barrow King, Captain, Skeletal Steed
+412 - 44 Skeletons, Shield, Standard Bearer (Sheltering Standard), Musician
+408 - 41 Skeletons, Spear and Shield, Standard Bearer (Banner of Eldritch Might), Musician
+180 - 20 Skeletons, Shield, Standard Bearer
+450 - 14 Barrow Knights, Standard Bearer, Musician
+300 - Court of the Damned
+260 - Cadaver Wagon
+95 - 2 Great Bats
+600 - 4 Winged Reapers, Paired Weapons
+4000
+
+
+Quentin (Morkall) - Dwarven Holds
+530 - 25 Greybeards, Shield Wall, Standard Bearer (Runic Standard of the Hold)
+490 - 25 Greybeards, Shield Wall, Standard Bearer (Runic Standard of the Anvil)
+428 - 21 Deep Watch, Standard Bearer (Runic Standard of the Hold)
+428 - 21 Deep Watch, Standard Bearer (Runic Standard of the Hold)
+280 - Grudge Buster
+280 - Grudge Buster
+245 - Field Artillery, Dwarf Cannon
+245 - Field Artillery, Dwarf Cannon
+170 - Field Artillery, Flame Cannon
+240 - 10 Miners, Great Weapon, Paired Weapons, Pistol, Standard Bearer, Musician
+210 - 10 Forge Wardens, Standard Bearer
+210 - 10 Forge Wardens, Standard Bearer
+120 - Vengeance Seeker
+120 - Vengeance Seeker
+3996
+
+
+H.J. (Strauss13) - Kingdom of Equitaine
+345 - Damsel, General, Light Troops, Wizard Adept, Shamanism (Predator's Instinct, Awaken the Beast, Swarm of Insects), Magical Heirloom, Sainted
+290 - Folk Hero, Destrier, Shield (Sigil of Protection), Light Lance (Giant Slayer), Attached, Bannerman, Cleric
+540 - 12 Knights of the Realm, Standard Bearer (Lady's Favour), Knight Banneret
+470 - 15 Mounted Serjeants, Great Weapon, Standard Bearer (Relic Shroud)
+595 - 9 Knights of the Quest, Standard Bearer (Stalker's Standard)
+550 - 10 Knights of the Court, Standard Bearer (Stalker's Standard)
+320 - 4 Knights Penitent, Standard Bearer
+319 - 22 Men-at-Arms, Castle Guard, Standard Bearer
+210 - 3 Sky Heralds, Light Lance
+360 - Fey Knight, Champion of the Green Knight
+3999
+
+
+Merlijn Dejonckheere (Talandria) - Vermin Swarm
+390 - Swarm Priest, Light Troops, Wizard Master, Thaumaturgy (Smite the Unbeliever, Holy Affliction, Wrath of God, Rain of Fire), Mimic Cloak, Caelysian Pantheon
+300 - Bloodfur Legate, Battle Standard Bearer, Light Troops, Destiny's Call, Hand Weapon (Swarm Master), Tarina's Lyre
+250 - Vermin Senator, General, Battleline Hero, Light Troops, Pistol (Storm Rocket), Rod of Battle
+140 - House Prefect, Captain and Attached, Skorchit Alchemist, Rodentium Bullets
+140 - House Prefect, Captain and Attached, Skorchit Alchemist, Rodentium Bullets
+100 - House Prefect, Captain and Attached, Rakachit Technocrat, Rotary Gun
+343 - 44 Vermin Legionaries, Spear, Musician, Standard Bearer
+336 - 43 Vermin Legionaries, Spear, Musician, Standard Bearer
+329 - 42 Vermin Legionaries, Spear, Musician, Standard Bearer
+469 - 39 Bloodfur Praetorians, Musician, Standard Bearer
+313 - 5 Experimental Weapon Teams, Rotary Gun
+135 - 3 Experimental Weapon Teams, Canister Launcher
+195 - Vermin Artillery, Rakachit Mauss Rifle
+140 - 10 Shadowfur Stalkers, Throwing Weapons
+80 - Legionary Drill Team
+80 - Legionary Drill Team
+260 - Stygian Earthbreaker
+4000
+
+
+Team BE  - Yilmi
+Warriors of the Dark Gods
+600 - Sorcerer, Curse of Lycanthropy, Light Troops, Wizard Master, Occultism (The Devouring Dark, Hand of Glory, Blood Curse, Umbral Majesty, The Grave Calls), Thrice-Forged, Dark Familiar
+560 - Chosen Lord, General, Light Troops, Trophy Rack, Destiny's Call, Paired Weapons (Touch of Greatness), Immortal Gauntlets, Potion of Swiftness, Wrath, Idol of Spite
+425 - Barbarian Chief, Captain and Attached, Wasteland Behemoth, Throwing Weapons, Great Weapon, Talisman of the Void
+492 - 34 Barbarians, Spear and Shield, Standard Bearer (Wasteland Torch)
+180 - 5 Barbarian Horsemen, Light Lance, Standard Bearer
+130 - 8 Warhounds
+530 - 4 Chosen Knights, Lust, Standard Bearer
+430 - 6 Forsworn, Great Weapon, Standard Bearer
+430 - 6 Forsworn, Great Weapon, Standard Bearer
+220 - Warrior Chariot, Lust
+3997
+
+Maximilien Cantiniaux (tcho) - Daemon Legions
+860 - Maw of Akaan, General, Wizard Adept, Evocation (Whispers of the Veil, Danse Macabre, Chorus of the Damned), Unnatural Roots, Digestive Vomit, Unholy Appetite
+735 - Courtesan of Cibaresh, Wizard Adept, Divination (Foresight, Chance of Redemption, The Stars Align), Hidden Knives
+350 - 15 Lemures, Unnatural Roots, Standard Bearer
+350 - 15 Lemures, Unnatural Roots, Standard Bearer
+315 - 15 Myrmidons, Hot Blood, Standard Bearer
+570 - 6 Hoarders, Unnatural Roots, Standard Bearer
+410 - Blazing Glory, Fly, Trampling Hooves
+410 - Blazing Glory, Fly, Trampling Hooves
+4000
+
+
+TEAM GSF
+
+Arthur Husselstein (Caladris) - Highborn Elves
+500 - Mage, General, Asfad Scholar, Light Troops, Wizard Master, Divination (Chance of Redemption, The Stars Align, Fate's Judgement, Augury of Despair, Inescapable Doom)
+400 - Commander, Solitary, Griffon, Great Weapon and Elven Finesse, Talisman of Shielding
+296 - 23 Citizen Spears, Standard Bearer
+296 - 23 Citizen Spears, Standard Bearer
+210 - 15 Citizen Archers, Standard Bearer
+210 - 15 Citizen Archers, Standard Bearer
+550 - 10 Knights of Rymâ, Standard Bearer (Stalker's Standard)
+535 - 10 Knights of Rymâ, Standard Bearer (Flaming Standard)
+230 - Sky Sloop
+230 - Sky Sloop
+200 - 10 Sword Masters
+170 - 2 Reaver Chariots
+170 - 2 Reaver Chariots
+3997
+
+
+Thibault (Drachenfels) - Warriors of the Dark Gods
+680 - Chosen Lord, General, War Dais, Trophy Rack (Stalker's Standard), Hand Weapon (Burning Portent), Immortal Gauntlets, Wrath, Idol of Spite
+530 - Sorcerer, Light Troops, Wizard Master, Occultism (The Devouring Dark, Hand of Glory, Blood Curse, Umbral Majesty, The Grave Calls), Mimic Cloak, Binding Scroll
+570 - 25 Warriors, Paired Weapons, Standard Bearer (Zealots' Banner)
+230 - 10 Warriors, Paired Weapons, Lust, Standard Bearer
+490 - 6 Forsworn, Great Weapon, Damnation, Standard Bearer
+490 - 6 Forsworn, Great Weapon, Damnation, Standard Bearer
+340 - Forsaken One
+340 - Forsaken One
+330 - 5 Warrior Knights, Lance, Lust, Standard Bearer, Musician
+4000
+
+
+Jose Paulo Soares Pinheiro (Jose_paulo) - Daemon Legions
+860 - Maw of Akaan, Wizard Adept, Evocation (Whispers of the Veil, Danse Macabre, Touch of the Reaper), Mirrored Scales, Digestive Vomit, Unholy Appetite
+735 - Miser of Sugulag, General, Wizard Adept, Thaumaturgy (Smite the Unbeliever, Light of Faith, Holy Affliction), Unnatural Roots, Clinging Ichor, Segmented Shell
+470 - 22 Lemures, Centipede Legs, Standard Bearer
+267 - 11 Imps, All-Seeing Eye, Standard Bearer (Firestarter - Smite the Unbeliever)
+267 - 11 Imps, All-Seeing Eye, Standard Bearer (Firestarter - Smite the Unbeliever)
+538 - 6 Hoarders, Clinging Ichor, Standard Bearer
+538 - 6 Hoarders, Clinging Ichor, Standard Bearer
+320 - Blazing Glory
+3995
+
+
+Didier (Malus67) - Dread Elves
+430 - Dread Prince, General (Beastmaster), Battleline Hero, Light Troops, Seal of the Republic, Paired Weapons (Lacerating Touch), Moithir's Mirror
+368 - 22 Temple Militants, Standard Bearer (Stalker's Standard)
+275 - 20 Silexian Spears, Standard Bearer
+185 - 10 Corsairs, Repeater Handbow
+185 - 10 Corsairs, Repeater Handbow
+548 - 24 Temple Militants, Dancers of Yema, Standard Bearer
+526 - 23 Temple Militants, Dancers of Yema, Standard Bearer
+260 - Divine Altar, Altar of Yema
+210 - Hunting Chariot
+210 - Hunting Chariot
+400 - Hydra
+400 - Hydra
+3997
+
+
+Husselstein Sylvain (Thetlis) - Vampire Covenant
+695 - Vampire Count, General, Disciplined, and The Dead Arise, Sangreal, Eternal Duellist, Light Troops, Wizard Adept, Occultism (The Devouring Dark, Hand of Glory, Blood Curse), Shield, Legend of the Black King, Hand Weapon (True Thirst), Gates of the Netherworld
+380 - Necromancer, Trusted Adviser, Light Troops, Wizard Adept, Evocation (Danse Macabre, Chorus of the Damned, Touch of the Reaper), Necromantic Staff
+110 - Barrow King, Captain, Light Troops, Hypnotic Pendant
+500 - 35 Ghouls, Standard Bearer, Musician
+348 - 36 Skeletons, Shield, Standard Bearer (Stalker's Standard)
+160 - 20 Zombies, Standard Bearer
+536 - 33 Barrow Guard, Shield, Standard Bearer (Black Standard of Zagvozd)
+300 - Court of the Damned
+165 - 5 Spectral Hunters
+525 - 6 Vampire Knights, Standard Bearer (Flaming Standard)
+280 - 2 Winged Reapers, Paired Weapons
+3999
+
+
+Cédric Fuchs (Trakritch) - Undying Dynasties
+690 - Death Cult Hierarch, General, Battleline Hero, Ark of Ages, Wizard Master, Divination (Foresight, The Stars Align, Fate's Judgement, Augury of Despair, Inescapable Doom), Sacred Hourglass, Scroll of Power, Soul Conduit
+185 - Nomarch, Battle Standard Bearer, Tomb Harbinger, Light Troops, Sheltering Standard, Paired Weapons (Scourge of Kings)
+170 - Nomarch, Captain and Attached, Deathless Noble, Light Troops, Shield (Sun's Embrace), Talisman of the Void
+520 - 50 Skeleton Warriors, Spear and Shield, Standard Bearer (Sigil of the Closed Gates)
+235 - 20 Skeleton Warriors, Shield, Standard Bearer (Banner of the Entombed), Musician
+220 - 25 Skeleton Warriors, Shield, Standard Bearer
+150 - 5 Skeleton Scouts
+360 - 5 Shabti Archers, Standard Bearer
+360 - 5 Shabti Archers, Standard Bearer
+140 - Sand Scorpion
+140 - Sand Scorpion
+415 - Colossus, Giant Aspis Bow
+415 - Colossus, Giant Aspis Bow
 4000
 
 
 Stephan Rössig (Trokler) - Ogre Khans
-530 - Shaman, General, Wizard Master, Thaumaturgy (Smite the Unbeliever, Weight of Judgement, Holy Affliction, Wrath of God, Rain of Fire), Rod of Battle, Scroll of Power, Gut Roarer
-320 - Khan, Battle Standard Bearer, Iron Fist (Heart-Ripper), Rampager's Chain, Trolleater
-520 - 9 Bruisers, Standard Bearer (Flaming Standard), Musician
-480 - 9 Bruisers, Standard Bearer, Musician
-365 - 3 Tusker Cavalry, Great Weapon, Standard Bearer, Musician
-365 - 3 Tusker Cavalry, Great Weapon, Standard Bearer, Musician
-190 - 3 Bombardiers, Standard Bearer, Musician
-190 - 3 Bombardiers, Standard Bearer, Musician
-190 - 3 Bombardiers, Standard Bearer, Musician
-190 - 3 Bombardiers, Standard Bearer, Musician
-220 - Scratapult
-220 - Scratapult
-220 - Scratapult
+375 - Shaman, General, Trusted Adviser, Wizard Adept, Pyromancy (Flaming Swords, Dragon's Roar, Pyroclastic Flow), Rod of Battle, Gut Roarer
+230 - Mammoth Hunter, Light Troops (Scout and Vanguard), Iron Fist, Hunting Spear
+230 - Mammoth Hunter, Light Troops (Scout and Vanguard), Iron Fist, Hunting Spear
+495 - 8 Bruisers, Standard Bearer (Flaming Standard)
+170 - 4 Tribesmen, Standard Bearer
+170 - 5 Sabretooth Tigers
+170 - 5 Sabretooth Tigers
+480 - 6 Mercenary Gunners, Ogre Crossbow and Accurate, Standard Bearer
+420 - 6 Mercenary Gunners, Brace of Ogre Pistols and Lethal Strike, Standard Bearer
+300 - Thunder Cannon
+300 - Thunder Cannon
+260 - Scratapult
+400 - Frost Mammoth, Ogre Crossbow
 4000
 
 
-Sous l'eau séant 
+sallustre (sallustre) - Orcs and Goblins
+210 - Goblin Demagogue, Solitary, Pet Monster (Huntsman Spider), Shield, Lance, Dragon's Brew
+135 - Goblin Demagogue, Battle Standard Bearer, Trusted Adviser, Light Troops
+90 - Goblin Demagogue, General (Darrmu and Goblin Gardens), Battleline Hero, Light Troops
+55 - Mad Git
+55 - Mad Git
+55 - Mad Git
+55 - Mad Git
+55 - Mad Git
+55 - Mad Git
+45 - Gogtuk Initiate, Netter
+45 - Gogtuk Initiate, Netter
+430 - 50 Goblin Rabble, Poisoned Spear and Shield, Standard Bearer (Goga Cauldron)
+423 - 49 Goblin Rabble, Poisoned Spear and Shield, Standard Bearer (Goga Cauldron)
+200 - 25 Goblin Rabble, Shield, Standard Bearer (Banner of Courage)
+545 - 9 Trolls, Bridge Troll
+545 - 9 Trolls, Bridge Troll
+180 - Goblin Artillery, Splatterer
+180 - Goblin Artillery, Splatterer
+170 - Goblin Artillery, Git Launcher
+90 - Goblin Artillery, Skewerer
+90 - Goblin Artillery, Skewerer
+90 - Goblin Artillery, Skewerer
+100 - Wrecking Team
+100 - Wrecking Team
+3998
 
-Destro (Destro) - Kingdom of Equitaine
-470 - Damsel, General, Destrier, Wizard Master, Shamanism (Savage Fury, Awaken the Beast, Predator's Instinct, Wild Guardian, Totemic Summon)
-285 - Folk Hero, Heraldic Steed, Shield (Sigil of Protection), Longbow with Shots 3, Lance (Uther's Mettle), Sainted, Castellan
-245 - Folk Hero, Destrier, Shield, Light Lance, Attached, Bannerman, Cleric
-185 - Folk Hero, Destrier, Shield, Light Lance, Attached, Cleric
-310 - 6 Knights of the Realm, Standard Bearer (Relic Shroud)
-255 - 6 Knights of the Realm, Standard Bearer
-220 - 6 Hedge Knights
-220 - 6 Hedge Knights
-585 - 8 Knights Penitent, Standard Bearer
-520 - 8 Knights of the Quest, Standard Bearer
-520 - 8 Knights of the Quest, Standard Bearer
-180 - 7 Naiads
-3995
 
+Tours-istes
 
-Etienne (Doud) - Highborn Elves
-645 - Mage, General, Asfad Scholar, Giant Eagle, Wizard Master, Pyromancy (Flaming Swords, Dragon's Roar, Pyroclastic Flow, Pillars of Fire, Tidal Flame), Gleaming Robe, Scroll of Power
-455 - Commander, Battle Standard Bearer, Fleet Officer, Sky Sloop, Shield (Sigil of Protection), Lance
-425 - Commander, Solitary, Fleet Officer, Sky Sloop, Shield, Daemon's Bane, Lance, Crown of the Wizard King
-380 - 30 Citizen Spears, Standard Bearer, Musician
-210 - 15 Citizen Archers, Standard Bearer
-210 - 15 Citizen Archers, Standard Bearer
-200 - 5 Highborn Lancers, Standard Bearer
-535 - 10 Knights of Rymâ, Standard Bearer, Musician
-390 - 15 Queen's Guard, Shield, Standard Bearer (Banner of Becalming)
-340 - 5 Giant Eagles
-210 - Sea Guard Reaper
+Thibaut (Khornael) - Highborn Elves
+685 - High Prince, General, Fleet Officer, Sky Sloop, Shield, Longbow, Dragonforged Armour, Daemon's Bane, Lance (Nova Flare), Diadem of Protection
+560 - Mage, Asfad Scholar, Light Troops, Wizard Master, Cosmology (Truth of Time, Weal and Woe, Ice and Fire, Cosmic Scales, Thunder and Lightning), Book of Meladys
+355 - Commander, Solitary, Griffon, Shield, Lance
+280 - 15 Sea Guard, Standard Bearer
+280 - 15 Sea Guard, Standard Bearer
+280 - 15 Sea Guard, Standard Bearer
+180 - 5 Erlein Reavers
+400 - Phoenix, Fire Phoenix
+340 - Phoenix, Frost Phoenix
+330 - 15 Sword Masters, Standard Bearer (Aether Icon)
+310 - 13 Queen's Guard, Standard Bearer
 4000
 
 
-Trc etc
+Tours-istes - Malfourbe
+Vampire Covenant
+690 - Vampire Count, General, Disciplined, and The Dead Arise, Lahmia, Commandment, Light Troops, Wizard Adept, Occultism (The Devouring Dark, Hand of Glory, Blood Curse), Destiny's Call, Great Weapon (Eldritch Inscriptions), Night's Crown
+530 - Necromancer, Light Troops, Wizard Master (Lich), Evocation (Whispers of the Veil, Danse Macabre, Chorus of the Damned, Touch of the Reaper, Spectral Blades), Necromantic Staff
+215 - Barrow King, Battle Standard Bearer, Light Troops, Warding of Unity, Halberd, Hypnotic Pendant
+505 - 36 Ghouls, Standard Bearer
+358 - 36 Skeletons, Spear and Shield, Standard Bearer (Banner of Eldritch Might)
+180 - 20 Skeletons, Shield, Standard Bearer
+507 - 28 Barrow Guard, Halberd, Standard Bearer (Black Standard of Zagvozd)
+300 - Court of the Damned
+95 - 2 Great Bats
+310 - 4 Vampire Spawn
+310 - 4 Vampire Spawn
+4000
 
-Luc MARTIN (Astrabell) - Saurian Ancients
-295 - Skink Veteran, Pouakai Sky Tyrant, Poisoned Javelin, Paired Weapons (Serpent's Nest Charm)
-170 - Skink Veteran, Light Troops and Strider, Enclave Wizard (Evocation (Chorus of the Damned)), Shield, Poisoned Javelin, Magical Heirloom, Te Aupouri Smokestone
-145 - Skink Veteran, Mountain Pteradon, Shield, Poisoned Javelin
-90 - Caiman Mentor, Combat Artist
-90 - Caiman Mentor, Combat Artist
-90 - Caiman Mentor, Combat Artist
-90 - Caiman Mentor, Combat Artist
-320 - 35 Skink Warriors, Shield, Wizard Conclave, Standard Bearer
-320 - 35 Skink Warriors, Shield, Wizard Conclave, Standard Bearer
-200 - 20 Skink Warriors, Shield, Musician, Standard Bearer
-250 - 4 Caiman Warriors, Tooth and Claw, Wizard Conclave, Standard Bearer
-410 - 10 Tegu Mystics, Wizard Conclave (Fountain of Youth, Stone Skin), Standard Bearer (Koru Stone), Musician
+Oberon2 - Orcs and Goblins
+470 - Goblin Witch, Light Troops, Wizard Master, Pyromancy (Fireball, Flaming Swords, Dragon's Roar, Pyroclastic Flow, Cage of Embers), Talisman of the Void
+60 - Goblin Demagogue, General (Darrmu and Goblin Gardens), Light Troops
+55 - Mad Git
+55 - Mad Git
+55 - Mad Git
+50 - Gogtuk Initiate, Headhunter
+50 - Gogtuk Initiate, Headhunter
+50 - Gogtuk Initiate, Headhunter
+373 - 22 Goblin Reavers, Lance and Shield, Creepy-Crawlies, Standard Bearer (Goga Cauldron)
+362 - 21 Goblin Reavers, Lance and Shield, Creepy-Crawlies, Standard Bearer (Goga Cauldron)
+200 - 25 Goblin Rabble, Spear and Shield, Standard Bearer (Banner of Courage)
+180 - 25 Goblin Rabble, Spear and Shield, Standard Bearer
+330 - Guardian Behemoth, Immense Bulk, Creepy-Crawlies
+330 - Guardian Behemoth, Immense Bulk, Creepy-Crawlies
+210 - 2 Goblin Chariots
+210 - 2 Goblin Chariots
+170 - Goblin Artillery, Git Launcher
+170 - Goblin Artillery, Git Launcher
+160 - 10 Gogtuk Neophytes, Standard Bearer
+160 - 10 Gogtuk Neophytes, Standard Bearer
+150 - 10 Gnasher Dashers
+150 - 10 Gnasher Dashers
+4000
+
+
+Tours-istes - Oshova
+Saurian Ancients
+600 - Anurarch Archmage, Light Troops and Closely Guarded, Alchemy (Living Steel, Corruption of Tin, Molten Copper, Word of Iron, Quicksilver Lash), Talisman of the Void, Scroll of Power, Eternal Mastery
+380 - Tegu Veteran, Saurian Raptor, Vital Essence, Paired Weapons (Touch of Greatness)
+280 - Skink Veteran, Pouakai Sky Tyrant, Poisoned Javelin, Paired Weapons (Serpent's Nest Charm)
+150 - Caiman Mentor, Combat Master
+150 - Caiman Mentor, Combat Master
+450 - 27 Tegu Warriors, Standard Bearer (Stalker's Standard)
+390 - 40 Skink Warriors, Spear and Shield, Wizard Conclave (Entwining Roots), Standard Bearer
+170 - 12 Skink Hunters, Poisoned Javelin
+465 - 20 Tegu Guards, Standard Bearer (Koru Stone)
+340 - 8 Raptor Riders, Standard Bearer
+245 - Thyroscutus Herd, Great Protector, Venomous Fortress
 200 - 3 Pteradon Riders, Poisoned Javelin
+176 - 8 Skink Guerrillas, Blowpipe, Vanguard
+3996
+
+
+
+Romain Simonet (Petit Lezard) - Dread Elves
+480 - Sanctioned Warlock, Light Troops, Wizard Master, Evocation (Danse Macabre, Chorus of the Damned, Touch of the Reaper, Spectral Blades, Soul Blight), Ceinran's Scales
+390 - Dread Prince, General (Academy Commander), Light Troops, Seal of the Republic, Great Weapon and Elven Finesse (Height of Hubris), Moithir's Mirror
+265 - Silexian Officer, Battle Standard Bearer, Light Troops, Aether Icon, Shield, Kraken's Hide, Spear (Mastery of Slaughter)
+413 - 27 Silexian Spears, Standard Bearer (Stalker's Standard)
+220 - 10 Silexian Auxiliaries, Standard Bearer
+188 - 12 Temple Militants, Standard Bearer
+185 - 10 Corsairs, Repeater Handbow
+556 - 23 Temple Militants, Dancers of Yema, Standard Bearer (Sheltering Standard)
+240 - Divine Altar, Altar of Nabh
+210 - Hunting Chariot
+210 - Hunting Chariot
+205 - 5 Dread Acolytes, Temple Acolytes
+205 - 5 Dread Acolytes, Temple Acolytes
+230 - Mist Leviathan
+3997
+
+
+Pierre-Antoine (Pierrotpan) - Sylvan Elves
+300 - Thicket Shepherd, Battle Standard Bearer, Scarred Bark
+280 - Dryad Ancient, Captain and Attached, Wizard Adept, Divination (Foresight, Chance of Redemption, The Stars Align), Toxic Spores
+260 - Forest Prince, General, Light Troops, Sylvan Bow, Pathfinder
+195 - Chieftain, Captain and Attached, Light Troops, Sylvan Blades (Spirit of the Whirlwind), Blade Dancer
+385 - 23 Dryads, Musician, Standard Bearer
+335 - 15 Sylvan Archers, Standard Bearer
+335 - 15 Sylvan Archers, Standard Bearer
+520 - 6 Thicket Beasts, Standard Bearer, Musician
+310 - 6 Wild Huntsmen, Shield, Lance, Standard Bearer
+300 - 12 Blade Dancers, Standard Bearer, Musician
+240 - 3 Kestrel Knights, Skirmisher, Light Lance and Sylvan Bow
+240 - 3 Kestrel Knights, Skirmisher, Light Lance and Sylvan Bow
+300 - 5 Briar Maidens, Wizard Conclave (Weal and Woe, Swarm of Insects)
+4000
+
+
+Von Teufel - Warriors of the Dark Gods
+830 - Chosen Lord, General, Wasteland Dragon, Trophy Rack, Paired Weapons (Touch of Greatness), Immortal Gauntlets, Wyrd Stone, Lust, Dark Prelate
+560 - Sorcerer, Light Troops, Wizard Master, Occultism (The Devouring Dark, Hand of Glory, Blood Curse, Umbral Majesty, The Grave Calls), Thrice-Forged, Dark Familiar
+540 - 23 Warriors, Paired Weapons, Standard Bearer (Zealots' Banner), Musician
+130 - 8 Warhounds
+130 - 8 Warhounds
+490 - 6 Forsworn, Paired Weapons, Damnation, Standard Bearer
+405 - 3 Chosen Knights, Lust, Standard Bearer
+405 - 3 Chosen Knights, Lust, Standard Bearer
+310 - Chosen Chariot, Lust
+200 - Warrior Chariot
+4000
+
+Alexandre Tison (yamadharma) - Vermin Swarm
+390 - Swarm Priest, Light Troops, Wizard Master, Witchcraft (Soured Luck, Illusory Paths, Cauldron's Curse, Clouded Sight), Mimic Cloak, Caelysian Pantheon
+205 - Swarm Priest, Light Troops, Wizard Adept, Occultism (Hand of Glory, Blood Curse), Cult of Errahman
+350 - Bloodfur Legate, Battle Standard Bearer, Light Troops, Stalker's Standard, Wild Warding, Hand Weapon (Swarm Master), Talisman of Shielding
+170 - House Prefect, Captain and Attached, Skorchit Alchemist, Deepfire Thrower
+120 - Vermin Senator, General, Light Troops
+120 - Duskblade Assassin
+120 - Duskblade Assassin
+120 - Duskblade Assassin
+468 - 59 Vermin Legionaries, Spear, Standard Bearer (Sheltering Standard)
+447 - 56 Vermin Legionaries, Spear, Standard Bearer (Sheltering Standard)
+230 - 50 Vermin Slaves
+195 - Vermin Artillery, Rakachit Mauss Rifle
+195 - Vermin Artillery, Rakachit Mauss Rifle
+195 - Vermin Artillery, Rakachit Mauss Rifle
+165 - 3 Experimental Weapon Teams, Deepfire Thrower
+160 - 8 Ignifier Grenadiers
+90 - 10 Giant Rats
+260 - 3 Dreadmill Chariots
+4000
+
+
+TwentyOrDie
+
+TwentyOrDie - Billy
+Dwarven Holds
+595 - King, General, Trusted Adviser, Shield Bearers, Rune of Steel, Rune of Iron, Hand Weapon (Rune of Destruction, Rune of Might, Rune of Craftsmanship), Rune of Storms, Rune of Mining, Battle Rune (Rune of Resolve)
+380 - Runic Smith, Shield Wall, 2x Rune of Iron, Rune of Harnessing, Rune of Channelling, Rune of Storms, 3x Battle Rune (Rune of Reckoning, Rune of Resolve, Rune of Resilience)
+245 - Thane, Solitary, Light Troops, Shield Wall, Rune of Resistance, Rune of Iron, Rune of the Forge, Hand Weapon (2x Rune of Lightning, Rune of Returning), Rune of Kinship
+500 - 20 Greybeards, Shield Wall, Throwing Weapons, Standard Bearer (Runic Standard of the Hold)
+500 - 20 Greybeards, Shield Wall, Throwing Weapons, Standard Bearer (Runic Standard of the Hold)
+360 - 20 Deep Watch, Standard Bearer
+360 - 20 Deep Watch, Standard Bearer
+200 - 10 Forge Wardens
+200 - 10 Forge Wardens
+200 - Anvil of Power, Rune of Resolve, Rune of Gleaming, Rune of Resilience
+115 - Field Artillery, Dwarf Ballista (Rune Crafted)
+115 - Field Artillery, Dwarf Ballista (Rune Crafted)
+115 - Field Artillery, Dwarf Ballista (Rune Crafted)
+115 - Field Artillery, Dwarf Ballista (Rune Crafted)
+4000
+
+Baptiste (Cernunoob) - Beast Herds
+385 - Soothsayer, General, Trusted Adviser, Light Troops, Wizard Adept, Shamanism (Predator's Instinct, Awaken the Beast, Swarm of Insects), Pillager Icon, Rain Augur Brew
+320 - Wildhorn Chieftain, Greater Totem Bearer, Battle Standard Bearer, Light Troops, Shield (Wild Warding), Throwing Weapons, Beast Axe, Seed of the Dark Forest
+320 - 3 Raiding Chariots
+174 - 22 Mongrel Herd, Ambush, Standard Bearer
+174 - 22 Mongrel Herd, Ambush, Standard Bearer
+160 - 15 Wildhorn Herd, Shield, Standard Bearer
+352 - 22 Longhorn Herd, Halberd, Standard Bearer
+230 - Razortusk Chariot
+230 - Razortusk Chariot
+230 - Razortusk Chariot
+230 - Razortusk Chariot
+155 - 5 Gargoyles
+155 - 5 Gargoyles
+295 - Beast Giant, Beer Barrel
+295 - Beast Giant, Beer Barrel
+295 - Beast Giant, Beer Barrel
+4000
+
+
+TwentyOrDie - Germ1painting
+Saurian Ancients
+555 - Anurarch Archmage, Trusted Adviser, Light Troops and Closely Guarded, Alchemy (Living Steel, Corruption of Tin, Molten Copper, Word of Iron, Quicksilver Lash), Talisman of the Void, Scroll of Power
+555 - 30 Tegu Warriors, Spear, Wizard Conclave (Awaken the Beast), Standard Bearer
+447 - 26 Tegu Warriors, Spear, Standard Bearer
+595 - 3 Thyroscutus Herd, Magnetic Great Bow
+250 - Thyroscutus Herd, Great Protector, Lodestone Shield
+486 - 21 Tegu Guards, Standard Bearer (Koru Stone)
+430 - 10 Raptor Riders, Standard Bearer (Aether Icon)
+240 - 2 Weapon Beasts, Spearback
+240 - 2 Weapon Beasts, Spearback
 200 - 3 Pteradon Riders, Poisoned Javelin
-510 - Titanopod, Lodestone Shield
-310 - 2 Stygiosaur Pack, Standard Bearer
-310 - 2 Stygiosaur Pack, Standard Bearer
+3998
+
+
+
+Jonas (LéonTrodSkill) - Vampire Covenant
+690 - Vampire Count, General, Disciplined, and The Dead Arise, Battleline Hero, Trusted Adviser, Lahmia, Commandment, Light Troops, Wizard Adept, Occultism (The Devouring Dark, Hand of Glory, Blood Curse), Destiny's Call, Paired Weapons (King Slayer)
+655 - Necromancer, Cadaver Wagon, Wizard Master (Lich), Evocation (Whispers of the Veil, Chorus of the Damned, Touch of the Reaper, Spectral Blades, Soul Blight)
+195 - Barrow King, Captain, Light Troops, Wild Warding, Warding of Unity, Great Weapon, Hypnotic Pendant
+535 - 38 Ghouls, Standard Bearer
+310 - 30 Skeletons, Spear and Shield, Standard Bearer (Stalker's Standard), Musician
+160 - 20 Zombies, Standard Bearer
+580 - 8 Ghasts, Standard Bearer
+479 - 26 Barrow Guard, Halberd, Standard Bearer (Black Standard of Zagvozd), Musician
+300 - Court of the Damned
+95 - 2 Great Bats
+3999
+
+
+Amaury Lafarge (Pinguegg) - Infernal Dwarves
+535 - Prophet, General, Prophet of Nezibkesh, Light Troops, Wizard Master, Alchemy (Living Steel, Corruption of Tin, Molten Copper, Word of Iron, Quicksilver Lash), Shield, Talisman of the Void
+270 - Vizier, Battle Standard Bearer, Light Troops, Shield, Flaming Standard, Blaze of Protection, Golden Idol of Shamut
+210 - Vizier, Captain and Attached, Light Troops, Shield (Sigil of Protection), Blunderbuss, Hand Weapon (Flame of the East), Ring of Desiccation
+504 - 21 Citadel Guard, Pistol and Spear, Standard Bearer (Banner of the Twice-Branded), Musician
+499 - 21 Infernal Warriors, Shield, Great Weapon, Blunderbuss, Standard Bearer (Banner of the Twice-Branded)
+534 - 23 Immortals, Spear, Standard Bearer (Flaming Standard)
+325 - 15 Immortals, Spear, Standard Bearer
+345 - 15 Disciples of Lugar, Paired Weapons, Standard Bearer (Banner of Courage)
+205 - 5 Taurukh Enforcers, Paired Weapons, Standard Bearer
+200 - Gunnery Team, Rocket Battery
+200 - Gunnery Team, Rocket Battery
+170 - Infernal Artillery, Naphtha Thrower
+3997
+
+
+Olivier (Souk) - Daemon Legions
+850 - Maw of Akaan, Wizard Adept, Evocation (Whispers of the Veil, Chorus of the Damned, Touch of the Reaper), Mirrored Scales, Chitinous Scales, Unholy Appetite
+740 - Miser of Sugulag, General, Wizard Adept, Thaumaturgy (Smite the Unbeliever, Light of Faith, Holy Affliction), Trampling Hooves, Smothering Coils
+430 - 20 Succubi, Horrifying Visage, Standard Bearer
+430 - 20 Succubi, Horrifying Visage, Standard Bearer
+255 - 10 Imps, All-Seeing Eye, Standard Bearer (Firestarter - Smite the Unbeliever)
+554 - 6 Hoarders, Chitinous Scales, Favoured of Greed, Standard Bearer, Musician
+370 - Blazing Glory, Trampling Hooves
+370 - Blazing Glory, Trampling Hooves
+3999
+
+
+Kalren (kalren) - Kingdom of Equitaine
+495 - Duke, General, Hippogriff, Bastard Sword (Shield Breaker), Faith
+365 - Paladin, Pegasus Charger, Lance (Divine Judgement)
+330 - Paladin, Pegasus Charger, Paired Weapons (Hero's Heart)
+235 - Folk Hero, Destrier, Shield, Attached, Bannerman, Cleric
+175 - Folk Hero, Destrier, Shield, Attached, Cleric
+480 - 12 Knights of the Realm, Standard Bearer (Aether Icon)
+260 - 8 Mounted Serjeants, Light Lance, Standard Bearer
+260 - 8 Mounted Serjeants, Light Lance, Standard Bearer
+530 - 8 Knights of the Quest, Standard Bearer (Stalker's Standard)
+490 - 8 Knights of the Quest, Standard Bearer
+380 - Fey Knight, Chosen of the Snow Childe
 4000
 
 
-Marco (Edelrath ) - Ogre Khans
-470 - Shaman, General, Wizard Master, Thaumaturgy (Smite the Unbeliever, Weight of Judgement, Holy Affliction, Wrath of God, Rain of Fire), Gut Roarer
-390 - Great Khan, Mammoth-Hide Cloak, Great Weapon (Eldritch Inscriptions), Ogre Crossbow, Rampager's Chain, Scraplord
-260 - 50 Scraplings, Spear, Standard Bearer, Musician
-260 - 50 Scraplings, Spear, Standard Bearer, Musician
-252 - 48 Scraplings, Spear, Standard Bearer, Musician
-228 - 5 Tribesmen, Paired Weapons, Standard Bearer (Banner of Courage)
-330 - 3 Tusker Cavalry, Standard Bearer (Banner of Courage)
-330 - 3 Tusker Cavalry, Standard Bearer (Banner of Courage)
-180 - 3 Bombardiers, Standard Bearer
-180 - 3 Bombardiers, Standard Bearer
-180 - 3 Bombardiers, Standard Bearer
-180 - 3 Bombardiers, Standard Bearer
-270 - Thunder Cannon
-270 - Thunder Cannon
-220 - Scratapult
-4000
+William (willlouping) - Warriors of the Dark Gods
+585 - Chosen Lord, General, Chimera, Paired Weapons (Shield Breaker), Talisman of Shielding, Gluttony, Dark Prelate
+565 - Sorcerer, Light Troops, Wizard Master, Occultism (The Devouring Dark, Hand of Glory, Blood Curse, Umbral Majesty, The Grave Calls), Thrice-Forged, Paired Weapons, Dark Familiar
+562 - 23 Warriors, Spiked Shield, Gluttony, Standard Bearer
+240 - 9 Barbarian Horsemen, Light Lance, Standard Bearer
+490 - 6 Forsworn, Great Weapon, Damnation, Standard Bearer
+490 - 6 Forsworn, Great Weapon, Damnation, Standard Bearer
+325 - 3 Feldraks, Paired Weapons, Standard Bearer
+320 - Battleshrine, Molten Copper, Whispers of the Veil
+220 - Warrior Chariot, Lust
+100 - 5 Warhounds
+100 - 5 Warhounds
+3997
 
 

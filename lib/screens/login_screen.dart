@@ -5,6 +5,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../utils/error_snack_bar_presenter.dart';
 import 'login_controller.dart';
 import 'widgets/login_brand_header.dart';
 import 'widgets/login_form_fields.dart';
@@ -25,12 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.redAccent,
-      ),
-    );
+    showErrorSnackBar(context, message);
   }
 
   void _showSuccessSnackBar(String message) {

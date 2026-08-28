@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import '../models/models.dart';
 import '../services/pocketbase_data_service.dart';
+import '../utils/error_snack_bar_presenter.dart';
 import 'team_dashboard_controller.dart';
 import 'widgets/estim_dialog.dart';
 import 'widgets/estim_details_sheet.dart';
@@ -80,13 +81,10 @@ class TeamDashboardEstimActions {
       final pairingSucceeded =
           await dashboardController.toggleMatched(player, opponent);
       if (!pairingSucceeded && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              "Action impossible : joueur ou adversaire déjà apparié dans un autre duel !",
-            ),
-            backgroundColor: Colors.redAccent,
-          ),
+        showErrorSnackBar(
+          context,
+          "Action impossible : joueur ou adversaire déjà apparié "
+          "dans un autre duel !",
         );
       }
     } else if (dashboardController.canEditEstimateOf(player)) {

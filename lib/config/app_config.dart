@@ -93,6 +93,9 @@ const List<String> estimConfianceOptions = [
 /// Nombre de décimales affiché pour les agrégats de score.
 const int scoreSummaryDecimalPlaces = 1;
 
+/// Longueur maximale du mot de passe d'accès d'une équipe.
+const int teamPasswordMaxLength = 128;
+
 // ---------------------------------------------------------------------------
 // Règles de validation du formulaire de connexion / inscription
 // ---------------------------------------------------------------------------
