@@ -20,8 +20,6 @@ class LoginController {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController nomController =
       TextEditingController(); // Pseudo (utilisé à l'inscription)
-  // Le champ d'initiales a été retiré : `short` est généré automatiquement
-  // à partir du pseudo lors de l'inscription.
 
   // Indique si on est en mode Inscription (true) ou Connexion (false)
   bool isSignUp = false;

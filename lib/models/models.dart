@@ -10,5 +10,4 @@ export 'matched.dart';
 export 'meta_adversaire.dart';
 export 'rencontre.dart';
 export 'team.dart';
-export 'team_membre.dart';
 export 'tournoi.dart';

@@ -26,7 +26,7 @@ void main() {
         const TournamentTextImportParser()
             .parseTournamentText(rawContent, referenceArmies);
 
-    expect(importedPlayers, hasLength(18));
+    expect(importedPlayers, hasLength(8));
     expect(importedPlayers.first['teamName'], 'AOC ona');
     expect(importedPlayers.first['playerName'],
         'Albin Bouchet (Cahuete)');
@@ -44,22 +44,28 @@ void main() {
         .firstWhere((player) => player['playerName'] == 'Matkempo (Matkempo)');
     expect(matkempo['teamName'], "Les Chiennes du désert d'Al Grodard");
 
-    final dynamic etienne = importedPlayers
-        .firstWhere((player) => player['playerName'] == 'Etienne (Doud)');
-    expect(etienne['teamName'], 'Sous l\'eau séant');
+    final dynamic jeanLuc = importedPlayers
+        .firstWhere((player) => player['playerName'] == 'Jean-Luc (djayhell)');
+    expect(jeanLuc['teamName'], 'Les fruits secs');
   });
 
-  test('importe léquipe avec joueur combiné et armée sur ligne séparée', () {
-    final String rawContent = File('exemple_tournoi.txt').readAsStringSync();
+  test('importe un joueur combiné avec son armée sur la ligne séparée', () {
+    const String rawContent = '''
+Orga Chocola'Team - Kirazon/Trehka
+Sylvan Elves
+420 - 10 Pathfinders
+4000
+''';
+
     final List<Map<String, dynamic>> importedPlayers =
         const TournamentTextImportParser()
             .parseTournamentText(rawContent, referenceArmies);
 
-    final dynamic combinedPlayer = importedPlayers
-        .firstWhere((player) => player['playerName'] == 'Kirazon/Trehka');
-    expect(combinedPlayer['teamName'], "Orga Chocola'Team");
-    expect(combinedPlayer['armyName'], 'Sylvan Elves');
-    expect(combinedPlayer['listText'], contains('420 - 10 Pathfinders'));
+    expect(importedPlayers, hasLength(1));
+    expect(importedPlayers.first['teamName'], "Orga Chocola'Team");
+    expect(importedPlayers.first['playerName'], 'Kirazon/Trehka');
+    expect(importedPlayers.first['armyName'], 'Sylvan Elves');
+    expect(importedPlayers.first['listText'], contains('420 - 10 Pathfinders'));
   });
 
   test('importe un joueur avec une armée inconnue sur une ligne dash', () {

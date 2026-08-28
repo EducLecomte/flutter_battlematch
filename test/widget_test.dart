@@ -15,7 +15,7 @@ void main() {
         'id': 'abc123def456ghi',
         'email': 'gus@pedagogeek.fr',
         'nom': 'Augustin',
-        'short': 'GUS',
+        'admin': true,
       });
 
       final joueur = Joueur.fromPocketBaseRecord(record);
@@ -23,7 +23,7 @@ void main() {
       expect(joueur.id, 'abc123def456ghi');
       expect(joueur.email, 'gus@pedagogeek.fr');
       expect(joueur.nom, 'Augustin');
-      expect(joueur.short, 'GUS');
+      expect(joueur.admin, true);
     });
   });
 

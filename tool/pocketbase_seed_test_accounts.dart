@@ -9,25 +9,21 @@ const List<Map<String, String>> comptesTestMetaWar = [
   {
     'email': 'test1@pedagogeek.fr',
     'nom': 'Joueur Test 1',
-    'short': 'JT1',
     'motDePasse': 'Test1!23',
   },
   {
     'email': 'test2@pedagogeek.fr',
     'nom': 'Joueur Test 2',
-    'short': 'JT2',
     'motDePasse': 'Test2!23',
   },
   {
     'email': 'test3@pedagogeek.fr',
     'nom': 'Joueur Test 3',
-    'short': 'JT3',
     'motDePasse': 'Test3!23',
   },
   {
     'email': 'test4@pedagogeek.fr',
     'nom': 'Joueur Test 4',
-    'short': 'JT4',
     'motDePasse': 'Test4!23',
   },
 ];
@@ -53,7 +49,6 @@ Future<void> main(List<String> arguments) async {
                 'password': definitionCompte['motDePasse'],
                 'passwordConfirm': definitionCompte['motDePasse'],
                 'nom': definitionCompte['nom'],
-                'short': definitionCompte['short'],
                 'admin': false,
               },
             );
@@ -67,7 +62,6 @@ Future<void> main(List<String> arguments) async {
                 'password': definitionCompte['motDePasse'],
                 'passwordConfirm': definitionCompte['motDePasse'],
                 'nom': definitionCompte['nom'],
-                'short': definitionCompte['short'],
                 'admin': false,
               },
             );

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 /// Carte d'édition des informations personnelles du profil
 /// (email en lecture seule, pseudo et bouton d'enregistrement).
-/// Le champ d'initiales a été retiré : `short` est généré automatiquement.
 class ProfileInfoCard extends StatelessWidget {
   final String email;
   final TextEditingController nomController;

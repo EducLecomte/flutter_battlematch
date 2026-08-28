@@ -19,19 +19,6 @@
         "autogeneratePattern": ""
       },
       {
-        "type": "text",
-        "id": "f_jshortj0001",
-        "name": "short",
-        "system": false,
-        "hidden": false,
-        "presentable": true,
-        "required": true,
-        "min": 1,
-        "max": 6,
-        "pattern": "",
-        "autogeneratePattern": ""
-      },
-      {
         "type": "autodate",
         "id": "autodate2990389176",
         "name": "created",

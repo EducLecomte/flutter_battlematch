@@ -1,9 +1,7 @@
 // ===========================================================================
-// Service d'importation des listes adverses depuis New Recruit.
-// Méthode A : appel direct de l'API New Recruit (délégation au
-// NewRecruitApiClient, sous réserve des autorisations CORS du serveur).
-// Méthode B (fallback) : parsing local d'un contenu JSON ou textuel collé
-// manuellement depuis l'interface New Recruit.
+// Service d'importation des listes adverses depuis New Recruit :
+// parsing local d'un contenu JSON ou textuel collé manuellement depuis
+// l'interface New Recruit.
 // ===========================================================================
 
 import 'dart:convert';
@@ -11,7 +9,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 import '../models/models.dart';
-import 'new_recruit_api_client.dart';
 import 'new_recruit_armee_name_matcher.dart';
 import 'new_recruit_json_extractor.dart';
 import 'tournament_text_import_parser.dart';
@@ -23,31 +20,8 @@ class NewRecruitImportService {
 
   NewRecruitImportService._internal();
 
-  final NewRecruitApiClient _apiClient = NewRecruitApiClient();
-
   // =========================================================================
-  // MÉTHODE A : IMPORTATION AUTOMATIQUE VIA L'API NEW RECRUIT
-  // =========================================================================
-
-  /// Appelle directement l'API New Recruit avec les identifiants fournis et
-  /// retourne la liste structurée des joueurs adverse de tout le tournoi.
-  ///
-  /// Lance une exception en cas d'échec réseau, CORS ou authentification :
-  /// l'appelant propose alors la méthode B (copier/coller manuel).
-  Future<List<Map<String, dynamic>>> fetchTournamentPlayersFromNewRecruitApi({
-    required String tournamentId,
-    required String login,
-    required String password,
-  }) {
-    return _apiClient.fetchTournamentPlayers(
-      tournamentId: tournamentId,
-      login: login,
-      password: password,
-    );
-  }
-
-  // =========================================================================
-  // MÉTHODE B : PARSING LOCAL (JSON COLLÉ OU TEXTE BRUT)
+  // PARSING LOCAL (JSON COLLÉ OU TEXTE BRUT)
   // =========================================================================
 
   /// Analyse un contenu collé manuellement : JSON copié depuis l'API

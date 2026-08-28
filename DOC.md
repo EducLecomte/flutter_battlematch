@@ -51,8 +51,8 @@ lib/
   models/                          # Modèles purs (IDs string PB, champs snake_case)
     models.dart                    # Barrel : ré-exporte les modèles ci-dessous
     appreciation_scale.dart        # Échelle fixe 7 appréciations + recherches
-    armee.dart choix.dart estim.dart joueur.dart matched.dart
-     meta_adversaire.dart rencontre.dart team.dart team_membre.dart tournoi.dart
+     armee.dart choix.dart estim.dart joueur.dart matched.dart
+     meta_adversaire.dart rencontre.dart team.dart tournoi.dart
                                     # M13 : Tournoi.importEffectue ;
                                     # Team.tournoiId / Team.motDePasse
   logic/
@@ -100,7 +100,6 @@ lib/
                                    # Dialog estimation découpé en 4 sections
     estim_dialog_controller.dart   # État/validation/sauvegarde du dialog
     estim_details_sheet.dart       # Bottom sheet détail d'estimation (édition)
-    import_newrecruit_*            # Dialog import New Recruit (controller + 6 widgets)
     tournament_text_import_*       # Dialog import txt : launcher (top-level
                                    # showTournamentTextImportDialog), dialog,
                                    # action_bar, analysis_section
@@ -159,13 +158,10 @@ lib/
       pocketbase_dashboard_adversaires_service.dart # CRUD + stream meta_adv
       pocketbase_dashboard_estims_service.dart      # CRUD + stream estims
       pocketbase_dashboard_matched_service.dart     # CRUD + stream matched
-    new_recruit_import_service.dart  # Façade import New Recruit : Méthode A
-                                     # (API) + Méthode B (parsing local) +
-                                     # correspondance armées
-    new_recruit_api_client.dart      # Méthode A : GET newrecruit.eu/api/tournament
-                                     # (Basic auth, timeout 30 s)
-    new_recruit_json_extractor.dart  # extractPlayersFromTournamentJson (A et B)
-    new_recruit_armee_name_matcher.dart # matchArmeeInReference (normalisation)
+     new_recruit_import_service.dart  # Parsing local New Recruit (JSON collé
+                                      # ou texte) + correspondance armées
+     new_recruit_json_extractor.dart  # extractPlayersFromTournamentJson
+     new_recruit_armee_name_matcher.dart # matchArmeeInReference (normalisation)
     tournament_text_import_parser.dart  # Parser du format texte de tournoi
                                         # (équipes, joueurs, listes, armées)
       tournament_text_import_service.dart # Import tournoi : rencontres,
@@ -220,8 +216,8 @@ tool/
     `TournamentTextImportService` (une rencontre par équipe détectée,
     adversaires déjà présents ignorés, armées inconnues comptées) →
     `PocketbaseDataService`
-   (rencontres + meta_adv). L'import API direct (`NewRecruitApiClient`)
-   est conservé mais mis de côté.
+   (rencontres + meta_adv). L'import API direct (dialog New Recruit +
+   `NewRecruitApiClient`) a été supprimé : feature sans point d'entrée.
 6. **Modèles** : `fromPocketBaseRecord` / champs snake_case ; les IDs sont
     des strings PocketBase. L'échelle d'appréciation est fixe dans
     `appreciation_scale.dart` (`--`, `-`, `=-`, `=`, `=+`, `+`, `++`);

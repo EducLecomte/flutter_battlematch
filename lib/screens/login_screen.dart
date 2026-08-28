@@ -29,20 +29,12 @@ class _LoginScreenState extends State<LoginScreen> {
     showErrorSnackBar(context, message);
   }
 
-  void _showSuccessSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.green,
-      ),
-    );
-  }
-
-  // Soumission du formulaire (Connexion ou Inscription)
+  // Soumission du formulaire (Connexion ou Inscription).
+  // En succès, l'authStore est mis à jour et l'AuthGate redirige
+  // automatiquement ; seul le cas d'échec est traité ici.
   Future<void> _submit() async {
     if (!_controller.validate()) return;
 
-    final bool wasInSignUpMode = _controller.isSignUp;
     final errorMessage = await _controller.submit(
       onStateChanged: _notifyStateChanged,
     );
@@ -50,11 +42,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (errorMessage != null) {
       _showErrorSnackBar(errorMessage);
-    } else if (wasInSignUpMode) {
-      _showSuccessSnackBar(
-        "Inscription réussie ! Un email de confirmation a été envoyé si "
-        "configuré, sinon vous pouvez vous connecter.",
-      );
     }
   }
 

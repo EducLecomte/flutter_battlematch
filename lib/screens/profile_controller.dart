@@ -13,8 +13,7 @@ class ProfileController {
   final PocketbaseDataService _pocketbaseService =
       PocketbaseDataService.instance;
 
-  // Contrôleur du champ pseudo (le champ d'initiales a été retiré,
-  // `short` est régénéré automatiquement à partir du nom).
+  // Contrôleur du champ pseudo
   final TextEditingController nomController = TextEditingController();
 
   // Profil de l'utilisateur connecté

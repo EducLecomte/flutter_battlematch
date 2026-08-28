@@ -10,6 +10,17 @@ import '../../config/app_config.dart';
 import '../../models/models.dart';
 import 'pocketbase_client_holder.dart';
 
+/// Erreur d'authentification / inscription avec un message lisible,
+/// à la place du déversement technique du ClientException PocketBase.
+class ErreurAuthentification implements Exception {
+  final String message;
+
+  const ErreurAuthentification(this.message);
+
+  @override
+  String toString() => message;
+}
+
 class PocketbaseAuthService {
   static final PocketbaseAuthService instance =
       PocketbaseAuthService._internal();
@@ -33,33 +44,30 @@ class PocketbaseAuthService {
   }().asBroadcastStream();
 
   /// Inscription d'un nouvel utilisateur : crée l'enregistrement du profil
-  /// puis tente une connexion automatique silencieuse.
+  /// puis connecte immédiatement l'utilisateur (pas de vérification email
+  /// sur le serveur).
   Future<void> signUp({
     required String email,
     required String password,
     required String nom,
   }) async {
-    await _holder.clientPocketBase.collection(collectionNameJoueurs).create(
-      body: {
-        'email': email,
-        'password': password,
-        'passwordConfirm': password,
-        'emailVisibility': true,
-        'nom': nom,
-        'short': Joueur.genererShortDepuisNom(nom),
-      },
-    );
-
     try {
-      await _holder.clientPocketBase
-          .collection(collectionNameJoueurs)
-          .authWithPassword(email, password);
-    } catch (exceptionConnexionAutomatique) {
-      // La connexion automatique peut échouer si la vérification email est
-      // activée côté serveur ; l'utilisateur passera alors par l'écran de connexion.
-      debugPrint('Connexion automatique post-inscription impossible : '
-          '$exceptionConnexionAutomatique');
+      await _holder.clientPocketBase.collection(collectionNameJoueurs).create(
+        body: {
+          'email': email,
+          'password': password,
+          'passwordConfirm': password,
+          'emailVisibility': true,
+          'nom': nom,
+        },
+      );
+    } on ClientException catch (exceptionInscription) {
+      throw ErreurAuthentification(
+        'Inscription impossible : ${_messageServeurPocketBase(exceptionInscription)}',
+      );
     }
+
+    await signIn(email: email, password: password);
   }
 
   /// Connexion de l'utilisateur (met à jour l'authStore et donc l'AuthGate).
@@ -67,9 +75,35 @@ class PocketbaseAuthService {
     required String email,
     required String password,
   }) async {
-    await _holder.clientPocketBase
-        .collection(collectionNameJoueurs)
-        .authWithPassword(email, password);
+    try {
+      await _holder.clientPocketBase
+          .collection(collectionNameJoueurs)
+          .authWithPassword(email, password);
+    } on ClientException catch (exceptionConnexion) {
+      throw ErreurAuthentification(
+        _messageErreurAuthentification(exceptionConnexion),
+      );
+    }
+  }
+
+  /// Convertit l'erreur d'authentification PocketBase en message lisible.
+  String _messageErreurAuthentification(ClientException exception) {
+    if (exception.statusCode == httpCodeIdentifiantsRejetes) {
+      return 'Identifiants incorrects : vérifiez votre email et votre mot de passe.';
+    }
+    if (exception.statusCode == httpCodeTropDeTentatives) {
+      return 'Trop de tentatives de connexion, réessayez dans quelques instants.';
+    }
+    return 'Connexion impossible : ${_messageServeurPocketBase(exception)}';
+  }
+
+  /// Extrait le message d'erreur du serveur dans un ClientException PocketBase.
+  String _messageServeurPocketBase(ClientException exception) {
+    final dynamic messageServeur = exception.response['message'];
+    if (messageServeur is String && messageServeur.isNotEmpty) {
+      return messageServeur;
+    }
+    return 'erreur inconnue';
   }
 
   /// Déconnexion
@@ -97,21 +131,16 @@ class PocketbaseAuthService {
     }
   }
 
-  /// Met à jour les champs éditables du profil de l'utilisateur courant.
-  /// Le champ `short` est régénéré automatiquement à partir du nouveau nom.
+  /// Met à jour le pseudo du profil de l'utilisateur courant.
   Future<void> updateJoueurProfileFields({
     required String nom,
   }) async {
     final String? userId = currentUserId;
     if (userId == null) throw Exception("Non authentifié");
 
-    await _holder.clientPocketBase.collection(collectionNameJoueurs).update(
-      userId,
-      body: {
-        'nom': nom,
-        'short': Joueur.genererShortDepuisNom(nom),
-      },
-    );
+    await _holder.clientPocketBase
+        .collection(collectionNameJoueurs)
+        .update(userId, body: {'nom': nom});
   }
 
   /// Recherche des joueurs enregistrés (pseudo ou email) pour envoyer des invitations.

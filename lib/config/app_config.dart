@@ -97,6 +97,16 @@ const int scoreSummaryDecimalPlaces = 1;
 const int teamPasswordMaxLength = 128;
 
 // ---------------------------------------------------------------------------
+// Codes de réponse HTTP PocketBase utilisés pour les messages d'erreur
+// ---------------------------------------------------------------------------
+
+/// Code HTTP renvoyé par PocketBase quand les identifiants sont rejetés.
+const int httpCodeIdentifiantsRejetes = 400;
+
+/// Code HTTP renvoyé par PocketBase en cas de limite de tentatives dépassée.
+const int httpCodeTropDeTentatives = 429;
+
+// ---------------------------------------------------------------------------
 // Règles de validation du formulaire de connexion / inscription
 // ---------------------------------------------------------------------------
 
