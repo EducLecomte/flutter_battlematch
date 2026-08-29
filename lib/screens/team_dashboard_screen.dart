@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../config/app_config.dart';
 import '../models/models.dart';
 import '../utils/error_snack_bar_presenter.dart';
 import 'team_dashboard_controller.dart';
@@ -62,8 +63,12 @@ class _TeamDashboardScreenState extends State<TeamDashboardScreen> {
     try {
       await _controller.deleteOpponent(opponent.id);
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text("Adversaire supprimé.")));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text("Adversaire supprimé."),
+            duration: snackBarDisplayDuration,
+          ),
+        );
       }
     } catch (deleteError) {
       if (mounted) {

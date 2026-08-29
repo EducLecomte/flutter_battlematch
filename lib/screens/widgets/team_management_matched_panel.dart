@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../config/app_config.dart';
 import '../../models/models.dart';
 import '../team_management_controller.dart';
 
@@ -42,10 +43,14 @@ class TeamManagementMatchedPanel extends StatelessWidget {
     final Set<String> pairedPlayerIds =
         currentMatched.map((pairing) => pairing.joueurId).toSet();
 
+    final String opponentLabel = (opponent.nomJoAdv?.isNotEmpty ?? false)
+        ? opponent.nomJoAdv!
+        : "Adversaire";
+
     final Joueur? selectedPlayer = await showDialog<Joueur>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text("Apparier à : ${opponent.listeAdv}"),
+        title: Text("Apparier à : $opponentLabel"),
         content: SizedBox(
           width: 320,
           child: members.isEmpty
@@ -120,18 +125,20 @@ class TeamManagementMatchedPanel extends StatelessWidget {
       messenger.showSnackBar(
         SnackBar(
           content: Text(
-            "Appariement : ${selectedPlayer.nom} → ${opponent.listeAdv}",
+            "Appariement : ${selectedPlayer.nom} → $opponentLabel",
           ),
           backgroundColor: Colors.green,
+          duration: snackBarDisplayDuration,
         ),
       );
     } else {
       messenger.showSnackBar(
-        const SnackBar(
-          content: Text(
+        SnackBar(
+          content: const Text(
             "Appariement impossible : joueur ou liste déjà engagé.",
           ),
           backgroundColor: Colors.redAccent,
+          duration: snackBarDisplayDuration,
         ),
       );
     }
@@ -184,20 +191,35 @@ class TeamManagementMatchedPanel extends StatelessWidget {
                         opponent.id,
                         controller.members,
                       );
+                      final String oppPseudo = (opponent.nomJoAdv?.isNotEmpty ?? false)
+                          ? opponent.nomJoAdv!
+                          : "Adversaire";
                       return ListTile(
-                        title: Text(opponent.listeAdv),
-                        subtitle: pairedMember != null
-                            ? Text(
-                                "Apparié : ${pairedMember.nom}",
-                                style: const TextStyle(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
-                            : const Text(
-                                "Non apparié",
-                                style: TextStyle(color: Colors.grey),
+                        leading: const CircleAvatar(
+                          child: Icon(Icons.person, size: 20),
+                        ),
+                        title: Text(
+                          oppPseudo,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              pairedMember != null
+                                  ? "Apparié : ${pairedMember.nom}"
+                                  : "Non apparié",
+                              style: TextStyle(
+                                color: pairedMember != null
+                                    ? Colors.green
+                                    : Colors.grey,
+                                fontWeight: pairedMember != null
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
                               ),
+                            ),
+                          ],
+                        ),
                         trailing: controller.isCaptain()
                             ? IconButton(
                                 icon: const Icon(Icons.link),

@@ -68,6 +68,32 @@ class TournoiController {
     }
   }
 
+  // Modifie le nom et le lien New Recruit d'un tournoi.
+  // Retourne null en succès, ou un message d'erreur.
+  Future<String?> updateTournoi(
+    String tournoiId,
+    String nom,
+    String lienNr,
+  ) async {
+    final String tournoiNom = nom.trim();
+    final String tournoiLien = lienNr.trim();
+
+    if (tournoiNom.isEmpty || tournoiLien.isEmpty) {
+      return "Le nom et le lien New Recruit sont obligatoires.";
+    }
+
+    try {
+      await _pocketbaseService.updateTournoi(
+        tournoiId,
+        tournoiNom,
+        tournoiLien,
+      );
+      return null;
+    } catch (updateError) {
+      return "Erreur de modification : ${updateError.toString()}";
+    }
+  }
+
   // Supprime un tournoi et sa sous-structure associée.
   // Retourne null en succès, ou un message d'erreur.
   Future<String?> deleteTournoi(String tournoiId) async {

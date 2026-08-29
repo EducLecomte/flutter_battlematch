@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../config/app_config.dart';
 import '../models/models.dart';
 import '../services/pocketbase_data_service.dart';
 import '../services/tournament_text_import_service.dart';
@@ -152,7 +153,11 @@ class TeamsScreenEncounterActions {
   }) {
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: backgroundColor),
+      SnackBar(
+        content: Text(message),
+        backgroundColor: backgroundColor,
+        duration: snackBarDisplayDuration,
+      ),
     );
   }
 }

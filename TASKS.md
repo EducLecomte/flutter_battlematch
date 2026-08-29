@@ -281,6 +281,30 @@ fixes), meta_adv, estims, matched.
         `flutter test` 24/24, `flutter build web` OK ;
         `DOC.md` et `README.md` mis à jour
 
+### M14 — Point 6 MEMO : CRUD tournoi + corrections dialogs ✅
+- [x] M14.1 Reproduire les erreurs d'édition des dialogs (framework.dart:6281,
+       "A TextEditingController was used after being disposed",
+       Duplicate GlobalKey) → `test/admin_dialog_repro_test.dart`
+       (test de garde : cycles ouverts/fermés sans exception)
+- [x] M14.2 Convertir les dialogs d'édition admin en StatefulWidget :
+       le State possède les contrôleurs + GlobalKey et les libère dans
+       `dispose()` ; API publique `showArmeeEditDialog` / `showChoixEditDialog`
+       inchangée (résultat via `pop`)
+- [x] M14.3 Corriger l'overflow SnackBar 99134 px (panel appariements) :
+       pseudo de l'adversaire à la place de la liste entière
+- [x] M14.4 CRUD tournoi complété : `updateTournoi` (service + controller),
+       `TournoiEditDialog` + `showTournoiEditDialog`, bouton édition (admin)
+       sur `TournoiCard`, câblage dans l'écran
+- [x] M14.5 Découpage service : `pocketbase_rencontres_service.dart`
+       (rencontres + équipes participantes), `pocketbase_tournois_service.dart`
+       retourne au CRUD tournoi pur
+- [x] M14.6 Compaction de `TournoisScreen` : `TournoiListBody` (corps de
+       liste) + `showTournoiTeamImportDialog` (tournoi_team_import_actions.dart)
+       + `_runTournoiOperation` (232→163 lignes)
+- [x] M14.7 Validation finale 2026-08-29 : `flutter analyze` sans problème,
+       `flutter test` 28/28, `flutter build web` OK ;
+       `DOC.md`/`MEMO.md` mis à jour, RAG et Discord
+
   ## Journal erreurs/découvertes
 [Date | Problème | Cause racine | Règle préventive]
 - 2026-08-21 | Code jamais compilé | pubspec sans supabase_flutter |
@@ -367,6 +391,14 @@ fixes), meta_adv, estims, matched.
    `ScaffoldMessenger`) et `showDialog<bool>` retourne `Future<bool?>` |
    typer le messenger en `ScaffoldMessengerState` et normaliser la valeur
    du dialog avec `.then((confirmation) => confirmation ?? false)`
+- 2026-08-29 | Édition des dialogs admin : "A TextEditingController was used
+   after being disposed" (framework.dart:6281) + Duplicate GlobalKey |
+   contrôleurs/GlobalKey créés dans la fonction `show...EditDialog` et
+   disposés au retour de `showDialog` pendant que l'animation de fermeture
+   rebuildait encore le widget | l'état d'un dialog (contrôleurs de texte,
+   clés de formulaire) doit appartenir au State d'un StatefulWidget et être
+   libéré dans `dispose()` ; l'API publique du wrapper `show...` reste
+   inchangée (objet résultat renvoyé via `pop`)
 - 2026-08-26 | Suppression de compte : données orphelines possibles sur
    `teams.capitaine_id` et `tournois.created_by` | ces relations n'ont pas
    `cascadeDelete: true` ; `deleteCurrentAccount` liste/supprime d'abord

@@ -5,6 +5,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../config/app_config.dart';
 import '../models/models.dart';
 import '../utils/error_snack_bar_presenter.dart';
 import 'admin_screen.dart';
@@ -35,7 +36,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.green),
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+        duration: snackBarDisplayDuration,
+      ),
     );
   }
 

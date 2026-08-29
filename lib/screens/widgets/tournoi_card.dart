@@ -1,7 +1,8 @@
 // ===========================================================================
 // Carte d'un Tournoi (tournoi_card.dart)
 // Affiche le nom et le lien New Recruit d'un tournoi, avec actions
-// d'ouverture, d'import des équipes (admin) et de suppression (admin).
+// d'ouverture, d'import des équipes (admin), de modification (admin)
+// et de suppression (admin).
 // ===========================================================================
 
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ class TournoiCard extends StatelessWidget {
   final ValueChanged<String>? onDeleteTournoi;
   final VoidCallback? onOpenTournoi;
   final VoidCallback? onImportTeams;
+  final VoidCallback? onEditTournoi;
 
   const TournoiCard({
     super.key,
@@ -22,6 +24,7 @@ class TournoiCard extends StatelessWidget {
     this.onDeleteTournoi,
     this.onOpenTournoi,
     this.onImportTeams,
+    this.onEditTournoi,
   });
 
   Future<void> _confirmDeletion(BuildContext context) async {
@@ -94,9 +97,18 @@ class TournoiCard extends StatelessWidget {
           children: [
             if (estAdministrateur && importRequis)
               IconButton(
-                icon: const Icon(Icons.download, color: Colors.blueAccent),
+                icon: const Icon(
+                  Icons.format_list_bulleted_add,
+                  color: Colors.blueAccent,
+                ),
                 onPressed: onImportTeams,
                 tooltip: "Importer les équipes",
+              ),
+            if (estAdministrateur && onEditTournoi != null)
+              IconButton(
+                icon: const Icon(Icons.edit_outlined),
+                onPressed: onEditTournoi,
+                tooltip: "Modifier",
               ),
             if (estAdministrateur)
               IconButton(

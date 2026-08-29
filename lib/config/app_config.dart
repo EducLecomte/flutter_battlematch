@@ -97,6 +97,15 @@ const int scoreSummaryDecimalPlaces = 1;
 const int teamPasswordMaxLength = 128;
 
 // ---------------------------------------------------------------------------
+// Durées d'affichage de l'interface
+// ---------------------------------------------------------------------------
+
+/// Durée d'affichage d'un SnackBar (confirmation ou erreur) avant disparition
+/// automatique. Valeur volontairement courte : le SnackBar ne doit jamais
+/// rester bloqué à l'écran.
+const Duration snackBarDisplayDuration = Duration(seconds: 2);
+
+// ---------------------------------------------------------------------------
 // Codes de réponse HTTP PocketBase utilisés pour les messages d'erreur
 // ---------------------------------------------------------------------------
 

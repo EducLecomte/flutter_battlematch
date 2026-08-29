@@ -5,6 +5,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../config/app_config.dart';
 import '../models/models.dart';
 import '../services/pocketbase_data_service.dart';
 import '../utils/error_snack_bar_presenter.dart';
@@ -61,7 +62,11 @@ class TeamsScreenTeamAccessActions {
   void _showSnackBar(BuildContext context, String message) {
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.green),
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+        duration: snackBarDisplayDuration,
+      ),
     );
   }
 }

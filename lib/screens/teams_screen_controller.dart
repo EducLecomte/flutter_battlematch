@@ -12,9 +12,36 @@ class TeamsScreenController {
 
   List<Armee>? _cachedReferenceArmies;
 
-  List<Team> get selectableTeams => availableUserTeams;
+  List<Team> get opponentTeams =>
+      availableTournoiTeams.where((team) => team.id != activeTeam?.id).toList();
 
   bool get utilisateurSansEquipe => availableUserTeams.isEmpty;
+
+  Rencontre? getEncounterForOpponentName(String opponentName) {
+    final String cleanOpponentName = opponentName.trim().toLowerCase();
+    for (final encounter in availableEncounters) {
+      if (encounter.nomAdversaire.trim().toLowerCase() == cleanOpponentName) {
+        return encounter;
+      }
+    }
+    return null;
+  }
+
+  Future<Rencontre> getOrCreateEncounterForOpponent(String opponentName) async {
+    if (activeTeam == null) {
+      throw Exception("Aucune équipe active.");
+    }
+    final existing = getEncounterForOpponentName(opponentName);
+    if (existing != null) return existing;
+
+    final created = await _pocketbaseService.createRencontre(
+      _tournoiId,
+      activeTeam!.id,
+      opponentName.trim(),
+    );
+    await loadEncountersForActiveTeam();
+    return created;
+  }
 
   Future<void> loadTeamsForUser(String? userId) async {
     isLoadingTeams = true;
@@ -39,10 +66,6 @@ class TeamsScreenController {
 
   void _selectDefaultActiveTeam() {
     activeTeam = availableUserTeams.isEmpty ? null : availableUserTeams.first;
-  }
-
-  void setActiveTeam(Team selectedTeam) {
-    activeTeam = selectedTeam;
   }
 
   Future<void> loadEncountersForActiveTeam() async {

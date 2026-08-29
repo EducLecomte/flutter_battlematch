@@ -86,4 +86,18 @@ Alice (Alias) - Faction Inconnue
     expect(importedPlayers.first['armyName'], 'Faction Inconnue');
     expect(importedPlayers.first['listText'], contains('Unité Simple'));
   });
+
+  test('analyse le gros tournoi exemple_tournoi_2.txt (50 equipes, 300 joueurs)', () {
+    final String rawContent = File('exemple_tournoi_2.txt').readAsStringSync();
+    final List<Map<String, dynamic>> importedPlayers =
+        const TournamentTextImportParser()
+            .parseTournamentText(rawContent, referenceArmies);
+
+    expect(importedPlayers, hasLength(300));
+    final uniqueTeams = importedPlayers.map((p) => p['teamName']).toSet();
+    expect(uniqueTeams, hasLength(50));
+    expect(uniqueTeams, contains('Belgique 1 - Brussels Fanatics'));
+    expect(uniqueTeams, contains('PACA Chèvres'));
+    expect(uniqueTeams, contains('Suisse 4 - Dream of Jambon'));
+  });
 }

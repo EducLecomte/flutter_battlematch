@@ -55,15 +55,35 @@ class TournamentTextImportService {
       if (_isTargetTeam(teamEntry.key, targetTeamName)) continue;
 
       final String normalizedTeamName = teamEntry.key.trim().toLowerCase();
-      if (existingOpponentNames.contains(normalizedTeamName)) {
-        skippedDuplicateEncounterCount++;
-        continue;
-      }
+      Rencontre encounterToPopulate;
+      final bool alreadyExists = existingOpponentNames.contains(normalizedTeamName);
 
-      final Rencontre createdEncounter = await _pocketbaseDataService
-          .createRencontre(tournoiId, targetTeamId, teamEntry.key);
-      existingOpponentNames.add(normalizedTeamName);
-      createdEncounterCount++;
+      if (alreadyExists) {
+        final List<Rencontre> existingEncounters =
+            await _pocketbaseDataService.getRencontres(tournoiId, targetTeamId);
+        final Rencontre? match = existingEncounters.cast<Rencontre?>().firstWhere(
+          (e) => e?.nomAdversaire.trim().toLowerCase() == normalizedTeamName,
+          orElse: () => null,
+        );
+
+        if (match != null) {
+          final existingOpponents =
+              await _pocketbaseDataService.getOpponents(match.id);
+          if (existingOpponents.isNotEmpty) {
+            skippedDuplicateEncounterCount++;
+            continue;
+          }
+          encounterToPopulate = match;
+        } else {
+          skippedDuplicateEncounterCount++;
+          continue;
+        }
+      } else {
+        encounterToPopulate = await _pocketbaseDataService
+            .createRencontre(tournoiId, targetTeamId, teamEntry.key);
+        existingOpponentNames.add(normalizedTeamName);
+        createdEncounterCount++;
+      }
 
       for (final Map<String, dynamic> importedPlayer in teamEntry.value) {
         final Armee? resolvedArmy = NewRecruitImportService.instance
@@ -75,7 +95,7 @@ class TournamentTextImportService {
         }
 
         await _pocketbaseDataService.createOpponent(
-          createdEncounter.id,
+          encounterToPopulate.id,
           resolvedArmy.id,
           importedPlayer['playerName'] as String,
           importedPlayer['listText'] as String,

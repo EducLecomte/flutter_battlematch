@@ -1,7 +1,32 @@
 # DOC.md — Cartographie technique MetaWar
 
-*[2026-08-28] Mise à jour M13 complète — refonte tournois/équipes terminée.
-M13.5 : import des équipes depuis la carte tournoi (`TournamentTeamImportService`).
+*[2026-08-29] Mise à jour M14 — point 6 MEMO : édition de tournoi +
+corrections dialogs. Cause racine des erreurs d'édition : contrôleurs de
+texte/GlobalKey créés dans la fonction `show...EditDialog` et disposés au
+retour de `showDialog` pendant que l'animation de fermeture rebuildait le
+widget → « TextEditingController used after being disposed » (framework.dart:6281)
++ Duplicate GlobalKey ; fix : StatefulWidgets dont le State possède et libère
+dans `dispose()` (admin_armee/admin_choix/tournoi_edit), API publique
+inchangée. CRUD tournoi complété : `PocketbaseTournoisService.updateTournoi`,
+`TournoiController.updateTournoi`, `TournoiEditDialog` + bouton édition
+(admin) sur `TournoiCard`, opérations consolidées dans `TournoisScreen`
+(`_runTournoiOperation`). Compaction : `TournoiListBody` (corps de liste) +
+`showTournoiTeamImportDialog` (`tournoi_team_import_actions.dart`) ; découpage
+service → `pocketbase_rencontres_service.dart`. Overflow SnackBar 99134 px
+corrigé (pseudo adverse au lieu de la liste). Test de garde
+`test/admin_dialog_repro_test.dart`. Validation : `flutter analyze` sans
+problème, `flutter test` 28/28, `flutter build web` OK.
+Précédents acceptés : pocketbase_data_service 242,
+teams_screen_team_access_panel 241, team_management_matched_panel 241,
+teams_screen_encounter_list 218, team_management_controller 199,
+admin_controller 186, team_management_team_actions 183, profile_screen 175,
+tournament_text_import_parser 170, admin_choix_edit_dialog 166,
+tournois_screen 163, pocketbase_auth_service 162,
+teams_screen_encounter_actions 158, estim_dialog 157, teams_screen 156,
+team_management_screen 153, profile_controller 153.
+Précédent *[2026-08-28] Mise à jour M13 complète — refonte tournois/équipes
+terminée. M13.5 : import des équipes depuis la carte tournoi
+(`TournamentTeamImportService`).
 M13.6 : écrans tournois admin-only (création/suppression, badge import,
 ouverture bloquée non-admin). M13.7 : écran équipes avec claim/join par mot
 de passe (`TeamsScreenTeamAccessPanel`, `TeamsScreenTeamAccessActions`).
@@ -30,12 +55,7 @@ raîchissements post-actions, équipes du tournoi visibles par tous,
 dédoublonnage de l'import texte, matrice : valeurs toujours visibles en
 cellule appariée, backend d'administration complet (champ `admin` sur
 `joueurs`, écran admin 3 onglets — import manuel du schéma PB requis).
-Précédents M9 : `Dicy`, matrice enrichie, import tournoi.
-Précédents acceptés : team_management_controller 213,
-import_newrecruit_controller 198, pocketbase_data_service 190,
-admin_controller 186, team_management_screen 168, profile_screen 168,
-import_newrecruit_dialog 166, tournois_screen 159,
-teams_screen_encounter_actions 158, estim_dialog 157.*
+Précédents M9 : `Dicy`, matrice enrichie, import tournoi.*
 
 ## Structure
 
@@ -67,8 +87,12 @@ lib/
                                    # chargements, mutations ; onStateChanged (VoidCallback)
     login_screen.dart              # Connexion/inscription (shell)
     login_controller.dart          # validate() / submit() → Future<String?>
-    tournois_screen.dart           # Liste des tournois + FAB ajout
-    tournois_controller.dart       # load/add/delete tournoi
+     tournois_screen.dart           # Liste des tournois + FAB ajout + actions
+                                    # édition/suppression/import (précédent,
+                                    # 163 lignes)
+     tournois_controller.dart       # load/add/update/delete tournoi
+     tournoi_team_import_actions.dart # showTournoiTeamImportDialog : armées de
+                                    # référence, dialog d'import, snackbar résumé
     teams_screen.dart              # Équipe active + liste des rencontres du tournoi
                                    # + bouton AppBar d'import tournoi
     teams_screen_controller.dart   # bindTournoi, loadTeams/Encounters, create/delete,
@@ -94,8 +118,12 @@ lib/
                                     # + helpers couleur hex
   screens/widgets/                 # Composants UI atomiques (1 fichier = 1 rôle)
     login_*                        # brand_header / form_fields / submit_actions
-    tournoi_card.dart              # Carte tournoi (suppression confirmée interne)
-    tournoi_add_dialog.dart        # Dialog ajout tournoi
+     tournoi_card.dart              # Carte tournoi (suppression confirmée
+                                    # interne, actions admin édition/import)
+     tournoi_add_dialog.dart        # Dialog ajout tournoi
+     tournoi_edit_dialog.dart       # Dialog modification tournoi (StatefulWidget,
+                                    # contrôleurs libérés dans dispose)
+     tournoi_list_body.dart         # Corps de liste : chargement / vide / cartes
     estim_dialog.dart + estim_{choix,score,confiance,commentaire}_section.dart
                                    # Dialog estimation découpé en 4 sections
     estim_dialog_controller.dart   # État/validation/sauvegarde du dialog
@@ -126,12 +154,13 @@ lib/
     profile_delete_account_dialog.dart      # Confirmation AlertDialog
                                             # avant suppression de compte
     admin_{armeees,choix,joueurs}_tab.dart   # Onglets admin : list + actions
-    admin_{armee,choix}_edit_dialog.dart     # Dialogues d'édition (contrôleurs
-                                    # internes, aperçu couleur pour les choix)
+     admin_{armee,choix}_edit_dialog.dart     # Dialogues d'édition (StatefulWidget :
+                                     # le State possède et libère les contrôleurs
+                                     # dans dispose ; aperçu couleur pour les choix)
   services/
       pocketbase_data_service.dart   # Façade singleton : surface API historique
                                      # (ex-SupabaseService) → délégation totale
-                                     # aux sous-services ci-dessous (~236 lg)
+                                      # aux sous-services ci-dessous (~242 lg)
     pocketbase/
       pocketbase_client_holder.dart    # Client PB + AsyncAuthStore + yield initial
                                        # du stream d'auth + échappement filtres
@@ -146,9 +175,10 @@ lib/
                                         # accept, decline/remove
        pocketbase_team_access_service.dart # Claim capitaine, join mot de passe,
                                         # nomination d'un nouveau capitaine
-        pocketbase_tournois_service.dart # CRUD tournois + rencontres +
-                                         # équipes participantes + import
-                                         # des équipes marqué
+        pocketbase_tournois_service.dart # CRUD tournois (dont updateTournoi)
+                                          # + import des équipes marqué
+         pocketbase_rencontres_service.dart # CRUD rencontres + équipes
+                                            # participantes d'un tournoi
        pocketbase_referentiels_service.dart   # getArmees / getChoix (publics)
                                               # + CRUD admin armées/choix
         pocketbase_admin_service.dart          # Admin joueurs : liste, toggle
@@ -171,7 +201,9 @@ lib/
                                          # création des teams manquantes,
                                          # mark import_effectue
 test/
-  widget_test.dart                 # Tests des conversions PocketBase ↔ modèles
+   widget_test.dart                 # Tests des conversions PocketBase ↔ modèles
+   admin_dialog_repro_test.dart     # Garde : dialogs d'édition admin (cycles
+                                    # ouverture/fermeture sans exception)
   tournament_text_import_parser_test.dart # Tests du parser (4 cas)
   appreciation_scale_test.dart     # Échelle fixe 7 appréciations
   hexadecimal_color_parser_test.dart # Parsing couleurs hexadécimales
@@ -251,8 +283,13 @@ tool/
    `ProfileTeamsSection` affiche les équipes groupées par tournoi. M13.10 :
    `TeamManagementController.loadEncountersForSelectedTeam` charge
    rencontres/adversaires/appariements ; `TeamManagementMatchedPanel`
-   affiche les rencontres en `ExpansionTile` avec dialog d'appariement
-   membre ↔ liste via `toggleMatched`.
+    affiche les rencontres en `ExpansionTile` avec dialog d'appariement
+    membre ↔ liste via `toggleMatched`. M14 : `updateTournoi` complète le CRUD
+    (service/controller/`TournoiEditDialog` + bouton admin sur `TournoiCard`) ;
+    les contrôleurs de texte des dialogs appartiennent au State (libérés dans
+    `dispose`) pour éviter l'usage après disposition pendant l'animation de
+    fermeture ; `TournoiListBody` + `showTournoiTeamImportDialog` condensent
+    l'écran des tournois.
 10. **Maintenance PocketBase** : `tool/pocketbase_purge_meta_war_records.dart`
    exige `--yes`, supprime `matched`, `estims`, `meta_adv`, `rencontres`,
    `team_membres`, `teams`, `tournois`, `joueurs` (feuilles → parents), et

@@ -5,8 +5,9 @@
 // ===========================================================================
 
 import 'package:flutter/material.dart';
+
+import '../config/app_config.dart';
 import '../utils/error_snack_bar_presenter.dart';
-import 'profile_screen.dart';
 import 'team_management_controller.dart';
 import 'team_management_team_actions.dart';
 import 'widgets/team_management_team_list_sidebar.dart';
@@ -64,7 +65,11 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
     setState(() {}); // Rafraîchit la liste des membres
     if (errorMessage == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Invitation envoyée !"), backgroundColor: Colors.green),
+        SnackBar(
+          content: const Text("Invitation envoyée !"),
+          backgroundColor: Colors.green,
+          duration: snackBarDisplayDuration,
+        ),
       );
     } else {
       showErrorSnackBar(context, "Erreur d'invitation : $errorMessage");
@@ -74,22 +79,14 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("Mes Équipes"),
         actions: [
-          IconButton(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (dialogContext) => const ProfileScreen()),
-            ).then((_) => _loadInitialData()), // Recharge au retour
-            icon: const Icon(Icons.person_outline),
-            tooltip: "Mon profil & invitations",
-          ),
+          //raffraichir ?
         ],
       ),
       body: Row(
@@ -135,15 +132,15 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
                       team,
                       _refreshUserInterface,
                     ),
-                    onUpdateMotDePasse: (motDePasse) => _teamActions
-                        .updateTeamMotDePasse(
+                    onUpdateMotDePasse: (motDePasse) =>
+                        _teamActions.updateTeamMotDePasse(
                           context,
                           _controller,
                           motDePasse,
                           _refreshUserInterface,
                         ),
-                    onNominateCaptain: (candidate) => _teamActions
-                        .nominateNewCaptain(
+                    onNominateCaptain: (candidate) =>
+                        _teamActions.nominateNewCaptain(
                           context,
                           _controller,
                           candidate,

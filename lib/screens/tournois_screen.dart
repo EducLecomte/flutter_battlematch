@@ -1,20 +1,20 @@
 // ===========================================================================
 // Écran des Tournois (tournois_screen.dart)
-// Permet de lister, d'ajouter et de supprimer des tournois.
+// Permet de lister, d'ajouter, de modifier et de supprimer des tournois.
 // Redirige vers la sélection de rencontre.
 // ===========================================================================
 
 import 'package:flutter/material.dart';
 
+import '../config/app_config.dart';
 import '../models/models.dart';
-import '../services/pocketbase_data_service.dart';
-import '../services/tournament_team_import_service.dart';
 import '../utils/error_snack_bar_presenter.dart';
 import 'teams_screen.dart'; // Écran des rencontres (matchs)
+import 'tournoi_team_import_actions.dart';
 import 'tournois_controller.dart';
 import 'widgets/tournoi_add_dialog.dart';
-import 'widgets/tournoi_card.dart';
-import 'widgets/tournoi_team_import_dialog.dart';
+import 'widgets/tournoi_edit_dialog.dart';
+import 'widgets/tournoi_list_body.dart';
 
 class TournoisScreen extends StatefulWidget {
   const TournoisScreen({super.key});
@@ -30,24 +30,12 @@ class _TournoisScreenState extends State<TournoisScreen> {
     if (mounted) setState(() {});
   }
 
-  void _showErrorSnackBar(String message) {
-    showErrorSnackBar(context, message);
-  }
-
-  void _showSuccessSnackBar(String message) {
+  void _showInfoSnackBar(String message, Color backgroundColor) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.green,
-      ),
-    );
-  }
-
-  void _showInfoSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: backgroundColor,
+        duration: snackBarDisplayDuration,
       ),
     );
   }
@@ -58,25 +46,44 @@ class _TournoisScreenState extends State<TournoisScreen> {
       onStateChanged: _notifyStateChanged,
     );
     if (errorMessage != null && mounted) {
-      _showErrorSnackBar(errorMessage);
+      showErrorSnackBar(context, errorMessage);
     }
   }
 
-  // Crée un nouveau tournoi, puis ferme la boîte de dialogue
-  Future<void> _handleAddTournoi() async {
-    final String? errorMessage = await _controller.addTournoi(
-      onStateChanged: _notifyStateChanged,
-    );
+  // Exécute une opération du contrôleur, affiche l'erreur ou le message de
+  // succès, puis actualise la liste en cas de succès.
+  Future<void> _runTournoiOperation(
+    Future<String?> Function() operation,
+    String successMessage, {
+    bool closeDialog = false,
+  }) async {
+    final String? errorMessage = await operation();
     if (!mounted) return;
-
     if (errorMessage != null) {
-      _showErrorSnackBar(errorMessage);
+      showErrorSnackBar(context, errorMessage);
       return;
     }
-
-    Navigator.of(context).pop(); // Ferme la boîte de dialogue
-    _showSuccessSnackBar("Tournoi ajouté !");
+    if (closeDialog) Navigator.of(context).pop();
+    _showInfoSnackBar(successMessage, Colors.green);
     await _loadTournois();
+  }
+
+  // Modifie un tournoi depuis la boîte de dialogue d'édition
+  Future<void> _handleEditTournoi(Tournoi tournoi) async {
+    final TournoiEditResult? editResult = await showTournoiEditDialog(
+      context: context,
+      tournoi: tournoi,
+    );
+    if (editResult == null) return;
+
+    await _runTournoiOperation(
+      () => _controller.updateTournoi(
+        tournoi.id,
+        editResult.nom,
+        editResult.lienNr,
+      ),
+      "Tournoi enregistré.",
+    );
   }
 
   // Ouvre un tournoi si l'import des équipes est déjà effectué.
@@ -84,60 +91,14 @@ class _TournoisScreenState extends State<TournoisScreen> {
     if (!tournoi.importEffectue && !_controller.estAdministrateur) {
       _showInfoSnackBar(
         "L'import des équipes est requis avant d'ouvrir ce tournoi.",
+        Colors.blueGrey,
       );
       return;
     }
 
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => TeamsScreen(tournoi: tournoi),
-      ),
+      MaterialPageRoute(builder: (context) => TeamsScreen(tournoi: tournoi)),
     );
-  }
-
-  // Ouvre la boîte de dialogue d'import des équipes d'un tournoi.
-  Future<void> _showTeamImportDialog(Tournoi tournoi) async {
-    final List<Armee> referenceArmies =
-        await PocketbaseDataService.instance.getArmees();
-    if (!mounted) return;
-
-    TournamentTeamImportSummary? importSummary;
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => TournoiTeamImportDialog(
-        tournoiId: tournoi.id,
-        tournoiNom: tournoi.nom,
-        referenceArmies: referenceArmies,
-        onImportCompleted: (summary) => importSummary = summary,
-      ),
-    );
-    if (!mounted) return;
-
-    final TournamentTeamImportSummary? completedImportSummary = importSummary;
-    if (completedImportSummary == null) return;
-
-    _showSuccessSnackBar(
-      "Import terminé : ${completedImportSummary.createdTeamCount} "
-      "équipe(s) créée(s), "
-      "${completedImportSummary.skippedExistingTeamCount} ignorée(s).",
-    );
-    await _loadTournois();
-  }
-
-  // Supprime un tournoi et actualise la liste
-  Future<void> _handleDeleteTournoi(String tournoiId) async {
-    final errorMessage = await _controller.deleteTournoi(tournoiId);
-    if (!mounted) return;
-
-    if (errorMessage != null) {
-      _showErrorSnackBar(errorMessage);
-      return;
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Tournoi supprimé.")),
-    );
-    await _loadTournois();
   }
 
   // Ouvre la boîte de dialogue d'ajout de tournoi
@@ -146,7 +107,11 @@ class _TournoisScreenState extends State<TournoisScreen> {
       context: context,
       builder: (dialogContext) => TournoiAddDialog(
         tournoiController: _controller,
-        onAddSubmitted: _handleAddTournoi,
+        onAddSubmitted: () => _runTournoiOperation(
+          () => _controller.addTournoi(onStateChanged: _notifyStateChanged),
+          "Tournoi ajouté !",
+          closeDialog: true,
+        ),
       ),
     );
   }
@@ -182,35 +147,22 @@ class _TournoisScreenState extends State<TournoisScreen> {
               child: const Icon(Icons.add),
             )
           : null,
-      body: _controller.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _controller.tournois.isEmpty
-              ? const Center(
-                  child: Text(
-                    "Aucun tournoi enregistré. Ajoutez-en un !",
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16.0),
-                  itemCount: _controller.tournois.length,
-                  itemBuilder: (context, index) {
-                    final tournoi = _controller.tournois[index];
-
-                    return TournoiCard(
-                      tournoi: tournoi,
-                      estAdministrateur: _controller.estAdministrateur,
-                      onDeleteTournoi: _controller.estAdministrateur
-                          ? _handleDeleteTournoi
-                          : null,
-                      onOpenTournoi: () => _handleOpenTournoi(tournoi),
-                      onImportTeams: _controller.estAdministrateur &&
-                              !tournoi.importEffectue
-                          ? () => _showTeamImportDialog(tournoi)
-                          : null,
-                    );
-                  },
-                ),
+      body: TournoiListBody(
+        isLoading: _controller.isLoading,
+        tournois: _controller.tournois,
+        estAdministrateur: _controller.estAdministrateur,
+        onDeleteTournoi: (tournoiId) => _runTournoiOperation(
+          () => _controller.deleteTournoi(tournoiId),
+          "Tournoi supprimé.",
+        ),
+        onOpenTournoi: _handleOpenTournoi,
+        onImportTeams: (tournoi) => showTournoiTeamImportDialog(
+          context: context,
+          tournoi: tournoi,
+          onImportCompleted: _loadTournois,
+        ),
+        onEditTournoi: _handleEditTournoi,
+      ),
     );
   }
 }

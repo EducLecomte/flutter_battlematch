@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../config/app_config.dart';
 import '../utils/error_snack_bar_presenter.dart';
 import 'admin_controller.dart';
 import 'widgets/admin_armees_tab.dart';
@@ -38,6 +39,7 @@ class _AdminScreenState extends State<AdminScreen> {
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.green,
+        duration: snackBarDisplayDuration,
       ),
     );
   }

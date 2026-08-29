@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../models/models.dart';
+import '../utils/error_snack_bar_presenter.dart';
 import 'team_dashboard_screen.dart';
 import 'teams_screen_controller.dart';
 import 'teams_screen_encounter_actions.dart';
 import 'teams_screen_team_access_actions.dart';
-import 'widgets/add_encounter_dialog.dart';
 import 'widgets/teams_screen_encounter_list.dart';
 import 'widgets/teams_screen_team_access_panel.dart';
 import 'widgets/teams_screen_team_selector.dart';
@@ -46,24 +46,6 @@ class _TeamsScreenState extends State<TeamsScreen> {
     if (mounted) setState(() {});
   }
 
-  Future<void> _handleTeamSelected(Team selectedTeam) async {
-    _controller.setActiveTeam(selectedTeam);
-    await _actions.loadEncounters(context, _refreshUserInterface);
-  }
-
-  void _showAddEncounterDialog() {
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AddEncounterDialog(
-        onCreateEncounter: (opponentName) => _actions.createEncounter(
-          context,
-          opponentName,
-          _refreshUserInterface,
-        ),
-      ),
-    );
-  }
-
   void _openEncounterDashboard(Rencontre selectedEncounter) {
     if (_controller.activeTeam == null) return;
 
@@ -76,6 +58,20 @@ class _TeamsScreenState extends State<TeamsScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _handleOpponentTeamSelected(Team opponentTeam) async {
+    try {
+      final Rencontre encounter =
+          await _controller.getOrCreateEncounterForOpponent(opponentTeam.nom);
+      if (mounted) {
+        _openEncounterDashboard(encounter);
+      }
+    } catch (e) {
+      if (mounted) {
+        showErrorSnackBar(context, "Erreur : $e");
+      }
+    }
   }
 
   @override
@@ -95,13 +91,6 @@ class _TeamsScreenState extends State<TeamsScreen> {
           ),
         ],
       ),
-      floatingActionButton: _controller.activeTeam == null
-          ? null
-          : FloatingActionButton(
-              onPressed: _showAddEncounterDialog,
-              tooltip: "Ajouter un match / ronde",
-              child: const Icon(Icons.add),
-            ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: _controller.utilisateurSansEquipe
@@ -129,12 +118,10 @@ class _TeamsScreenState extends State<TeamsScreen> {
                 children: [
                   TeamsScreenTeamSelector(
                     activeTeam: _controller.activeTeam,
-                    selectableTeams: _controller.selectableTeams,
-                    onTeamSelected: _handleTeamSelected,
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    "Rencontres / Rondes du tournoi",
+                    "Rencontres / Équipes adverses du tournoi",
                     style: Theme.of(context).textTheme.titleMedium
                         ?.copyWith(fontWeight: FontWeight.bold),
                   ),
@@ -142,8 +129,10 @@ class _TeamsScreenState extends State<TeamsScreen> {
                   Expanded(
                     child: TeamsScreenEncounterList(
                       activeTeam: _controller.activeTeam,
+                      opponentTeams: _controller.opponentTeams,
                       availableEncounters: _controller.availableEncounters,
                       onEncounterSelected: _openEncounterDashboard,
+                      onOpponentTeamSelected: _handleOpponentTeamSelected,
                       onDeleteRequested: (selectedEncounter) =>
                           _actions.deleteEncounter(
                             context,

@@ -12,6 +12,7 @@ import 'pocketbase/pocketbase_dashboard_adversaires_service.dart';
 import 'pocketbase/pocketbase_dashboard_estims_service.dart';
 import 'pocketbase/pocketbase_dashboard_matched_service.dart';
 import 'pocketbase/pocketbase_referentiels_service.dart';
+import 'pocketbase/pocketbase_rencontres_service.dart';
 import 'pocketbase/pocketbase_team_access_service.dart';
 import 'pocketbase/pocketbase_team_invitations_service.dart';
 import 'pocketbase/pocketbase_team_membres_service.dart';
@@ -31,6 +32,8 @@ class PocketbaseDataService {
       PocketbaseTeamInvitationsService.instance;
   final PocketbaseTournoisService _serviceTournois =
       PocketbaseTournoisService.instance;
+  final PocketbaseRencontresService _serviceRencontres =
+      PocketbaseRencontresService.instance;
   final PocketbaseReferentielsService _serviceReferentiels =
       PocketbaseReferentielsService.instance;
   final PocketbaseDashboardAdversairesService _serviceDashboardAdversaires =
@@ -109,21 +112,24 @@ class PocketbaseDataService {
   Future<void> markTournoiImportEffectue(String tournoiId) =>
       _serviceTournois.markTournoiImportEffectue(tournoiId);
 
+  Future<Tournoi> updateTournoi(String tournoiId, String nom, String lienNr) =>
+      _serviceTournois.updateTournoi(tournoiId, nom, lienNr);
+
   Future<void> deleteTournoi(String tournoiId) =>
       _serviceTournois.deleteTournoi(tournoiId);
 
   Future<Rencontre> createRencontre(String tournoiId, String teamId,
           String nomAdversaire) =>
-      _serviceTournois.createRencontre(tournoiId, teamId, nomAdversaire);
+      _serviceRencontres.createRencontre(tournoiId, teamId, nomAdversaire);
 
   Future<List<Rencontre>> getRencontres(String tournoiId, String teamId) =>
-      _serviceTournois.getRencontres(tournoiId, teamId);
+      _serviceRencontres.getRencontres(tournoiId, teamId);
 
   Future<void> deleteRencontre(String rencontreId) =>
-      _serviceTournois.deleteRencontre(rencontreId);
+      _serviceRencontres.deleteRencontre(rencontreId);
 
   Future<List<Team>> getTeamsParticipatingInTournoi(String tournoiId) =>
-      _serviceTournois.getTeamsParticipatingInTournoi(tournoiId);
+      _serviceRencontres.getTeamsParticipatingInTournoi(tournoiId);
 
   Future<Team> getTeam(String teamId) => _serviceTeams.getTeam(teamId);
 

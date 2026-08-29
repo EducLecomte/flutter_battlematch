@@ -5,6 +5,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../../config/app_config.dart';
 import '../../models/models.dart';
 import '../../utils/error_snack_bar_presenter.dart';
 import '../team_dashboard_controller.dart';
@@ -57,9 +58,10 @@ class _AddOpponentDialogState extends State<AddOpponentDialog> {
       final messenger = ScaffoldMessenger.of(context);
       Navigator.of(context).pop();
       messenger.showSnackBar(
-        const SnackBar(
-          content: Text("Adversaire ajouté !"),
+        SnackBar(
+          content: const Text("Adversaire ajouté !"),
           backgroundColor: Colors.green,
+          duration: snackBarDisplayDuration,
         ),
       );
     } catch (addError) {
