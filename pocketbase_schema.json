@@ -574,9 +574,9 @@
     "indexes": [],
     "listRule": "@request.auth.id != ''",
     "viewRule": "@request.auth.id != ''",
-    "createRule": "@request.auth.id = team_id.capitaine_id",
-    "updateRule": "@request.auth.id = team_id.capitaine_id",
-    "deleteRule": "@request.auth.id = team_id.capitaine_id"
+    "createRule": "@request.auth.id = team_id.capitaine_id || @request.auth.admin = true",
+    "updateRule": "@request.auth.id = team_id.capitaine_id || @request.auth.admin = true",
+    "deleteRule": "@request.auth.id = team_id.capitaine_id || @request.auth.admin = true"
   },
   {
     "id": "mwestims0000001",

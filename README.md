@@ -66,7 +66,7 @@ estimations par joueur, armées/choix) et règles d'accès.
 | Tournois | création/suppression réservées aux admins ; ouverture bloquée pour les non-admins tant que l'import des équipes n'est pas effectué |
 | Équipes | création réservée aux admins ; réclamation d'une équipe sans capitaine ; join par mot de passe ; suppression admin ou capitaine |
 | Invitations | capitaine de l'équipe ; acceptation/refus par l'invité |
-| Adversaires & appariements | capitaine de l'équipe |
+| Adversaires & appariements | capitaine de l'équipe ; admin (bypass — saisie depuis la carte tournoi, M16.11) |
 | Estimations | chaque joueur et le capitaine de son équipe |
 | Administration | compte `admin` : gestion des joueurs, armées et appréciations |
 

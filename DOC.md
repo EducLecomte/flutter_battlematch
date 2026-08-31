@@ -1,5 +1,17 @@
 # DOC.md — Cartographie technique MetaWar
 
+*[2026-08-31] M16.11 — correctif : bypass admin des règles d'écriture
+`meta_adv` (RESOLU). L'import « équipes + listes adverses » depuis la carte
+tournoi (M15) échouait en 400 « Failed to create record » dès la première
+équipe dont le capitaine n'était pas l'utilisateur connecté : les règles
+d'écriture `meta_adv` (`@request.auth.id = team_id.capitaine_id`) n'incluaient
+pas de bypass admin, alors que l'import de tournoi est une action admin
+(M13.5/M13.6 : l'admin saisit les adversaires depuis la carte tournoi).
+`|| @request.auth.admin = true` ajouté aux règles create/update/delete de
+`meta_adv` (snapshot + application directe sur le serveur via superuser le
+2026-08-31). `matched`/`estims` inchangées (pas de flux d'écriture admin).
+Vérifié de bout en bout avec un compte admin temporaire
+(create/update/delete OK, puis nettoyage). Précédent :
 *[2026-08-30] M16 — point 8 MEMO : suppression de la collection `rencontres`
 (RESOLU). Chaque équipe d'un tournoi peut estimer n'importe quelle autre
 équipe du tournoi : la « rencontre » n'était qu'un intermédiaire inutile.

@@ -368,11 +368,18 @@ fixes), meta_adv, estims, matched.
          MetaAdv/Estim/Matched ancrés sur teamId + adversaireTeamId, toJson
          sans `rencontre_id`)
 - [x] M16.9 Docs (README/DOC/MEMO point 8 RESOLU) + RAG + notification Discord
-- [x] M16.10 Validation : `flutter analyze` 0, `flutter test` OK,
-         `flutter build web` OK
-         → 2026-08-30 : `flutter analyze` sans problème,
-         `flutter test` 35/35, `flutter build web` OK
-
+ - [x] M16.10 Validation : `flutter analyze` 0, `flutter test` OK,
+          `flutter build web` OK
+          → 2026-08-30 : `flutter analyze` sans problème,
+          `flutter test` 35/35, `flutter build web` OK
+ - [x] M16.11 Correctif import carte tournoi : règles d'écriture `meta_adv`
+          sans bypass admin → 400 « Failed to create record » sur les équipes
+          dont le capitaine ≠ utilisateur connecté. `|| @request.auth.admin = true`
+          ajouté aux règles create/update/delete `meta_adv` (snapshot +
+          application directe serveur via superuser 2026-08-31). Vérifié
+          de bout en bout (compte admin temporaire : create/update/delete OK).
+          `matched`/`estims` inchangées.
+ 
   ## Journal erreurs/découvertes
 [Date | Problème | Cause racine | Règle préventive]
 - 2026-08-21 | Code jamais compilé | pubspec sans supabase_flutter |
