@@ -302,8 +302,76 @@ fixes), meta_adv, estims, matched.
        liste) + `showTournoiTeamImportDialog` (tournoi_team_import_actions.dart)
        + `_runTournoiOperation` (232→163 lignes)
 - [x] M14.7 Validation finale 2026-08-29 : `flutter analyze` sans problème,
-       `flutter test` 28/28, `flutter build web` OK ;
-       `DOC.md`/`MEMO.md` mis à jour, RAG et Discord
+        `flutter test` 28/28, `flutter build web` OK ;
+        `DOC.md`/`MEMO.md` mis à jour, RAG et Discord
+
+### M15 — Points 7 et 9 MEMO : durée des SnackBars + sélecteur équipe
+- [x] M15.1 Point 7 : constante `snackBarDisplayDuration = Duration(seconds: 2)`
+        dans `app_config.dart` (section « Durées d'affichage de l'interface ») ;
+        `duration` appliquée au présentateur d'erreurs
+        (`error_snack_bar_presenter.dart`, 3 SnackBars) et aux 11 SnackBars
+        succès/info (profile, team_dashboard, team_management ×3,
+        add_opponent_dialog, tournois, team_access_actions,
+        matched_panel ×2, admin, tournoi_team_import_actions)
+- [x] M15.2 Point 9 : `teams_screen_team_selector.dart` réécrit en affichage
+        statique `Text` du nom d'équipe active (plus de `DropdownButton`) ;
+        `teams_screen.dart` : `_handleTeamSelected` supprimé, appel réduit à
+        `TeamsScreenTeamSelector(activeTeam: …)` ;
+        `teams_screen_controller.dart` : `selectableTeams` et `setActiveTeam`
+        supprimés (morts). Équipe active = première équipe du tournoi/joueur
+- [x] M15.3 Test de garde `test/memo_7_9_repro_test.dart` (3 tests :
+        disparition auto du SnackBar, sélecteur = Text sans dropdown,
+        cas équipe nulle)
+- [x] M15.4 Cause racine du test point 7 en échec : ce n'était PAS un
+        problème de timing de pump — le SnackBar d'erreur avait une `action`
+        (bouton « Copier ») et dans Flutter 3.47 un `SnackBar` avec `action`
+        reçoit `persist = true` par défaut (`snack_bar.dart:303` :
+        `persist = persist ?? action != null`) → le timer fire mais le
+        SnackBar ne s'auto-ferme jamais (test ET prod). Fix : bouton « Copier »
+        retiré du présentateur d'erreurs (le message reste dans les logs via
+        `debugPrint`) ; aucun autre SnackBar de `lib/` n'a d'`action`
+- [x] M15.5 Validation finale : `flutter analyze` 0 problème,
+        `flutter test` 32/32, `flutter build web` OK ; points 7 et 9 RESOLU
+        dans `MEMO.md`, `DOC.md` finalisé, RAG et notification Discord
+
+### M16 — Point 8 MEMO : suppression de la collection `rencontres` ✅
+- [x] M16.1 Schéma `pocketbase_schema.json` : collection `rencontres` supprimée ;
+        `meta_adv`/`estims`/`matched` ancrés sur `team_id` + `adversaire_team_id`
+        (relations `teams`, cascadeDelete) ; index uniques `matched` recalés sur
+        `(team_id, adversaire_team_id, joueur_id)` et
+        `(team_id, adversaire_team_id, meta_adv_id)` ; règles d'écriture
+        recalées sur `team_id.capitaine_id`
+- [x] M16.2 Modèles : `MetaAdv`/`Estim`/`Matched` — `rencontreId` remplacé par
+        `teamId` + `adversaireTeamId` ; `lib/models/rencontre.dart` supprimé
+        (+ export `models.dart`)
+- [x] M16.3 Services : filtres `pocketbase_dashboard_{adversaires,estims,matched}`
+        sur `team_id`/`adversaire_team_id` ; `deleteEstim` sans `rencontreId` ;
+        façade `pocketbase_data_service` recâblée (create/get/delete Rencontre et
+        `getTeamsParticipatingInTournoi` retirés, `getTeamsForTournoi` = liste des
+        adversaires) ; `pocketbase_rencontres_service.dart` supprimé ;
+        `collectionNameRencontres` retiré de `app_config.dart`
+- [x] M16.4 Écran Équipes : liste = équipes du tournoi (hors équipe active) ;
+        suppression des « rencontres personnalisées » (texte libre), du bouton
+        de création de rencontre, du bouton de suppression et des widgets
+        `rencontre_list_tile`/`add_encounter_dialog`/`rencontre_delete_confirmation`
+- [x] M16.5 Tableau de bord : `TeamDashboardScreen`/`Controller` pilotés par
+        `team` + `adversaireTeam` (flux filtrés sur le duo d'équipes) ;
+        panel d'appariements de la gestion d'équipe recalé sur les équipes adverses
+- [x] M16.6 Import texte : `TournamentTextImportService` ancre `meta_adv` sur
+        l'équipe adverse réelle (créée si absente du tournoi) ; compteurs
+        `createdEncounterCount` → `createdOpponentTeamCount`
+- [x] M16.7 Outils : purge sans `rencontres` ; seed démo réécrit (4 équipes
+        adverses [DEMO] créées dans le tournoi, `meta_adv`/`estims`/`matched`
+        ancrés sur les duos d'équipes)
+- [x] M16.8 Tests : fixtures `rencontre_id` remplacées ; test de garde point 8
+         (modèles sans `rencontreId`) → `test/memo_8_repro_test.dart` (3 tests :
+         MetaAdv/Estim/Matched ancrés sur teamId + adversaireTeamId, toJson
+         sans `rencontre_id`)
+- [x] M16.9 Docs (README/DOC/MEMO point 8 RESOLU) + RAG + notification Discord
+- [x] M16.10 Validation : `flutter analyze` 0, `flutter test` OK,
+         `flutter build web` OK
+         → 2026-08-30 : `flutter analyze` sans problème,
+         `flutter test` 35/35, `flutter build web` OK
 
   ## Journal erreurs/découvertes
 [Date | Problème | Cause racine | Règle préventive]
@@ -400,8 +468,18 @@ fixes), meta_adv, estims, matched.
    libéré dans `dispose()` ; l'API publique du wrapper `show...` reste
    inchangée (objet résultat renvoyé via `pop`)
 - 2026-08-26 | Suppression de compte : données orphelines possibles sur
-   `teams.capitaine_id` et `tournois.created_by` | ces relations n'ont pas
-   `cascadeDelete: true` ; `deleteCurrentAccount` liste/supprime d'abord
-   les équipes capitaines puis les tournois créés avant la suppression
-   du joueur ; les autres relations (`team_membres`, `rencontres`,
-   `meta_adv`, `estims`, `matched`) sont nettoyées par cascade
+    `teams.capitaine_id` et `tournois.created_by` | ces relations n'ont pas
+    `cascadeDelete: true` ; `deleteCurrentAccount` liste/supprime d'abord
+    les équipes capitaines puis les tournois créés avant la suppression
+    du joueur ; les autres relations (`team_membres`, `rencontres`,
+    `meta_adv`, `estims`, `matched`) sont nettoyées par cascade
+- 2026-08-29 | Test de garde point 7 : le SnackBar ne disparaît jamais
+    (FakeAsync, 6 s de pumps) — l'hypothèse initiale « timing de pump »
+    était fausse | un `SnackBar` avec `action` (bouton « Copier ») reçoit
+    `persist = true` par défaut dans Flutter 3.47 (`snack_bar.dart:303` :
+    `persist = persist ?? action != null`) ; le timer d'auto-dismiss fire
+    mais `ScaffoldMessengerState` respecte `persist` et ne masque pas le
+    SnackBar (bug app réel, pas seulement de test) | un SnackBar qui doit
+    s'auto-fermer ne doit pas avoir d'`action` (ou passer `persist: false`
+    explicitement) ; pour diagnostiquer un SnackBar persistant en test,
+    vérifier d'abord `persist`/`action` avant d'incriminer le timing FakeAsync

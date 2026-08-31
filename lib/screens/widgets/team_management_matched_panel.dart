@@ -4,7 +4,7 @@ import '../../config/app_config.dart';
 import '../../models/models.dart';
 import '../team_management_controller.dart';
 
-/// Panel d'association membre ↔ liste d'armée par rencontre.
+/// Panel d'association membre ↔ liste d'armée par équipe adverse.
 class TeamManagementMatchedPanel extends StatelessWidget {
   final TeamManagementController controller;
   final VoidCallback onStateChanged;
@@ -32,13 +32,13 @@ class TeamManagementMatchedPanel extends StatelessWidget {
 
   Future<void> _handlePairingTap(
     BuildContext context,
-    Rencontre encounter,
+    Team opponentTeam,
     MetaAdv opponent,
   ) async {
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     final List<Map<String, dynamic>> members = controller.members;
     final List<Matched> currentMatched =
-        controller.matchedByEncounter[encounter.id] ?? [];
+        controller.matchedByOpponentTeamId[opponentTeam.id] ?? [];
 
     final Set<String> pairedPlayerIds =
         currentMatched.map((pairing) => pairing.joueurId).toSet();
@@ -113,7 +113,7 @@ class TeamManagementMatchedPanel extends StatelessWidget {
     if (selectedPlayer == null) return;
 
     final bool success = await controller.toggleMatched(
-      encounter,
+      opponentTeam,
       selectedPlayer,
       opponent,
     );
@@ -147,9 +147,9 @@ class TeamManagementMatchedPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final encounters = controller.encounters;
+    final opponentTeams = controller.opponentTeams;
 
-    if (encounters.isEmpty) {
+    if (opponentTeams.isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -157,22 +157,22 @@ class TeamManagementMatchedPanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Rencontres & Appariements",
+          "Équipes adverses & Appariements",
           style: theme.textTheme.titleMedium
               ?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        ...encounters.map((encounter) {
+        ...opponentTeams.map((opponentTeam) {
           final opponents =
-              controller.opponentsByEncounter[encounter.id] ?? [];
+              controller.opponentsByOpponentTeamId[opponentTeam.id] ?? [];
           final matched =
-              controller.matchedByEncounter[encounter.id] ?? [];
+              controller.matchedByOpponentTeamId[opponentTeam.id] ?? [];
 
           return Card(
             margin: const EdgeInsets.only(bottom: 8),
             child: ExpansionTile(
               title: Text(
-                "Ronde : ${encounter.nomAdversaire}",
+                "Adversaire : ${opponentTeam.nom}",
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               children: opponents.isEmpty
@@ -180,7 +180,7 @@ class TeamManagementMatchedPanel extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Text(
-                          "Aucun adversaire pour cette rencontre.",
+                          "Aucun adversaire pour cette équipe.",
                           style: TextStyle(color: Colors.grey),
                         ),
                       ),
@@ -226,7 +226,7 @@ class TeamManagementMatchedPanel extends StatelessWidget {
                                 tooltip: "Apparier",
                                 onPressed: () => _handlePairingTap(
                                   context,
-                                  encounter,
+                                  opponentTeam,
                                   opponent,
                                 ),
                               )

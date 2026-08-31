@@ -1,5 +1,5 @@
 // ===========================================================================
-// Contrôleur du tableau de bord d'équipe (team_dashboard_controller.dart)
+// Contrôleur du tableau de bord d’équipe (team_dashboard_controller.dart)
 // Détient les données de référence, les flux temps réel et les règles
 // métier (rôles capitaine/joueur, appariements, estimations).
 // ===========================================================================
@@ -8,39 +8,37 @@ import '../models/models.dart';
 import '../services/pocketbase_data_service.dart';
 
 class TeamDashboardController {
-  final Tournoi tournoi;
   final Team team;
-  final Rencontre rencontre;
+  final Team adversaireTeam;
   final PocketbaseDataService _pocketbaseService =
       PocketbaseDataService.instance;
 
-  // Profil de l'utilisateur actuellement connecté
+  // Profil de l’utilisateur actuellement connecté
   Joueur? currentUserProfile;
 
   // Listes de référence statiques chargées au démarrage
   List<Armee> armies = [];
   List<Choix> choiceList = [];
 
-  // Liste des membres acceptés dans l'équipe
+  // Liste des membres acceptés dans l’équipe
   List<Joueur> teamMembers = [];
 
   // Flux temps réel créés UNE seule fois : des streams récréés à chaque
   // rebuild forceraient des résouscriptions SSE et des refetchs en cascade.
   late final Stream<List<MetaAdv>> opponentsStream =
-      _pocketbaseService.streamOpponents(rencontre.id);
+      _pocketbaseService.streamOpponents(team.id, adversaireTeam.id);
   late final Stream<List<Estim>> estimsStream =
-      _pocketbaseService.streamEstims(rencontre.id);
+      _pocketbaseService.streamEstims(team.id, adversaireTeam.id);
   late final Stream<List<Matched>> matchedStream =
-      _pocketbaseService.streamMatched(rencontre.id);
+      _pocketbaseService.streamMatched(team.id, adversaireTeam.id);
 
   TeamDashboardController({
-    required this.tournoi,
     required this.team,
-    required this.rencontre,
+    required this.adversaireTeam,
   });
 
   // Charge le profil connecté, les armées, les choix et les membres
-  // acceptés. Retourne un message d'erreur, ou null en cas de succès.
+  // acceptés. Retourne un message d’erreur, ou null en cas de succès.
   Future<String?> loadReferenceAndTeamData() async {
     try {
       currentUserProfile =
@@ -60,26 +58,27 @@ class TeamDashboardController {
     }
   }
 
-  // Ajoute un adversaire manuellement à la rencontre.
+  // Ajoute un adversaire manuellement au duo d’équipes.
   Future<void> addOpponent(
     String opponentName,
     String armyList,
     Armee army,
   ) async {
     await _pocketbaseService.createOpponent(
-      rencontre.id,
+      team.id,
+      adversaireTeam.id,
       army.id,
       opponentName,
       armyList,
     );
   }
 
-  // Supprime un adversaire de la rencontre.
+  // Supprime un adversaire du duo d’équipes.
   Future<void> deleteOpponent(String opponentId) async {
     await _pocketbaseService.deleteOpponent(opponentId);
   }
 
-  // Résout l'armée de référence d'un adversaire.
+  // Résout l’armée de référence d’un adversaire.
   Armee armyForOpponent(MetaAdv opponent, {String fallbackName = 'Inconnue'}) {
     return armies.firstWhere(
       (army) => army.id == opponent.armeeId,
@@ -87,13 +86,13 @@ class TeamDashboardController {
     );
   }
 
-  // Vérifie si l'utilisateur connecté est le capitaine.
+  // Vérifie si l’utilisateur connecté est le capitaine.
   bool isCaptain() {
     if (currentUserProfile == null) return false;
     return team.capitaineId == currentUserProfile!.id;
   }
 
-  // Vérifie si l'utilisateur courant a le droit d'éditer l'estimation de
+  // Vérifie si l’utilisateur courant a le droit d’éditer l’estimation de
   // ce joueur : chaque joueur édite les siennes, le capitaine édite celles
   // de toute son équipe.
   bool canEditEstimateOf(Joueur player) {
@@ -102,12 +101,13 @@ class TeamDashboardController {
     return isCaptain();
   }
 
-  // Verrouille/déverrouille l'appariement. Retourne false si l'appariement
+  // Verrouille/déverrouille l’appariement. Retourne false si l’appariement
   // est impossible (joueur ou adversaire déjà apparié ailleurs).
   Future<bool> toggleMatched(Joueur player, MetaAdv opponent) async {
     try {
       await _pocketbaseService.toggleMatched(
-        rencontre.id,
+        team.id,
+        adversaireTeam.id,
         player.id,
         opponent.id,
       );
@@ -116,5 +116,4 @@ class TeamDashboardController {
       return false;
     }
   }
-
 }

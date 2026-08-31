@@ -11,19 +11,22 @@ void main() {
     test('totalise et moyennne uniquement les appariements scorés', () {
       final matchedPlayer = Matched(
         id: 'matched00001',
-        rencontreId: 'rencontre00001',
+        teamId: 'team00001',
+        adversaireTeamId: 'adversaireTeam00001',
         joueurId: 'joueur00001',
         metaAdvId: 'adversaire00001',
       );
       final unmatchedScoredPlayer = Matched(
         id: 'matched00002',
-        rencontreId: 'rencontre00001',
+        teamId: 'team00001',
+        adversaireTeamId: 'adversaireTeam00001',
         joueurId: 'joueur00002',
         metaAdvId: 'adversaire00002',
       );
       final scoredEstim = Estim(
         joueurId: 'joueur00001',
-        rencontreId: 'rencontre00001',
+        teamId: 'team00001',
+        adversaireTeamId: 'adversaireTeam00001',
         metaAdvId: 'adversaire00001',
         choixId: 'choix00001',
         scoreMin: 8,
@@ -31,7 +34,8 @@ void main() {
       );
       final unscoredEstim = Estim(
         joueurId: 'joueur00002',
-        rencontreId: 'rencontre00001',
+        teamId: 'team00001',
+        adversaireTeamId: 'adversaireTeam00001',
         metaAdvId: 'adversaire00002',
         choixId: 'choix00001',
       );
@@ -55,7 +59,7 @@ void main() {
       expect(summary.averageScore, 10);
     });
 
-    test('renvoie zéro pour une rencontre sans appariement', () {
+    test('renvoie zéro pour une équipe adverse sans appariement', () {
       final summary = MatchedScoreSummaryCalculator.summarize(
         [],
         {},

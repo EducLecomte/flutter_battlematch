@@ -3,16 +3,16 @@ import 'new_recruit_import_service.dart';
 import 'pocketbase_data_service.dart';
 
 class TournamentTextImportSummary {
-  final int createdEncounterCount;
+  final int createdOpponentTeamCount;
   final int createdOpponentCount;
   final int unknownArmyCount;
-  final int skippedDuplicateEncounterCount;
+  final int skippedDuplicateTeamCount;
 
   const TournamentTextImportSummary({
-    required this.createdEncounterCount,
+    required this.createdOpponentTeamCount,
     required this.createdOpponentCount,
     required this.unknownArmyCount,
-    required this.skippedDuplicateEncounterCount,
+    required this.skippedDuplicateTeamCount,
   });
 }
 
@@ -32,57 +32,43 @@ class TournamentTextImportService {
     required List<Map<String, dynamic>> importedPlayers,
     required List<Armee> referenceArmies,
   }) async {
-    final Map<String, List<Map<String, dynamic>>> playersByTeamName = {};
-    for (final Map<String, dynamic> importedPlayer in importedPlayers) {
-      final String teamName = importedPlayer['teamName'] as String;
-      playersByTeamName
-          .putIfAbsent(teamName, () => <Map<String, dynamic>>[])
-          .add(importedPlayer);
-    }
+    final Map<String, List<Map<String, dynamic>>> playersByTeamName =
+        _groupPlayersByTeamName(importedPlayers);
+    final Map<String, Team> teamsByNormalizedName = {
+      for (final Team team
+          in await _pocketbaseDataService.getTeamsForTournoi(tournoiId))
+        team.nom.trim().toLowerCase(): team,
+    };
 
-    final Set<String> existingOpponentNames = await _loadExistingOpponentNames(
-      tournoiId,
-      targetTeamId,
-    );
-
-    int createdEncounterCount = 0;
+    int createdOpponentTeamCount = 0;
     int createdOpponentCount = 0;
     int unknownArmyCount = 0;
-    int skippedDuplicateEncounterCount = 0;
+    int skippedDuplicateTeamCount = 0;
 
     for (final MapEntry<String, List<Map<String, dynamic>>> teamEntry
         in playersByTeamName.entries) {
       if (_isTargetTeam(teamEntry.key, targetTeamName)) continue;
 
-      final String normalizedTeamName = teamEntry.key.trim().toLowerCase();
-      Rencontre encounterToPopulate;
-      final bool alreadyExists = existingOpponentNames.contains(normalizedTeamName);
+      final String opponentTeamName = teamEntry.key.trim();
+      final String normalizedName = opponentTeamName.toLowerCase();
+      Team opponentTeam = teamsByNormalizedName[normalizedName] ??
+          await _pocketbaseDataService.createTeamForTournoi(
+            tournoiId,
+            opponentTeamName,
+          );
+      if (teamsByNormalizedName[normalizedName] == null) {
+        teamsByNormalizedName[normalizedName] = opponentTeam;
+        createdOpponentTeamCount++;
+      }
 
-      if (alreadyExists) {
-        final List<Rencontre> existingEncounters =
-            await _pocketbaseDataService.getRencontres(tournoiId, targetTeamId);
-        final Rencontre? match = existingEncounters.cast<Rencontre?>().firstWhere(
-          (e) => e?.nomAdversaire.trim().toLowerCase() == normalizedTeamName,
-          orElse: () => null,
-        );
-
-        if (match != null) {
-          final existingOpponents =
-              await _pocketbaseDataService.getOpponents(match.id);
-          if (existingOpponents.isNotEmpty) {
-            skippedDuplicateEncounterCount++;
-            continue;
-          }
-          encounterToPopulate = match;
-        } else {
-          skippedDuplicateEncounterCount++;
-          continue;
-        }
-      } else {
-        encounterToPopulate = await _pocketbaseDataService
-            .createRencontre(tournoiId, targetTeamId, teamEntry.key);
-        existingOpponentNames.add(normalizedTeamName);
-        createdEncounterCount++;
+      final List<MetaAdv> existingOpponents =
+          await _pocketbaseDataService.getOpponents(
+        targetTeamId,
+        opponentTeam.id,
+      );
+      if (existingOpponents.isNotEmpty) {
+        skippedDuplicateTeamCount++;
+        continue;
       }
 
       for (final Map<String, dynamic> importedPlayer in teamEntry.value) {
@@ -95,7 +81,8 @@ class TournamentTextImportService {
         }
 
         await _pocketbaseDataService.createOpponent(
-          encounterToPopulate.id,
+          targetTeamId,
+          opponentTeam.id,
           resolvedArmy.id,
           importedPlayer['playerName'] as String,
           importedPlayer['listText'] as String,
@@ -105,23 +92,26 @@ class TournamentTextImportService {
     }
 
     return TournamentTextImportSummary(
-      createdEncounterCount: createdEncounterCount,
+      createdOpponentTeamCount: createdOpponentTeamCount,
       createdOpponentCount: createdOpponentCount,
       unknownArmyCount: unknownArmyCount,
-      skippedDuplicateEncounterCount: skippedDuplicateEncounterCount,
+      skippedDuplicateTeamCount: skippedDuplicateTeamCount,
     );
   }
 
-  Future<Set<String>> _loadExistingOpponentNames(
-    String tournoiId,
-    String targetTeamId,
-  ) async {
-    final List<Rencontre> existingEncounters =
-        await _pocketbaseDataService.getRencontres(tournoiId, targetTeamId);
-    return {
-      for (final Rencontre existingEncounter in existingEncounters)
-        existingEncounter.nomAdversaire.trim().toLowerCase(),
-    };
+  Map<String, List<Map<String, dynamic>>> _groupPlayersByTeamName(
+    List<Map<String, dynamic>> importedPlayers,
+  ) {
+    final Map<String, List<Map<String, dynamic>>> playersByTeamName = {};
+    for (final Map<String, dynamic> importedPlayer in importedPlayers) {
+      final String teamName = (importedPlayer['teamName'] as String? ?? '')
+          .trim();
+      if (teamName.isEmpty) continue;
+      playersByTeamName
+          .putIfAbsent(teamName, () => <Map<String, dynamic>>[])
+          .add(importedPlayer);
+    }
+    return playersByTeamName;
   }
 
   bool _isTargetTeam(String teamName, String targetTeamName) =>

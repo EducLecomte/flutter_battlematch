@@ -1,5 +1,5 @@
 // ===========================================================================
-// Estimations d'une rencontre MetaWar (collection estims) :
+// Estimations d’un duo d’équipes MetaWar (collection estims) :
 // enregistrement/upsert, suppression, listing et flux temps réel.
 // ===========================================================================
 
@@ -18,7 +18,11 @@ class PocketbaseDashboardEstimsService {
 
   PocketbaseClientHolder get _holder => PocketbaseClientHolder.instance;
 
-  /// Enregistre ou met à jour une estimation (upsert guidé par l'index unique
+  String _filtreParEquipes(String teamId, String adversaireTeamId) =>
+      'team_id = "${_holder.echapperFiltrePocketBase(teamId)}" '
+      '&& adversaire_team_id = "${_holder.echapperFiltrePocketBase(adversaireTeamId)}"';
+
+  /// Enregistre ou met à jour une estimation (upsert guidé par l’index unique
   /// joueur + adversaire).
   Future<void> saveEstim(Estim estim) async {
     final List<RecordModel> existants =
@@ -43,14 +47,12 @@ class PocketbaseDashboardEstimsService {
   /// Supprime une estimation précise.
   Future<void> deleteEstim(
     String joueurId,
-    String rencontreId,
     String metaAdvId,
   ) async {
     final List<RecordModel> existants =
         await _holder.clientPocketBase.collection(collectionNameEstims).getFullList(
               filter:
                   'joueur_id = "${_holder.echapperFiltrePocketBase(joueurId)}" '
-                  '&& rencontre_id = "${_holder.echapperFiltrePocketBase(rencontreId)}" '
                   '&& meta_adv_id = "${_holder.echapperFiltrePocketBase(metaAdvId)}"',
             );
 
@@ -61,15 +63,17 @@ class PocketbaseDashboardEstimsService {
     }
   }
 
-  /// Récupère les estimations d'une rencontre.
-  Future<List<Estim>> getEstims(String rencontreId) async {
+  /// Récupère les estimations d’un duo d’équipes.
+  Future<List<Estim>> getEstims(
+    String teamId,
+    String adversaireTeamId,
+  ) async {
     try {
       final List<RecordModel> records =
           await _holder.clientPocketBase
               .collection(collectionNameEstims)
               .getFullList(
-                filter:
-                    'rencontre_id = "${_holder.echapperFiltrePocketBase(rencontreId)}"',
+                filter: _filtreParEquipes(teamId, adversaireTeamId),
               );
       return records.map(Estim.fromPocketBaseRecord).toList();
     } catch (exception) {
@@ -78,13 +82,15 @@ class PocketbaseDashboardEstimsService {
     }
   }
 
-  /// Flux temps réel des estimations d'une rencontre.
-  Stream<List<Estim>> streamEstims(String rencontreId) {
+  /// Flux temps réel des estimations d’un duo d’équipes.
+  Stream<List<Estim>> streamEstims(
+    String teamId,
+    String adversaireTeamId,
+  ) {
     return _holder
         .streamCollectionRecords(
           nomCollection: collectionNameEstims,
-          filtre:
-              'rencontre_id = "${_holder.echapperFiltrePocketBase(rencontreId)}"',
+          filtre: _filtreParEquipes(teamId, adversaireTeamId),
           tri: 'created',
         )
         .map((records) => records.map(Estim.fromPocketBaseRecord).toList());

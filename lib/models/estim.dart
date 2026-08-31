@@ -4,7 +4,8 @@ import 'package:pocketbase/pocketbase.dart';
 /// (collection `estims`).
 class Estim {
   final String joueurId;
-  final String rencontreId;
+  final String teamId;
+  final String adversaireTeamId;
   final String metaAdvId;
   final String choixId;
   final int? scoreMin; // Optionnel (système 20-0)
@@ -14,7 +15,8 @@ class Estim {
 
   Estim({
     required this.joueurId,
-    required this.rencontreId,
+    required this.teamId,
+    required this.adversaireTeamId,
     required this.metaAdvId,
     required this.choixId,
     this.scoreMin,
@@ -26,7 +28,8 @@ class Estim {
   factory Estim.fromPocketBaseRecord(RecordModel record) {
     return Estim(
       joueurId: record.get<String>('joueur_id'),
-      rencontreId: record.get<String>('rencontre_id'),
+      teamId: record.get<String>('team_id'),
+      adversaireTeamId: record.get<String>('adversaire_team_id'),
       metaAdvId: record.get<String>('meta_adv_id'),
       choixId: record.get<String>('choix_id'),
       scoreMin: record.get<int?>('score_min', null),
@@ -39,7 +42,8 @@ class Estim {
   Map<String, dynamic> toJson() {
     return {
       'joueur_id': joueurId,
-      'rencontre_id': rencontreId,
+      'team_id': teamId,
+      'adversaire_team_id': adversaireTeamId,
       'meta_adv_id': metaAdvId,
       'choix_id': choixId,
       'score_min': scoreMin,

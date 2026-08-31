@@ -339,81 +339,6 @@
     "deleteRule": "joueur_id = @request.auth.id || @request.auth.id = team_id.capitaine_id"
   },
   {
-    "id": "mwrencontres001",
-    "name": "rencontres",
-    "type": "base",
-    "system": false,
-    "fields": [
-      {
-        "type": "relation",
-        "id": "f_tournoi0001",
-        "name": "tournoi_id",
-        "system": false,
-        "hidden": false,
-        "presentable": false,
-        "required": true,
-        "collectionId": "mwtournois00001",
-        "cascadeDelete": true,
-        "minSelect": null,
-        "maxSelect": 1,
-        "displayFields": null
-      },
-      {
-        "type": "relation",
-        "id": "f_teamidrenco",
-        "name": "team_id",
-        "system": false,
-        "hidden": false,
-        "presentable": false,
-        "required": true,
-        "collectionId": "mwteams00000001",
-        "cascadeDelete": true,
-        "minSelect": null,
-        "maxSelect": 1,
-        "displayFields": null
-      },
-      {
-        "type": "text",
-        "id": "f_noadv000001",
-        "name": "nom_adversaire",
-        "system": false,
-        "hidden": false,
-        "presentable": true,
-        "required": true,
-        "min": 1,
-        "max": 96,
-        "pattern": "",
-        "autogeneratePattern": ""
-      },
-      {
-        "type": "autodate",
-        "id": "autodate2990389176",
-        "name": "created",
-        "system": true,
-        "hidden": false,
-        "presentable": false,
-        "onCreate": true,
-        "onUpdate": false
-      },
-      {
-        "type": "autodate",
-        "id": "autodate3332085495",
-        "name": "updated",
-        "system": true,
-        "hidden": false,
-        "presentable": false,
-        "onCreate": true,
-        "onUpdate": true
-      }
-    ],
-    "indexes": [],
-    "listRule": "@request.auth.id != ''",
-    "viewRule": "@request.auth.id != ''",
-    "createRule": "@request.auth.id = team_id.capitaine_id",
-    "updateRule": "@request.auth.id = team_id.capitaine_id",
-    "deleteRule": "@request.auth.id = team_id.capitaine_id"
-  },
-  {
     "id": "mwarmees0000001",
     "name": "armees",
     "type": "base",
@@ -559,13 +484,27 @@
     "fields": [
       {
         "type": "relation",
-        "id": "f_rencontre01",
-        "name": "rencontre_id",
+        "id": "f_teammeta001",
+        "name": "team_id",
         "system": false,
         "hidden": false,
         "presentable": false,
         "required": true,
-        "collectionId": "mwrencontres001",
+        "collectionId": "mwteams00000001",
+        "cascadeDelete": true,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "relation",
+        "id": "f_advmeta001",
+        "name": "adversaire_team_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "collectionId": "mwteams00000001",
         "cascadeDelete": true,
         "minSelect": null,
         "maxSelect": 1,
@@ -635,9 +574,9 @@
     "indexes": [],
     "listRule": "@request.auth.id != ''",
     "viewRule": "@request.auth.id != ''",
-    "createRule": "@request.auth.id = rencontre_id.team_id.capitaine_id",
-    "updateRule": "@request.auth.id = rencontre_id.team_id.capitaine_id",
-    "deleteRule": "@request.auth.id = rencontre_id.team_id.capitaine_id"
+    "createRule": "@request.auth.id = team_id.capitaine_id",
+    "updateRule": "@request.auth.id = team_id.capitaine_id",
+    "deleteRule": "@request.auth.id = team_id.capitaine_id"
   },
   {
     "id": "mwestims0000001",
@@ -661,13 +600,27 @@
       },
       {
         "type": "relation",
-        "id": "f_rencestim01",
-        "name": "rencontre_id",
+        "id": "f_teamestim01",
+        "name": "team_id",
         "system": false,
         "hidden": false,
         "presentable": false,
         "required": true,
-        "collectionId": "mwrencontres001",
+        "collectionId": "mwteams00000001",
+        "cascadeDelete": true,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "relation",
+        "id": "f_advestim01",
+        "name": "adversaire_team_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "collectionId": "mwteams00000001",
         "cascadeDelete": true,
         "minSelect": null,
         "maxSelect": 1,
@@ -779,9 +732,9 @@
     ],
     "listRule": "@request.auth.id != ''",
     "viewRule": "@request.auth.id != ''",
-    "createRule": "joueur_id = @request.auth.id || (@collection.team_membres:member.joueur_id ?= joueur_id && @collection.team_membres:member.statut ?= 'accepted' && @collection.team_membres:member.team_id.capitaine_id ?= @request.auth.id)",
-    "updateRule": "joueur_id = @request.auth.id || (@collection.team_membres:member.joueur_id ?= joueur_id && @collection.team_membres:member.statut ?= 'accepted' && @collection.team_membres:member.team_id.capitaine_id ?= @request.auth.id)",
-    "deleteRule": "joueur_id = @request.auth.id || (@collection.team_membres:member.joueur_id ?= joueur_id && @collection.team_membres:member.statut ?= 'accepted' && @collection.team_membres:member.team_id.capitaine_id ?= @request.auth.id)"
+    "createRule": "joueur_id = @request.auth.id || (team_id.capitaine_id = @request.auth.id && @collection.team_membres:member.team_id ?= team_id && @collection.team_membres:member.joueur_id ?= joueur_id && @collection.team_membres:member.statut ?= 'accepted')",
+    "updateRule": "joueur_id = @request.auth.id || (team_id.capitaine_id = @request.auth.id && @collection.team_membres:member.team_id ?= team_id && @collection.team_membres:member.joueur_id ?= joueur_id && @collection.team_membres:member.statut ?= 'accepted')",
+    "deleteRule": "joueur_id = @request.auth.id || (team_id.capitaine_id = @request.auth.id && @collection.team_membres:member.team_id ?= team_id && @collection.team_membres:member.joueur_id ?= joueur_id && @collection.team_membres:member.statut ?= 'accepted')"
   },
   {
     "id": "mwmatched000001",
@@ -791,13 +744,27 @@
     "fields": [
       {
         "type": "relation",
-        "id": "f_rencomatch1",
-        "name": "rencontre_id",
+        "id": "f_teammatch01",
+        "name": "team_id",
         "system": false,
         "hidden": false,
         "presentable": false,
         "required": true,
-        "collectionId": "mwrencontres001",
+        "collectionId": "mwteams00000001",
+        "cascadeDelete": true,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "relation",
+        "id": "f_advmatch01",
+        "name": "adversaire_team_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": true,
+        "collectionId": "mwteams00000001",
         "cascadeDelete": true,
         "minSelect": null,
         "maxSelect": 1,
@@ -853,13 +820,13 @@
       }
     ],
     "indexes": [
-      "CREATE UNIQUE INDEX `idx_matched_un_appariement_par_joueur` ON `matched` (`rencontre_id`, `joueur_id`)",
-      "CREATE UNIQUE INDEX `idx_matched_un_appariement_par_adversaire` ON `matched` (`rencontre_id`, `meta_adv_id`)"
+      "CREATE UNIQUE INDEX `idx_matched_un_appariement_par_joueur` ON `matched` (`team_id`, `adversaire_team_id`, `joueur_id`)",
+      "CREATE UNIQUE INDEX `idx_matched_un_appariement_par_adversaire` ON `matched` (`team_id`, `adversaire_team_id`, `meta_adv_id`)"
     ],
     "listRule": "@request.auth.id != ''",
     "viewRule": "@request.auth.id != ''",
-    "createRule": "@request.auth.id = rencontre_id.team_id.capitaine_id",
-    "updateRule": "@request.auth.id = rencontre_id.team_id.capitaine_id",
-    "deleteRule": "@request.auth.id = rencontre_id.team_id.capitaine_id"
+    "createRule": "@request.auth.id = team_id.capitaine_id",
+    "updateRule": "@request.auth.id = team_id.capitaine_id",
+    "deleteRule": "@request.auth.id = team_id.capitaine_id"
   }
 ]

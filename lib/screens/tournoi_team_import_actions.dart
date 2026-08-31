@@ -42,7 +42,8 @@ Future<void> showTournoiTeamImportDialog({
       content: Text(
         "Import terminé : ${completedImportSummary.createdTeamCount} "
         "équipe(s) créée(s), "
-        "${completedImportSummary.skippedExistingTeamCount} ignorée(s).",
+        "${completedImportSummary.createdOpponentCount} liste(s) adverse(s) ajoutée(s), "
+        "${completedImportSummary.skippedExistingTeamCount} équipe(s) ignorée(s).",
       ),
       backgroundColor: Colors.green,
       duration: snackBarDisplayDuration,

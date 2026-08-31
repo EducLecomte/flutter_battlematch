@@ -9,7 +9,6 @@ const List<String> collectionsMetaWarParDefaut = [
   collectionNameMatched,
   collectionNameEstims,
   collectionNameMetaAdv,
-  collectionNameRencontres,
   collectionNameTeamMembres,
   collectionNameTeams,
   collectionNameTournois,

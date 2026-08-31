@@ -1,6 +1,6 @@
 // ===========================================================================
 // Tournois MetaWar : listing, création, modification et suppression des
-// tournois. Les rencontres sont gérées par pocketbase_rencontres_service.dart.
+// tournois. Les équipes sont gérées par pocketbase_teams_service.dart.
 // ===========================================================================
 
 import 'package:flutter/foundation.dart';
@@ -91,7 +91,7 @@ class PocketbaseTournoisService {
     );
   }
 
-  /// Supprime un tournoi (équipes/rencontres purgées en cascade).
+  /// Supprime un tournoi (équipes/listes adverses purgées en cascade).
   Future<void> deleteTournoi(String tournoiId) async {
     await _holder.clientPocketBase
         .collection(collectionNameTournois)

@@ -1,7 +1,7 @@
 // ===========================================================================
 // Écran des Tournois (tournois_screen.dart)
 // Permet de lister, d'ajouter, de modifier et de supprimer des tournois.
-// Redirige vers la sélection de rencontre.
+// Redirige vers la sélection d'équipe adverse.
 // ===========================================================================
 
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import '../config/app_config.dart';
 import '../models/models.dart';
 import '../utils/error_snack_bar_presenter.dart';
-import 'teams_screen.dart'; // Écran des rencontres (matchs)
+import 'teams_screen.dart'; // Écran des équipes adverses
 import 'tournoi_team_import_actions.dart';
 import 'tournois_controller.dart';
 import 'widgets/tournoi_add_dialog.dart';

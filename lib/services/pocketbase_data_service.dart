@@ -12,7 +12,6 @@ import 'pocketbase/pocketbase_dashboard_adversaires_service.dart';
 import 'pocketbase/pocketbase_dashboard_estims_service.dart';
 import 'pocketbase/pocketbase_dashboard_matched_service.dart';
 import 'pocketbase/pocketbase_referentiels_service.dart';
-import 'pocketbase/pocketbase_rencontres_service.dart';
 import 'pocketbase/pocketbase_team_access_service.dart';
 import 'pocketbase/pocketbase_team_invitations_service.dart';
 import 'pocketbase/pocketbase_team_membres_service.dart';
@@ -32,8 +31,6 @@ class PocketbaseDataService {
       PocketbaseTeamInvitationsService.instance;
   final PocketbaseTournoisService _serviceTournois =
       PocketbaseTournoisService.instance;
-  final PocketbaseRencontresService _serviceRencontres =
-      PocketbaseRencontresService.instance;
   final PocketbaseReferentielsService _serviceReferentiels =
       PocketbaseReferentielsService.instance;
   final PocketbaseDashboardAdversairesService _serviceDashboardAdversaires =
@@ -57,14 +54,13 @@ class PocketbaseDataService {
 
   Stream<bool> get authStateChanges => _serviceAuth.authStateChanges;
 
-  Future<void> signUp(
-          {required String email,
-          required String password,
-          required String nom}) =>
-      _serviceAuth.signUp(email: email, password: password, nom: nom);
+  Future<void> signUp({
+    required String email,
+    required String password,
+    required String nom,
+  }) => _serviceAuth.signUp(email: email, password: password, nom: nom);
 
-  Future<void> signIn(
-          {required String email, required String password}) =>
+  Future<void> signIn({required String email, required String password}) =>
       _serviceAuth.signIn(email: email, password: password);
 
   Future<void> signOut() => _serviceAuth.signOut();
@@ -118,19 +114,6 @@ class PocketbaseDataService {
   Future<void> deleteTournoi(String tournoiId) =>
       _serviceTournois.deleteTournoi(tournoiId);
 
-  Future<Rencontre> createRencontre(String tournoiId, String teamId,
-          String nomAdversaire) =>
-      _serviceRencontres.createRencontre(tournoiId, teamId, nomAdversaire);
-
-  Future<List<Rencontre>> getRencontres(String tournoiId, String teamId) =>
-      _serviceRencontres.getRencontres(tournoiId, teamId);
-
-  Future<void> deleteRencontre(String rencontreId) =>
-      _serviceRencontres.deleteRencontre(rencontreId);
-
-  Future<List<Team>> getTeamsParticipatingInTournoi(String tournoiId) =>
-      _serviceRencontres.getTeamsParticipatingInTournoi(tournoiId);
-
   Future<Team> getTeam(String teamId) => _serviceTeams.getTeam(teamId);
 
   Future<List<Team>> getTeamsForTournoi(String tournoiId) =>
@@ -146,64 +129,98 @@ class PocketbaseDataService {
       _serviceTeamAccess.reclamerEquipeEnCapitaine(teamId);
 
   Future<Team> rejoindreEquipeAvecMotDePasse(
-          String teamId, String motDePasse) =>
-      _serviceTeamAccess.rejoindreEquipeAvecMotDePasse(teamId, motDePasse);
+    String teamId,
+    String motDePasse,
+  ) => _serviceTeamAccess.rejoindreEquipeAvecMotDePasse(teamId, motDePasse);
 
   Future<Team> nommerNouveauCapitaine(
-          String teamId, String nouveauCapitaineJoueurId) =>
-      _serviceTeamAccess.nommerNouveauCapitaine(
-        teamId,
-        nouveauCapitaineJoueurId,
-      );
+    String teamId,
+    String nouveauCapitaineJoueurId,
+  ) => _serviceTeamAccess.nommerNouveauCapitaine(
+    teamId,
+    nouveauCapitaineJoueurId,
+  );
 
   Future<TournamentTeamImportSummary> importTeamsForTournoi({
     required String tournoiId,
     required List<Map<String, dynamic>> importedPlayers,
-  }) =>
-      _serviceTournamentTeamImport.importTeamsForTournoi(
-        tournoiId: tournoiId,
-        importedPlayers: importedPlayers,
-      );
+    required List<Armee> referenceArmies,
+  }) => _serviceTournamentTeamImport.importTeamsForTournoi(
+    tournoiId: tournoiId,
+    importedPlayers: importedPlayers,
+    referenceArmies: referenceArmies,
+  );
 
   Future<List<Armee>> getArmees() => _serviceReferentiels.getArmees();
 
   Future<List<Choix>> getChoix() => _serviceReferentiels.getChoix();
 
-  Future<List<MetaAdv>> getOpponents(String rencontreId) =>
-      _serviceDashboardAdversaires.getOpponents(rencontreId);
+  Future<List<MetaAdv>> getOpponents(
+    String teamId,
+    String adversaireTeamId,
+  ) => _serviceDashboardAdversaires.getOpponents(teamId, adversaireTeamId);
 
-  Stream<List<MetaAdv>> streamOpponents(String rencontreId) =>
-      _serviceDashboardAdversaires.streamOpponents(rencontreId);
+  Stream<List<MetaAdv>> streamOpponents(
+    String teamId,
+    String adversaireTeamId,
+  ) => _serviceDashboardAdversaires.streamOpponents(teamId, adversaireTeamId);
 
-  Future<MetaAdv> createOpponent(String rencontreId, String armeeId,
-          String nomJoAdv, String listeAdv) =>
-      _serviceDashboardAdversaires
-          .createOpponent(rencontreId, armeeId, nomJoAdv, listeAdv);
+  Future<MetaAdv> createOpponent(
+    String teamId,
+    String adversaireTeamId,
+    String armeeId,
+    String nomJoAdv,
+    String listeAdv,
+  ) => _serviceDashboardAdversaires.createOpponent(
+    teamId,
+    adversaireTeamId,
+    armeeId,
+    nomJoAdv,
+    listeAdv,
+  );
 
   Future<void> deleteOpponent(String opponentId) =>
       _serviceDashboardAdversaires.deleteOpponent(opponentId);
 
-  Future<void> saveEstim(Estim estim) => _serviceDashboardEstims.saveEstim(estim);
+  Future<void> saveEstim(Estim estim) =>
+      _serviceDashboardEstims.saveEstim(estim);
 
-  Future<void> deleteEstim(String joueurId, String rencontreId,
-          String metaAdvId) =>
-      _serviceDashboardEstims.deleteEstim(joueurId, rencontreId, metaAdvId);
+  Future<void> deleteEstim(
+    String joueurId,
+    String metaAdvId,
+  ) => _serviceDashboardEstims.deleteEstim(joueurId, metaAdvId);
 
-  Future<List<Estim>> getEstims(String rencontreId) =>
-      _serviceDashboardEstims.getEstims(rencontreId);
+  Future<List<Estim>> getEstims(
+    String teamId,
+    String adversaireTeamId,
+  ) => _serviceDashboardEstims.getEstims(teamId, adversaireTeamId);
 
-  Stream<List<Estim>> streamEstims(String rencontreId) =>
-      _serviceDashboardEstims.streamEstims(rencontreId);
+  Stream<List<Estim>> streamEstims(
+    String teamId,
+    String adversaireTeamId,
+  ) => _serviceDashboardEstims.streamEstims(teamId, adversaireTeamId);
 
-  Future<void> toggleMatched(String rencontreId, String joueurId,
-          String metaAdvId) =>
-      _serviceDashboardMatched.toggleMatched(rencontreId, joueurId, metaAdvId);
+  Future<void> toggleMatched(
+    String teamId,
+    String adversaireTeamId,
+    String joueurId,
+    String metaAdvId,
+  ) => _serviceDashboardMatched.toggleMatched(
+    teamId,
+    adversaireTeamId,
+    joueurId,
+    metaAdvId,
+  );
 
-  Future<List<Matched>> getMatched(String rencontreId) =>
-      _serviceDashboardMatched.getMatched(rencontreId);
+  Future<List<Matched>> getMatched(
+    String teamId,
+    String adversaireTeamId,
+  ) => _serviceDashboardMatched.getMatched(teamId, adversaireTeamId);
 
-  Stream<List<Matched>> streamMatched(String rencontreId) =>
-      _serviceDashboardMatched.streamMatched(rencontreId);
+  Stream<List<Matched>> streamMatched(
+    String teamId,
+    String adversaireTeamId,
+  ) => _serviceDashboardMatched.streamMatched(teamId, adversaireTeamId);
 
   // -------------------------------------------------------------------
   // Administration (comptes marqués `admin`)
@@ -218,8 +235,7 @@ class PocketbaseDataService {
   Future<void> deleteJoueur(String joueurId) =>
       _serviceAdmin.deleteJoueur(joueurId);
 
-  Future<void> deleteCurrentAccount() =>
-      _serviceAdmin.deleteCurrentAccount();
+  Future<void> deleteCurrentAccount() => _serviceAdmin.deleteCurrentAccount();
 
   Future<Armee> createArmee(String nom, String short) =>
       _serviceReferentiels.createArmee(nom, short);
@@ -233,9 +249,12 @@ class PocketbaseDataService {
   Future<Choix> createChoix(String libelle, String short, String couleurHex) =>
       _serviceReferentiels.createChoix(libelle, short, couleurHex);
 
-  Future<Choix> updateChoix(String choixId, String libelle, String short,
-      String couleurHex) =>
-      _serviceReferentiels.updateChoix(choixId, libelle, short, couleurHex);
+  Future<Choix> updateChoix(
+    String choixId,
+    String libelle,
+    String short,
+    String couleurHex,
+  ) => _serviceReferentiels.updateChoix(choixId, libelle, short, couleurHex);
 
   Future<void> deleteChoix(String choixId) =>
       _serviceReferentiels.deleteChoix(choixId);

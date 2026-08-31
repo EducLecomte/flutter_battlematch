@@ -1,4 +1,4 @@
-// Agrégats de scores pour les appariements d'une rencontre.
+// Agrégats de scores pour les appariements d'une équipe adverse.
 
 import '../models/models.dart';
 import 'estim_score_calculator.dart';

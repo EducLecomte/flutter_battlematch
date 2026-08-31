@@ -1,8 +1,8 @@
 // ===========================================================================
 // Appariements capitaine ↔ adversaire MetaWar (collection matched) :
-// bascule d'appariement, listing et flux temps réel par rencontre.
+// bascule d’appariement, listing et flux temps réel par duo d’équipes.
 // Les index uniques PocketBase garantissent un appariement unique par
-// joueur et par adversaire au sein d'une rencontre.
+// joueur et par adversaire au sein du même duo d’équipes.
 // ===========================================================================
 
 import 'package:flutter/foundation.dart';
@@ -20,16 +20,21 @@ class PocketbaseDashboardMatchedService {
 
   PocketbaseClientHolder get _holder => PocketbaseClientHolder.instance;
 
-  /// Active/désactive l'appariement capitaine ↔ adversaire d'une case.
+  String _filtreParEquipes(String teamId, String adversaireTeamId) =>
+      'team_id = "${_holder.echapperFiltrePocketBase(teamId)}" '
+      '&& adversaire_team_id = "${_holder.echapperFiltrePocketBase(adversaireTeamId)}"';
+
+  /// Active/désactive l’appariement capitaine ↔ adversaire d’une case.
   Future<void> toggleMatched(
-    String rencontreId,
+    String teamId,
+    String adversaireTeamId,
     String joueurId,
     String metaAdvId,
   ) async {
     final List<RecordModel> existants =
         await _holder.clientPocketBase.collection(collectionNameMatched).getFullList(
               filter:
-                  'rencontre_id = "${_holder.echapperFiltrePocketBase(rencontreId)}" '
+                  '${_filtreParEquipes(teamId, adversaireTeamId)} '
                   '&& joueur_id = "${_holder.echapperFiltrePocketBase(joueurId)}" '
                   '&& meta_adv_id = "${_holder.echapperFiltrePocketBase(metaAdvId)}"',
             );
@@ -41,10 +46,11 @@ class PocketbaseDashboardMatchedService {
           .delete(existants.first.id);
     } else {
       // Non apparié -> création (les index uniques bloquent les doublons
-      // joueur ou adversaire déjà engagés ailleurs, erreur propagée à l'écran)
+      // joueur ou adversaire déjà engagés ailleurs, erreur propagée à l’écran)
       await _holder.clientPocketBase.collection(collectionNameMatched).create(
         body: {
-          'rencontre_id': rencontreId,
+          'team_id': teamId,
+          'adversaire_team_id': adversaireTeamId,
           'joueur_id': joueurId,
           'meta_adv_id': metaAdvId,
         },
@@ -52,15 +58,17 @@ class PocketbaseDashboardMatchedService {
     }
   }
 
-  /// Récupère les appariements validés d'une rencontre.
-  Future<List<Matched>> getMatched(String rencontreId) async {
+  /// Récupère les appariements validés d’un duo d’équipes.
+  Future<List<Matched>> getMatched(
+    String teamId,
+    String adversaireTeamId,
+  ) async {
     try {
       final List<RecordModel> records =
           await _holder.clientPocketBase
               .collection(collectionNameMatched)
               .getFullList(
-                filter:
-                    'rencontre_id = "${_holder.echapperFiltrePocketBase(rencontreId)}"',
+                filter: _filtreParEquipes(teamId, adversaireTeamId),
               );
       return records.map(Matched.fromPocketBaseRecord).toList();
     } catch (exception) {
@@ -69,13 +77,15 @@ class PocketbaseDashboardMatchedService {
     }
   }
 
-  /// Flux temps réel des appariements validés d'une rencontre.
-  Stream<List<Matched>> streamMatched(String rencontreId) {
+  /// Flux temps réel des appariements validés d’un duo d’équipes.
+  Stream<List<Matched>> streamMatched(
+    String teamId,
+    String adversaireTeamId,
+  ) {
     return _holder
         .streamCollectionRecords(
           nomCollection: collectionNameMatched,
-          filtre:
-              'rencontre_id = "${_holder.echapperFiltrePocketBase(rencontreId)}"',
+          filtre: _filtreParEquipes(teamId, adversaireTeamId),
           tri: 'created',
         )
         .map((records) => records.map(Matched.fromPocketBaseRecord).toList());

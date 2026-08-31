@@ -40,11 +40,17 @@ pocketbase_schema.json                   # Snapshot de schéma à importer
 
 Le snapshot est au **format génération moderne** PocketBase (≥ 0.23 ;
 instance migrée en **0.39.11** le 2026-08-22). Il crée/met à jour :
-`joueurs` (collection `auth` **dédiée** aux profils MetaWar, champs
-`nom`/`short`, auth email+mot de passe), `tournois`, `teams`,
-`team_membres`, `rencontres`, `armees`, `choix`, `meta_adv`, `estims`,
+`joueurs` (collection `auth` **dédiée** aux profils MetaWar, champ
+`nom`, auth email+mot de passe), `tournois`, `teams`,
+`team_membres`, `armees`, `choix`, `meta_adv`, `estims`,
 `matched` — relations, index uniques anti-doublon (appariements,
 estimations par joueur, armées/choix) et règles d'accès.
+
+> ⚠️ **M16 (2026-08-30) :** la collection `rencontres` a été supprimée du
+> snapshot. `meta_adv`/`estims`/`matched` sont ancrés sur le duo
+> `team_id` + `adversaire_team_id`. Lors du réimport, supprimer
+> manuellement la collection `rencontres` existante dans l'admin
+> (l'import est additif et ne la retire pas).
 
 > ✅ La collection native `users` n'apparaît **pas** dans le snapshot :
 > l'import est **additif** et la laisse strictement intacte (l'application
@@ -60,7 +66,7 @@ estimations par joueur, armées/choix) et règles d'accès.
 | Tournois | création/suppression réservées aux admins ; ouverture bloquée pour les non-admins tant que l'import des équipes n'est pas effectué |
 | Équipes | création réservée aux admins ; réclamation d'une équipe sans capitaine ; join par mot de passe ; suppression admin ou capitaine |
 | Invitations | capitaine de l'équipe ; acceptation/refus par l'invité |
-| Adversaires & appariements | capitaine de l'équipe de la rencontre |
+| Adversaires & appariements | capitaine de l'équipe |
 | Estimations | chaque joueur et le capitaine de son équipe |
 | Administration | compte `admin` : gestion des joueurs, armées et appréciations |
 
@@ -105,9 +111,10 @@ Crée un univers de test **idempotent** rattaché à l'équipe `Les randomiques`
 
 - 5 comptes joueurs : `martin|sophie|lucas|emma|hugo.demo@pedagogeek.fr`,
   mot de passe commun `DemoMetaWar2026`, ajoutés comme membres acceptés
-- 4 rencontres `[DEMO] vs …` avec 12 adversaires (listes T9A réalistes)
+- 4 équipes adverses `[DEMO] vs …` créées dans le tournoi, chacune avec
+  3 adversaires (listes T9A réalistes)
 - 60 estimations pré-remplies avec **trous volontaires** pour tester la saisie
-- 1 appariement exemple sur la première rencontre
+- 1 appariement exemple sur la première équipe adverse
 
 Pour repartir de zéro : supprimer les enregistrements dont le nom commence
 par `[DEMO]` et les comptes `*.demo@pedagogeek.fr` depuis l'admin.
@@ -121,7 +128,7 @@ dart run tool/pocketbase_purge_meta_war_records.dart
 ```
 
 Avec `--yes`, il supprime les données MetaWar dans l'ordre anti-orphelins :
-`matched`, `estims`, `meta_adv`, `rencontres`, `team_membres`, `teams`,
+`matched`, `estims`, `meta_adv`, `team_membres`, `teams`,
 `tournois`, `joueurs`. Les collections natives PocketBase (`users`,
 `_superusers`, fichiers) ne sont pas touchées.
 
@@ -176,7 +183,8 @@ flutter analyze           # analyse statique
 - Équipes : réclamation d'une équipe sans capitaine, join par mot de passe,
   gestion du mot de passe, nomination d'un capitaine, invitations, retrait de
   membres
-- Rencontres (rondes) par équipe et tournoi
+- Équipes adverses du tournoi par équipe (chaque équipe peut estimer
+  n'importe quelle autre équipe du tournoi)
 - Matrice d'estimation temps réel joueur × adversaire (7 appréciations fixes,
    symbole `Dicy` en gris, scores 20-0, confiance, commentaires, valeurs
    visibles en cellule appariée/bloquée)
@@ -188,8 +196,8 @@ flutter analyze           # analyse statique
 - Équipes du tournoi visibles par tous (sélection de l'équipe active
    depuis l'écran Équipes)
 - Import tournoi : texte ou JSON depuis l'écran Équipes, avec création des
-   rencontres et des adversaires, dédoublonnage des adversaires déjà
-   importés et comptage des armées inconnues
+   équipes adverses (si absentes du tournoi) et des adversaires,
+   dédoublonnage des adversaires déjà importés et comptage des armées inconnues
  - Administration (compte `admin`, accessible depuis le Profil) :
     promotion/rétrogradation et suppression des joueurs, gestion des armées et
     des appréciations

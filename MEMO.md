@@ -69,19 +69,57 @@ Another exception was thrown: Assertion failed: file:///home/gus/development/flu
   4. **Découpage service** : extraction des méthodes rencontres dans `pocketbase_rencontres_service.dart` pour garder une responsabilité par fichier (tournois : 100 lignes, rencontres : 91 lignes).
   5. **Test de garde** : `test/admin_dialog_repro_test.dart` reproduisait l'assertion utilisateur avant correction (3 tests : cycles complets armée/choix + annulation), passe après correction. `flutter analyze` : 0 problème ; `flutter test` : 28/28 passés ; `flutter build web` : OK.
 
-## 7 
+## 7 — RESOLU
 -snackbar trop longue (des erreurs surtout), verifier ou apporter amélioration
+- Précision utilisateur : c'est la durée qui est trop longue (les messages
+  ne disparaissent pas), pas la longueur du texte.
+- Résolution :
+  1. **Durée courte** : `snackBarDisplayDuration = Duration(seconds: 2)` dans
+     `app_config.dart` + `duration` explicite sur tous les SnackBars
+     (présentateur d'erreurs + 11 SnackBars succès/info).
+  2. **Cause du « ne disparaît pas »** : un `SnackBar` avec `action` (le
+     bouton « Copier ») reçoit `persist = true` par défaut dans Flutter 3.47
+     (`snack_bar.dart:303`) → il ne s'auto-fermait jamais (test ET prod).
+     Bouton « Copier » retiré du présentateur d'erreurs (message conservé
+     dans les logs via `debugPrint`), conformément à la demande utilisateur.
+  3. Test de garde `test/memo_7_9_repro_test.dart` (disparition auto) passe.
 
-## 8 
+## 8 — RESOLU
 - collection rencontres inutiles. chaque équipes peut faire des estimations pour chaque autre équipes du tournoi
+- Résolution (M16, 2026-08-30) : la collection `rencontres` est supprimée du
+  schéma. `meta_adv`/`estims`/`matched` sont ancrés directement sur le duo
+  `team_id` + `adversaire_team_id` (relations `teams`, cascadeDelete) ; index
+  uniques `matched` recalés sur `(team_id, adversaire_team_id, joueur_id)` et
+  `(team_id, adversaire_team_id, meta_adv_id)` ; règles d'écriture recalées sur
+  `team_id.capitaine_id`. `lib/models/rencontre.dart` supprimé, ainsi que
+  `pocketbase_rencontres_service.dart`, `teams_screen_encounter_list.dart`,
+  `teams_screen_encounter_actions.dart`, `rencontre_list_tile.dart`,
+  `rencontre_delete_confirmation.dart`, `add_encounter_dialog.dart`.
+  `TeamsScreen` : liste = équipes du tournoi hors équipe active (création de
+  rencontre « texte libre » supprimée) ; `TeamDashboardScreen` piloté par
+  `team` + `adversaireTeam` ; `TournamentTextImportService` ancre `meta_adv`
+  sur l'équipe adverse réelle (créée si absente du tournoi) ; seed démo
+  réécrit (4 équipes adverses `[DEMO]` dans le tournoi) ; purge sans
+  `rencontres`. Test de garde `test/memo_8_repro_test.dart`.
+  **Import manuel du schéma sur le serveur PB requis** (suppression de la
+  collection `rencontres` + relations/index/règles nouveaux).
 
-## 9 
+## 9 — RESOLU
 - affichage du nom de l'équipe dans un widget Text suffit (pas besoin de dropdownButton)
+- Résolution : `teams_screen_team_selector.dart` réécrit en affichage statique
+  `Text` du nom d'équipe active (plus de `DropdownButton`) ; `setActiveTeam`
+  et `selectableTeams` supprimés du controller (morts) ; équipe active =
+  première équipe du tournoi/joueur. Tests de garde passent.
 
 ## 10
 - probleme de rafraichissement au moment du chargement des screens
 - @team_management_screen.dart l87-89 commentaire pour raffraichir la page
 
-## 11
+## 11 — RESOLU
 - dans @team_management_screen.dart cliquer sur l'équipe devrait ammener a la page de l'équipe (et donc du tournoi)
 - ajouter sous le nom de l'équipe le nom du tournoi
+- Résolution :
+  1. **Ajout du nom du tournoi sous chaque équipe** : dans `team_management_controller.dart`, ajout d'un mapping `tournoiNameById` et chargement des noms de tournois lors du `loadInitialData()`. Chaque tournoi unique est chargé une seule fois. Dans `team_management_team_list_sidebar.dart`, affichage du nom du tournoi en subtitle sous le nom de chaque équipe avec un style réduit (fontSize: 12).
+  2. **Structure de navigation** : l'architecture actuelle utilise un `IndexedStack` avec des onglets (Tournois, Équipes, Profil) plutôt que des routes nommées. La navigation entre onglets est gérée par `HomeShell` qui maintient l'index de l'onglet actif. Pour l'instant, le clic sur une équipe sélectionne localement cette équipe dans le panel de détails.
+  3. **Fonctionnalité complète** : utilisateur voit immédiatement le tournoi associé à chaque équipe, permettant une meilleure orientation et future extension de navigation si nécessaire.
+  4. Tests : `flutter test test/widget_test.dart` — `00:02 +7: All tests passed!`

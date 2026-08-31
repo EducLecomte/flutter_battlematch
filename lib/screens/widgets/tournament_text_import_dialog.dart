@@ -83,7 +83,10 @@ class _TournamentTextImportDialogState
         referenceArmies: widget.referenceArmies,
       );
 
-      if (importSummary.createdEncounterCount == 0) {
+      if (importSummary.createdOpponentTeamCount +
+          importSummary.createdOpponentCount +
+          importSummary.skippedDuplicateTeamCount ==
+          0) {
         if (mounted) {
           setState(() => _errorMessage =
               "Aucune équipe détectée à importer pour ce tournoi.");

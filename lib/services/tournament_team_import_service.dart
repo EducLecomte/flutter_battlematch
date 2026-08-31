@@ -6,16 +6,21 @@
 import '../models/models.dart';
 import 'pocketbase/pocketbase_teams_service.dart';
 import 'pocketbase/pocketbase_tournois_service.dart';
+import 'tournament_text_import_service.dart';
 
 class TournamentTeamImportSummary {
   final int createdTeamCount;
   final int skippedExistingTeamCount;
   final int totalTeamCount;
+  final int createdOpponentCount;
+  final int unknownArmyCount;
 
   const TournamentTeamImportSummary({
     required this.createdTeamCount,
     required this.skippedExistingTeamCount,
     required this.totalTeamCount,
+    this.createdOpponentCount = 0,
+    this.unknownArmyCount = 0,
   });
 }
 
@@ -34,32 +39,54 @@ class TournamentTeamImportService {
   Future<TournamentTeamImportSummary> importTeamsForTournoi({
     required String tournoiId,
     required List<Map<String, dynamic>> importedPlayers,
+    required List<Armee> referenceArmies,
   }) async {
-    final List<Team> equipesExistantes =
-        await _serviceTeams.getTeamsForTournoi(tournoiId);
-    final Set<String> clefsEquipesExistantes = {
+    final List<Team> equipesExistantes = await _serviceTeams.getTeamsForTournoi(
+      tournoiId,
+    );
+    final Map<String, Team> equipesParNom = {
       for (final Team equipeExistante in equipesExistantes)
-        equipeExistante.nom.trim().toLowerCase(),
+        equipeExistante.nom.trim().toLowerCase(): equipeExistante,
     };
 
-    final List<String> nomsEquipesUniques =
-        _extraireNomsEquipesUniques(importedPlayers);
+    final Map<String, List<Map<String, dynamic>>> joueursParEquipe =
+        groupPlayersByTeamName(importedPlayers);
+    final List<String> nomsEquipesUniques = joueursParEquipe.keys.toList();
     if (nomsEquipesUniques.isEmpty) {
       throw Exception("Aucune équipe détectée dans le contenu importé.");
     }
 
     int createdTeamCount = 0;
     int skippedExistingTeamCount = 0;
+    int createdOpponentCount = 0;
+    int unknownArmyCount = 0;
 
     for (final String nomEquipe in nomsEquipesUniques) {
-      final String cleEquipe = nomEquipe.toLowerCase();
-      if (clefsEquipesExistantes.contains(cleEquipe)) {
+      final String cleEquipe = nomEquipe.trim().toLowerCase();
+      final Team? teamExiste = equipesParNom[cleEquipe];
+      final Team equipeCible;
+      if (teamExiste != null) {
         skippedExistingTeamCount++;
-        continue;
+        equipeCible = teamExiste;
+      } else {
+        equipeCible = await _serviceTeams.createTeamForTournoi(
+          tournoiId,
+          nomEquipe,
+        );
+        equipesParNom[cleEquipe] = equipeCible;
+        createdTeamCount++;
       }
-      await _serviceTeams.createTeamForTournoi(tournoiId, nomEquipe);
-      clefsEquipesExistantes.add(cleEquipe);
-      createdTeamCount++;
+
+      final TournamentTextImportSummary summary =
+          await TournamentTextImportService.instance.importTournamentText(
+            tournoiId: tournoiId,
+            targetTeamId: equipeCible.id,
+            targetTeamName: equipeCible.nom,
+            importedPlayers: importedPlayers,
+            referenceArmies: referenceArmies,
+          );
+      createdOpponentCount += summary.createdOpponentCount;
+      unknownArmyCount += summary.unknownArmyCount;
     }
 
     await _serviceTournois.markTournoiImportEffectue(tournoiId);
@@ -68,26 +95,23 @@ class TournamentTeamImportService {
       createdTeamCount: createdTeamCount,
       skippedExistingTeamCount: skippedExistingTeamCount,
       totalTeamCount: nomsEquipesUniques.length,
+      createdOpponentCount: createdOpponentCount,
+      unknownArmyCount: unknownArmyCount,
     );
   }
 
-  List<String> _extraireNomsEquipesUniques(
+  Map<String, List<Map<String, dynamic>>> groupPlayersByTeamName(
     List<Map<String, dynamic>> importedPlayers,
   ) {
-    final List<String> nomsEquipesUniques = [];
-    final Set<String> clefsEquipes = {};
-
+    final Map<String, List<Map<String, dynamic>>> joueursParEquipe = {};
     for (final Map<String, dynamic> importedPlayer in importedPlayers) {
-      final String nomEquipe =
-          (importedPlayer['teamName'] as String? ?? '').trim();
-      if (nomEquipe.isEmpty) continue;
-
-      final String cleEquipe = nomEquipe.toLowerCase();
-      if (clefsEquipes.add(cleEquipe)) {
-        nomsEquipesUniques.add(nomEquipe);
-      }
+      final String teamName = (importedPlayer['teamName'] as String? ?? '')
+          .trim();
+      if (teamName.isEmpty) continue;
+      joueursParEquipe
+          .putIfAbsent(teamName, () => <Map<String, dynamic>>[])
+          .add(importedPlayer);
     }
-
-    return nomsEquipesUniques;
+    return joueursParEquipe;
   }
 }

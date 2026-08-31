@@ -95,11 +95,12 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
           TeamManagementTeamListSidebar(
             teams: _controller.teams,
             selectedTeamId: _controller.selectedTeam?.id,
+            tournoiNameById: _controller.tournoiNameById,
             onTeamSelected: (team) async {
               _controller.selectedTeam = team;
               _refreshUserInterface();
               await _controller.loadMembersForSelectedTeam();
-              await _controller.loadEncountersForSelectedTeam();
+              await _controller.loadOpponentsForSelectedTeam();
               _refreshUserInterface();
             },
           ),

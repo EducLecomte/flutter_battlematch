@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+
 import '../../models/models.dart';
 
 class TeamManagementTeamListSidebar extends StatelessWidget {
   final List<Team> teams;
   final String? selectedTeamId;
   final ValueChanged<Team> onTeamSelected;
+  final Map<String, String> tournoiNameById;
 
   const TeamManagementTeamListSidebar({
     super.key,
     required this.teams,
     required this.selectedTeamId,
     required this.onTeamSelected,
+    this.tournoiNameById = const {},
   });
 
   @override
@@ -36,15 +39,25 @@ class TeamManagementTeamListSidebar extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final team = teams[index];
                       final isSelected = selectedTeamId == team.id;
+                      final tournoiName =
+                          tournoiNameById[team.tournoiId] ?? 'Tournoi inconnu';
                       return ListTile(
                         title: Text(
                           team.nom,
                           style: TextStyle(
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
                           ),
                         ),
+                        subtitle: Text(
+                          tournoiName,
+                          style: const TextStyle(fontSize: 12),
+                        ),
                         selected: isSelected,
-                        onTap: () => onTeamSelected(team),
+                        onTap: () {
+                          onTeamSelected(team);
+                        },
                       );
                     },
                   ),

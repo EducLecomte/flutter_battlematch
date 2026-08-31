@@ -1,7 +1,7 @@
 // ===========================================================================
 // Script de jeu de données de démonstration pour MetaWar.
 // Crée un univers de test cohérent et idempotent sur l'instance PocketBase :
-// comptes joueurs de démonstration, adhésions d'équipe, rencontres,
+// comptes joueurs de démonstration, adhésions d'équipe, équipes adverses,
 // adversaires avec listes d'armées T9A réalistes, estimations pré-remplies
 // (avec trous volontaires pour tester la saisie) et un appariement exemple.
 //
@@ -11,7 +11,7 @@
 //   dart run tool/pocketbase_seed_demo_records.dart
 //
 // Idempotence : chaque catégorie est recherchée par sa clé naturelle
-// (email du joueur, couple team/joueur, couple tournoi/nom_adversaire,
+// (email du joueur, couple team/joueur, couple tournoi/nom_equipe,
 // couple joueur/meta_adv) puis mise à jour au lieu d'être dupliquée.
 //
 // Prérequis : les collections MetaWar doivent exister et les référentiels
@@ -46,22 +46,22 @@ const List<Map<String, String>> referentielJoueursDemo = [
   {'email': 'hugo.demo@pedagogeek.fr', 'nom': 'Hugo Moreau', 'short': 'HMOR'},
 ];
 
-/// Rencontres de démonstration et armées des trois adversaires de chacune.
-const List<Map<String, dynamic>> definitionRencontresDemo = [
+/// Équipes adverses de démonstration et armées de leurs trois adversaires.
+const List<Map<String, dynamic>> definitionEquipesAdversesDemo = [
   {
-    'nom_adversaire': '[DEMO] vs Les Chevaliers du Sud',
+    'nom_equipe': '[DEMO] vs Les Chevaliers du Sud',
     'shorts_armees': ['KoE', 'EoS', 'HE'],
   },
   {
-    'nom_adversaire': '[DEMO] vs Compagnie Verte',
+    'nom_equipe': '[DEMO] vs Compagnie Verte',
     'shorts_armees': ['SE', 'SA', 'BH'],
   },
   {
-    'nom_adversaire': '[DEMO] vs La Garde de Fer',
+    'nom_equipe': '[DEMO] vs La Garde de Fer',
     'shorts_armees': ['DH', 'ID', 'VS'],
   },
   {
-    'nom_adversaire': '[DEMO] vs Horde du Nord',
+    'nom_equipe': '[DEMO] vs Horde du Nord',
     'shorts_armees': ['WDG', 'VC', 'OK'],
   },
 ];
@@ -257,29 +257,32 @@ Future<void> main(List<String> arguments) async {
                 'created_by': identifiantCapitaine,
               },
             );
+    await clientPocketBase.collection(collectionNameTeams).update(
+      equipeCible.id,
+      body: {'tournoi_id': tournoiCible.id},
+    );
 
-    // --- Rencontres et adversaires ---------------------------------------------
-    var nombreRencontresCreees = 0;
+    // --- Équipes adverses et listes ---------------------------------------------
+    var nombreEquipesAdversesCreees = 0;
     var nombreAdversairesCrees = 0;
-    final List<RecordModel> rencontresDemo = [];
-    final Map<String, List<RecordModel>> adversairesParRencontre = {};
+    final List<RecordModel> equipesAdversesDemo = [];
+    final Map<String, List<RecordModel>> adversairesParEquipeAdverse = {};
 
-    for (final Map<String, dynamic> definitionRencontre in definitionRencontresDemo) {
-      final String nomAdversaireEquipe = definitionRencontre['nom_adversaire'] as String;
-      final RecordModel rencontre = await _rechercherPremier(clientPocketBase,
-              nomCollection: collectionNameRencontres,
+    for (final Map<String, dynamic> definitionEquipeAdverse in definitionEquipesAdversesDemo) {
+      final String nomEquipeAdverse = definitionEquipeAdverse['nom_equipe'] as String;
+      final RecordModel equipeAdverse = await _rechercherPremier(clientPocketBase,
+              nomCollection: collectionNameTeams,
               filtre:
-                  'tournoi_id = "${tournoiCible.id}" && nom_adversaire = "$nomAdversaireEquipe"') ??
-          await clientPocketBase.collection(collectionNameRencontres).create(body: {
+                  'tournoi_id = "${tournoiCible.id}" && nom = "$nomEquipeAdverse"') ??
+          await clientPocketBase.collection(collectionNameTeams).create(body: {
             'tournoi_id': tournoiCible.id,
-            'team_id': equipeCible.id,
-            'nom_adversaire': nomAdversaireEquipe,
+            'nom': nomEquipeAdverse,
           });
-      if (_estNouvelleCreation(rencontre)) nombreRencontresCreees++;
-      rencontresDemo.add(rencontre);
+      if (_estNouvelleCreation(equipeAdverse)) nombreEquipesAdversesCreees++;
+      equipesAdversesDemo.add(equipeAdverse);
 
-      final List<RecordModel> adversairesDeLaRencontre = [];
-      for (final String shortArmee in definitionRencontre['shorts_armees'] as List<String>) {
+      final List<RecordModel> adversairesDeLEquipe = [];
+      for (final String shortArmee in definitionEquipeAdverse['shorts_armees'] as List<String>) {
         final Map<String, String>? adversaireReference =
             adversairesParShortArmee[shortArmee];
         final String? identifiantArmee = idsArmeesParShort[shortArmee];
@@ -290,24 +293,25 @@ Future<void> main(List<String> arguments) async {
         final RecordModel adversaire = await _rechercherPremier(clientPocketBase,
                 nomCollection: collectionNameMetaAdv,
                 filtre:
-                    'rencontre_id = "${rencontre.id}" && nom_jo_adv = "${adversaireReference['pseudo']}"') ??
+                    'team_id = "${equipeCible.id}" && adversaire_team_id = "${equipeAdverse.id}" && nom_jo_adv = "${adversaireReference['pseudo']}"') ??
             await clientPocketBase.collection(collectionNameMetaAdv).create(body: {
-              'rencontre_id': rencontre.id,
+              'team_id': equipeCible.id,
+              'adversaire_team_id': equipeAdverse.id,
               'armee_id': identifiantArmee,
               'nom_jo_adv': adversaireReference['pseudo'],
               'liste_adv': adversaireReference['liste'],
             });
         if (_estNouvelleCreation(adversaire)) nombreAdversairesCrees++;
-        adversairesDeLaRencontre.add(adversaire);
+        adversairesDeLEquipe.add(adversaire);
       }
-      adversairesParRencontre[rencontre.id] = adversairesDeLaRencontre;
+      adversairesParEquipeAdverse[equipeAdverse.id] = adversairesDeLEquipe;
     }
 
     // --- Estimations pré-remplies (avec trous volontaires) ---------------------
     final List<RecordModel> estimateurs = <RecordModel>[capitaine, ...listeJoueursDemo];
     var nombreEstimsCreees = 0;
-    for (final RecordModel rencontre in rencontresDemo) {
-      final List<RecordModel> adversaires = adversairesParRencontre[rencontre.id]!;
+    for (final RecordModel equipeAdverse in equipesAdversesDemo) {
+      final List<RecordModel> adversaires = adversairesParEquipeAdverse[equipeAdverse.id]!;
       for (var indexJoueur = 0; indexJoueur < estimateurs.length; indexJoueur++) {
         for (var indexAdv = 0; indexAdv < adversaires.length; indexAdv++) {
           // Trous volontaires (~1 case sur 6) pour tester la saisie manuelle.
@@ -333,7 +337,8 @@ Future<void> main(List<String> arguments) async {
               .clamp(scoreMin, estimScoreMaximum);
           await clientPocketBase.collection(collectionNameEstims).create(body: {
             'joueur_id': estimateur.id,
-            'rencontre_id': rencontre.id,
+            'team_id': equipeCible.id,
+            'adversaire_team_id': equipeAdverse.id,
             'meta_adv_id': adversaire.id,
             'choix_id':
                 choixAppreciation[(indexJoueur * 2 + indexAdv) % choixAppreciation.length].id,
@@ -348,21 +353,23 @@ Future<void> main(List<String> arguments) async {
       }
     }
 
-    // --- Un appariement exemple sur la première rencontre ----------------------
+    // --- Un appariement exemple sur la première équipe adverse ------------------
     var nombreMatchedCrees = 0;
-    if (rencontresDemo.isNotEmpty &&
-        (adversairesParRencontre[rencontresDemo.first.id]?.isNotEmpty ?? false)) {
-      final RecordModel premiereRencontre = rencontresDemo.first;
+    if (equipesAdversesDemo.isNotEmpty &&
+        (adversairesParEquipeAdverse[equipesAdversesDemo.first.id]?.isNotEmpty ?? false)) {
+      final RecordModel premiereEquipeAdverse = equipesAdversesDemo.first;
       final RecordModel premierAdversaire =
-          adversairesParRencontre[premiereRencontre.id]!.first;
+          adversairesParEquipeAdverse[premiereEquipeAdverse.id]!.first;
       final RecordModel? appariementExistant = await _rechercherPremier(
         clientPocketBase,
         nomCollection: collectionNameMatched,
-        filtre: 'rencontre_id = "${premiereRencontre.id}"',
+        filtre:
+            'team_id = "${equipeCible.id}" && adversaire_team_id = "${premiereEquipeAdverse.id}"',
       );
       if (appariementExistant == null) {
         await clientPocketBase.collection(collectionNameMatched).create(body: {
-          'rencontre_id': premiereRencontre.id,
+          'team_id': equipeCible.id,
+          'adversaire_team_id': premiereEquipeAdverse.id,
           'joueur_id': listeJoueursDemo.first.id,
           'meta_adv_id': premierAdversaire.id,
         });
@@ -374,8 +381,8 @@ Future<void> main(List<String> arguments) async {
     stdout.writeln(
       'Jeu de données de démonstration terminé sur $pocketBaseServerUrl :\n'
       '  joueurs démo créés/maj       : $nombreJoueursCrees / $nombreJoueursMisAJour\n'
-      '  membres ajoutés              : $nombreMembresCrees\n'
-      '  rencontres créées            : $nombreRencontresCreees\n'
+       '  membres ajoutés              : $nombreMembresCrees\n'
+       '  équipes adverses créées      : $nombreEquipesAdversesCreees\n'
       '  adversaires créés            : $nombreAdversairesCrees\n'
       '  estimations créées           : $nombreEstimsCreees\n'
       '  appariements exemple créés   : $nombreMatchedCrees\n'

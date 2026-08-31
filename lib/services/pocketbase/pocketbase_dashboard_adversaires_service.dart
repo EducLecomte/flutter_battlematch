@@ -1,5 +1,5 @@
 // ===========================================================================
-// Adversaires d'une rencontre MetaWar (collection meta_adv) :
+// Adversaires d’une équipe MetaWar (collection meta_adv) :
 // listing, flux temps réel, création manuelle et suppression.
 // ===========================================================================
 
@@ -18,15 +18,21 @@ class PocketbaseDashboardAdversairesService {
 
   PocketbaseClientHolder get _holder => PocketbaseClientHolder.instance;
 
-  /// Récupère les adversaires d'une rencontre.
-  Future<List<MetaAdv>> getOpponents(String rencontreId) async {
+  String _filtreParEquipes(String teamId, String adversaireTeamId) =>
+      'team_id = "${_holder.echapperFiltrePocketBase(teamId)}" '
+      '&& adversaire_team_id = "${_holder.echapperFiltrePocketBase(adversaireTeamId)}"';
+
+  /// Récupère les adversaires d’un duo d’équipes.
+  Future<List<MetaAdv>> getOpponents(
+    String teamId,
+    String adversaireTeamId,
+  ) async {
     try {
       final List<RecordModel> records =
           await _holder.clientPocketBase
               .collection(collectionNameMetaAdv)
               .getFullList(
-                filter:
-                    'rencontre_id = "${_holder.echapperFiltrePocketBase(rencontreId)}"',
+                filter: _filtreParEquipes(teamId, adversaireTeamId),
                 sort: 'created',
               );
       return records.map(MetaAdv.fromPocketBaseRecord).toList();
@@ -36,13 +42,15 @@ class PocketbaseDashboardAdversairesService {
     }
   }
 
-  /// Flux temps réel des adversaires d'une rencontre.
-  Stream<List<MetaAdv>> streamOpponents(String rencontreId) {
+  /// Flux temps réel des adversaires d’un duo d’équipes.
+  Stream<List<MetaAdv>> streamOpponents(
+    String teamId,
+    String adversaireTeamId,
+  ) {
     return _holder
         .streamCollectionRecords(
           nomCollection: collectionNameMetaAdv,
-          filtre:
-              'rencontre_id = "${_holder.echapperFiltrePocketBase(rencontreId)}"',
+          filtre: _filtreParEquipes(teamId, adversaireTeamId),
           tri: 'created',
         )
         .map((records) => records.map(MetaAdv.fromPocketBaseRecord).toList());
@@ -50,7 +58,8 @@ class PocketbaseDashboardAdversairesService {
 
   /// Ajoute un adversaire manuellement.
   Future<MetaAdv> createOpponent(
-    String rencontreId,
+    String teamId,
+    String adversaireTeamId,
     String armeeId,
     String nomJoAdv,
     String listeAdv,
@@ -58,7 +67,8 @@ class PocketbaseDashboardAdversairesService {
     final RecordModel record = await _holder.clientPocketBase
         .collection(collectionNameMetaAdv)
         .create(body: {
-      'rencontre_id': rencontreId,
+      'team_id': teamId,
+      'adversaire_team_id': adversaireTeamId,
       'armee_id': armeeId,
       'nom_jo_adv': nomJoAdv,
       'liste_adv': listeAdv,

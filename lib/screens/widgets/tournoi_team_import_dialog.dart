@@ -51,11 +51,8 @@ class _TournoiTeamImportDialogState extends State<TournoiTeamImportDialog> {
   }
 
   void _analyzeContent() {
-    final List<Map<String, dynamic>> players =
-        NewRecruitImportService.instance.parseNewRecruitContent(
-      _pasteController.text,
-      widget.referenceArmies,
-    );
+    final List<Map<String, dynamic>> players = NewRecruitImportService.instance
+        .parseNewRecruitContent(_pasteController.text, widget.referenceArmies);
 
     if (players.isEmpty) {
       setState(() => _errorMessage = 'Aucune équipe détectée dans le contenu.');
@@ -80,9 +77,10 @@ class _TournoiTeamImportDialogState extends State<TournoiTeamImportDialog> {
     try {
       final TournamentTeamImportSummary importSummary =
           await PocketbaseDataService.instance.importTeamsForTournoi(
-        tournoiId: widget.tournoiId,
-        importedPlayers: _importedPlayers,
-      );
+            tournoiId: widget.tournoiId,
+            importedPlayers: _importedPlayers,
+            referenceArmies: widget.referenceArmies,
+          );
 
       widget.onImportCompleted(importSummary);
       if (mounted) Navigator.of(context).pop();
@@ -107,8 +105,11 @@ class _TournoiTeamImportDialogState extends State<TournoiTeamImportDialog> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Importer les équipes de « ${widget.tournoiNom} »',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                'Importer les équipes + listes adverses de « ${widget.tournoiNom} »',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 12),
               TournamentTextImportAnalysisSection(
@@ -120,7 +121,8 @@ class _TournoiTeamImportDialogState extends State<TournoiTeamImportDialog> {
                 const SizedBox(height: 16),
                 Text(
                   '${_detectedTeamNames.length} équipe(s) détectée(s). '
-                  'Les équipes déjà présentes seront ignorées.',
+                  'Les équipes déjà présentes sont ignorées et les listes adverses '
+                  'associées sont importées pour les nouvelles équipes.',
                 ),
               ],
               const SizedBox(height: 20),

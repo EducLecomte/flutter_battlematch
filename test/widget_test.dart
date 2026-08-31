@@ -8,6 +8,8 @@ import 'package:pocketbase/pocketbase.dart';
 
 import 'package:flutter_metawar/models/models.dart';
 
+import 'package:flutter_metawar/services/tournament_team_import_service.dart';
+
 void main() {
   group('Joueur', () {
     test('convertit un enregistrement PocketBase complet', () {
@@ -42,10 +44,7 @@ void main() {
     });
 
     test('accepte une équipe sans capitaine renseigné', () {
-      final record = RecordModel({
-        'id': 'team1234567890a',
-        'nom': 'trc2',
-      });
+      final record = RecordModel({'id': 'team1234567890a', 'nom': 'trc2'});
 
       final team = Team.fromPocketBaseRecord(record);
 
@@ -72,7 +71,8 @@ void main() {
       final record = RecordModel({
         'id': 'estims00000001ab',
         'joueur_id': 'abc123def456ghi',
-        'rencontre_id': 'rencontre00001ab',
+        'team_id': 'team000001ab',
+        'adversaire_team_id': 'adversaire0001ab',
         'meta_adv_id': 'metaadv000001ab',
         'choix_id': 'choix00000001ab',
       });
@@ -90,7 +90,8 @@ void main() {
     test('convertit un appariement verrouillé', () {
       final record = RecordModel({
         'id': 'matched000001ab',
-        'rencontre_id': 'rencontre00001ab',
+        'team_id': 'team000001ab',
+        'adversaire_team_id': 'adversaire0001ab',
         'joueur_id': 'abc123def456ghi',
         'meta_adv_id': 'metaadv000001ab',
       });
@@ -99,6 +100,38 @@ void main() {
 
       expect(matched.joueurId, 'abc123def456ghi');
       expect(matched.metaAdvId, 'metaadv000001ab');
+    });
+  });
+
+  group('TournamentTeamImportService', () {
+    test('regroupe les joueurs par équipe pour l import complet', () {
+      final importedPlayers = [
+        {
+          'teamName': 'Alpha',
+          'playerName': 'Alice',
+          'armyName': 'Empire of Sonnstahl',
+          'listText': 'Liste Alice',
+        },
+        {
+          'teamName': 'Beta',
+          'playerName': 'Bob',
+          'armyName': 'Vampire Covenant',
+          'listText': 'Liste Bob',
+        },
+        {
+          'teamName': 'Alpha',
+          'playerName': 'Alicia',
+          'armyName': 'Empire of Sonnstahl',
+          'listText': 'Liste Alicia',
+        },
+      ];
+
+      final byTeam = TournamentTeamImportService.instance
+          .groupPlayersByTeamName(importedPlayers);
+
+      expect(byTeam.keys, containsAll(['Alpha', 'Beta']));
+      expect(byTeam['Alpha'], hasLength(2));
+      expect(byTeam['Beta']!.single['playerName'], 'Bob');
     });
   });
 }

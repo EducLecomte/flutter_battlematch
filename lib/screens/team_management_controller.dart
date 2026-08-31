@@ -28,14 +28,17 @@ class TeamManagementController {
   // Indique si une recherche de joueurs est en cours
   bool isSearching = false;
 
-  // Rencontres de l'équipe sélectionnée
-  List<Rencontre> encounters = [];
+  // Équipes adverses de l'équipe sélectionnée
+  List<Team> opponentTeams = [];
 
-  // Adversaires par rencontre
-  Map<String, List<MetaAdv>> opponentsByEncounter = {};
+  // Adversaires par équipe adverse
+  Map<String, List<MetaAdv>> opponentsByOpponentTeamId = {};
 
-  // Appariements par rencontre
-  Map<String, List<Matched>> matchedByEncounter = {};
+  // Appariements par équipe adverse
+  Map<String, List<Matched>> matchedByOpponentTeamId = {};
+
+  // Mapping tournoi ID → nom du tournoi
+  Map<String, String> tournoiNameById = {};
 
   // Charge le profil du joueur connecté et ses équipes.
   Future<String?> loadInitialData() async {
@@ -45,9 +48,19 @@ class TeamManagementController {
         currentUserProfile = profile;
         final list = await _pocketbaseService.getTeamsForUser(profile.id);
         teams = list;
+        // Charge les noms des tournois associés aux équipes
+        final uniqueTournoiIds = list.map((t) => t.tournoiId).toSet();
+        for (final tournoiId in uniqueTournoiIds) {
+          try {
+            final tournoi = await _pocketbaseService.getTournoi(tournoiId);
+            tournoiNameById[tournoiId] = tournoi.nom;
+          } catch (_) {
+            // Tournoi non trouvé, skip
+          }
+        }
         selectedTeam = list.isEmpty ? null : list.first;
         await loadMembersForSelectedTeam();
-        await loadEncountersForSelectedTeam();
+        await loadOpponentsForSelectedTeam();
       }
       return null;
     } catch (loadError) {
@@ -55,26 +68,37 @@ class TeamManagementController {
     }
   }
 
-  // Charge les rencontres, adversaires et appariements de l'équipe sélectionnée.
-  Future<String?> loadEncountersForSelectedTeam() async {
+  // Charge les équipes adverses, listes et appariements de l'équipe sélectionnée.
+  Future<String?> loadOpponentsForSelectedTeam() async {
     final selectedTeam = this.selectedTeam;
     if (selectedTeam == null) return null;
     try {
-      encounters = await _pocketbaseService.getRencontres(
+      final List<Team> allTeams = await _pocketbaseService.getTeamsForTournoi(
         selectedTeam.tournoiId,
-        selectedTeam.id,
       );
-      opponentsByEncounter = {};
-      matchedByEncounter = {};
-      for (final encounter in encounters) {
-        final opponents = await _pocketbaseService.getOpponents(encounter.id);
-        opponentsByEncounter[encounter.id] = opponents;
-        final matched = await _pocketbaseService.getMatched(encounter.id);
-        matchedByEncounter[encounter.id] = matched;
+      final List<Team> opponentTeamsToDisplay = [];
+      final Map<String, List<MetaAdv>> loadedOpponents = {};
+      final Map<String, List<Matched>> loadedMatched = {};
+      for (final Team opponentTeam in allTeams) {
+        if (opponentTeam.id == selectedTeam.id) continue;
+        final List<MetaAdv> opponents = await _pocketbaseService.getOpponents(
+          selectedTeam.id,
+          opponentTeam.id,
+        );
+        if (opponents.isEmpty) continue;
+        opponentTeamsToDisplay.add(opponentTeam);
+        loadedOpponents[opponentTeam.id] = opponents;
+        loadedMatched[opponentTeam.id] = await _pocketbaseService.getMatched(
+          selectedTeam.id,
+          opponentTeam.id,
+        );
       }
+      opponentTeams = opponentTeamsToDisplay;
+      opponentsByOpponentTeamId = loadedOpponents;
+      matchedByOpponentTeamId = loadedMatched;
       return null;
-    } catch (encountersError) {
-      return encountersError.toString();
+    } catch (opponentsError) {
+      return opponentsError.toString();
     }
   }
 
@@ -101,9 +125,11 @@ class TeamManagementController {
     try {
       final results = await _pocketbaseService.searchJoueurs(query);
       searchResults = results
-          .where((player) =>
-              !members.any((member) =>
-                  (member['joueur'] as Joueur).id == player.id))
+          .where(
+            (player) => !members.any(
+              (member) => (member['joueur'] as Joueur).id == player.id,
+            ),
+          )
           .toList();
     } catch (_) {
       // Recherche sans résultat : on ignore l'erreur réseau.
@@ -126,25 +152,30 @@ class TeamManagementController {
     }
   }
 
-  // Bascule l'appariement joueur ↔ adversaire pour une rencontre.
+  // Bascule l'appariement joueur ↔ adversaire pour une équipe adverse.
   // Retourne false si l'appariement est impossible (contrainte unique).
   Future<bool> toggleMatched(
-    Rencontre encounter,
+    Team opponentTeam,
     Joueur player,
     MetaAdv opponent,
   ) async {
+    final selectedTeam = this.selectedTeam;
+    if (selectedTeam == null) return false;
     try {
       await _pocketbaseService.toggleMatched(
-        encounter.id,
+        selectedTeam.id,
+        opponentTeam.id,
         player.id,
         opponent.id,
       );
-      // Recharge les appariements pour cette rencontre.
-      final updatedMatched =
-          await _pocketbaseService.getMatched(encounter.id);
-      matchedByEncounter[encounter.id] = updatedMatched;
+      // Recharge les appariements pour cette équipe adverse.
+      final updatedMatched = await _pocketbaseService.getMatched(
+        selectedTeam.id,
+        opponentTeam.id,
+      );
+      matchedByOpponentTeamId[opponentTeam.id] = updatedMatched;
       return true;
-    } catch (pairingError) {
+    } catch (_) {
       return false;
     }
   }
@@ -179,8 +210,10 @@ class TeamManagementController {
 
   // Liste des membres acceptés pouvant devenir capitaine.
   List<Joueur> get captainCandidates => members
-      .where((member) =>
-          member['role'] != 'captain' && member['statut'] == 'accepted')
+      .where(
+        (member) =>
+            member['role'] != 'captain' && member['statut'] == 'accepted',
+      )
       .map((member) => member['joueur'] as Joueur)
       .toList();
 

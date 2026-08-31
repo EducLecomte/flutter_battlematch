@@ -37,7 +37,7 @@ class TournoiCard extends StatelessWidget {
         title: const Text("Supprimer le tournoi ?"),
         content: const Text(
           "Cette action supprimera également toutes les équipes, "
-          "rencontres et estimations associées.",
+          "listes adverses et estimations associées.",
         ),
         actions: [
           TextButton(

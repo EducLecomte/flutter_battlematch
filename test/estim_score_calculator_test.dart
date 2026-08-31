@@ -10,7 +10,8 @@ void main() {
     test('calcule le point médian du score', () {
       final estim = Estim(
         joueurId: 'joueur00001',
-        rencontreId: 'rencontre00001',
+        teamId: 'team00001',
+        adversaireTeamId: 'adversaireTeam00001',
         metaAdvId: 'adversaire00001',
         choixId: 'choix00001',
         scoreMin: 8,
@@ -23,7 +24,8 @@ void main() {
     test('renvoie null si un score est absent', () {
       final incompleteEstim = Estim(
         joueurId: 'joueur00001',
-        rencontreId: 'rencontre00001',
+        teamId: 'team00001',
+        adversaireTeamId: 'adversaireTeam00001',
         metaAdvId: 'adversaire00001',
         choixId: 'choix00001',
         scoreMin: 8,
@@ -36,7 +38,8 @@ void main() {
     test('formate le libellé du score', () {
       final rangeEstim = Estim(
         joueurId: 'joueur00001',
-        rencontreId: 'rencontre00001',
+        teamId: 'team00001',
+        adversaireTeamId: 'adversaireTeam00001',
         metaAdvId: 'adversaire00001',
         choixId: 'choix00001',
         scoreMin: 8,
@@ -44,7 +47,8 @@ void main() {
       );
       final fixedEstim = Estim(
         joueurId: 'joueur00001',
-        rencontreId: 'rencontre00001',
+        teamId: 'team00001',
+        adversaireTeamId: 'adversaireTeam00001',
         metaAdvId: 'adversaire00001',
         choixId: 'choix00001',
         scoreMin: 10,

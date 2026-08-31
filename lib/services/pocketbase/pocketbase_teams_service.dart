@@ -131,7 +131,7 @@ class PocketbaseTeamsService {
     }
   }
 
-  /// Supprime une équipe (les membres et rencontres sont purgés en cascade).
+  /// Supprime une équipe (membres et données adverses purgés en cascade).
   Future<void> deleteTeam(String teamId) async {
     await _holder.clientPocketBase.collection(collectionNameTeams).delete(teamId);
   }

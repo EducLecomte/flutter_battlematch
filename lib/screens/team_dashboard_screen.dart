@@ -1,6 +1,6 @@
 // ===========================================================================
-// Tableau de bord de l'équipe (team_dashboard_screen.dart)
-// Écran principal affichant la matrice d'estimations et d'appariement.
+// Tableau de bord d’équipe (team_dashboard_screen.dart)
+// Écran principal affichant la matrice d’estimations et d’appariement.
 // La logique métier vit dans TeamDashboardController ; le rendu dans
 // lib/screens/widgets/team_dashboard_*.dart.
 // ===========================================================================
@@ -16,15 +16,13 @@ import 'widgets/add_opponent_dialog.dart';
 import 'widgets/team_dashboard_body.dart';
 
 class TeamDashboardScreen extends StatefulWidget {
-  final Tournoi tournoi;
   final Team team;
-  final Rencontre rencontre;
+  final Team adversaireTeam;
 
   const TeamDashboardScreen({
     super.key,
-    required this.tournoi,
     required this.team,
-    required this.rencontre,
+    required this.adversaireTeam,
   });
 
   @override
@@ -40,9 +38,8 @@ class _TeamDashboardScreenState extends State<TeamDashboardScreen> {
   void initState() {
     super.initState();
     _controller = TeamDashboardController(
-      tournoi: widget.tournoi,
       team: widget.team,
-      rencontre: widget.rencontre,
+      adversaireTeam: widget.adversaireTeam,
     );
     _estimActions = TeamDashboardEstimActions(_controller);
     _loadInitialData();
@@ -55,7 +52,7 @@ class _TeamDashboardScreenState extends State<TeamDashboardScreen> {
       _isLoadingReferenceData = false;
     });
     if (loadError != null) {
-      showErrorSnackBar(context, "Erreur de chargement: $loadError");
+      showErrorSnackBar(context, "Erreur de chargement : $loadError");
     }
   }
 
@@ -90,7 +87,7 @@ class _TeamDashboardScreenState extends State<TeamDashboardScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Ronde : ${widget.rencontre.nomAdversaire}"),
+        title: Text("vs ${widget.adversaireTeam.nom}"),
         actions: [
           if (isCaptain)
             IconButton(

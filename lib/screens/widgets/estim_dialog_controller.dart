@@ -78,7 +78,8 @@ class EstimDialogController extends ChangeNotifier {
     final commentValue = commentaireController.text.trim();
     return Estim(
       joueurId: currentJoueur.id,
-      rencontreId: currentOpponent.rencontreId,
+      teamId: currentOpponent.teamId,
+      adversaireTeamId: currentOpponent.adversaireTeamId,
       metaAdvId: currentOpponent.id,
       choixId: choiceId,
       scoreMin: minimumScore,

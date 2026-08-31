@@ -26,16 +26,13 @@ const String collectionNameTeams = 'teams';
 /// Association équipe ↔ joueur avec rôle et statut d'invitation.
 const String collectionNameTeamMembres = 'team_membres';
 
-/// Rencontres (rondes) opposant une équipe à une équipe adverse.
-const String collectionNameRencontres = 'rencontres';
-
 /// Référentiel statique des 16 armées (The Ninth Age).
 const String collectionNameArmees = 'armees';
 
 /// Référentiel statique des 7 appréciations fixes du système d'estimation.
 const String collectionNameChoix = 'choix';
 
-/// Joueurs adverses (méta adverse) attachés à une rencontre.
+/// Joueurs adverses (méta adverse) d’une équipe contre une équipe adverse.
 const String collectionNameMetaAdv = 'meta_adv';
 
 /// Estimations saisies par nos joueurs sur chaque adversaire.

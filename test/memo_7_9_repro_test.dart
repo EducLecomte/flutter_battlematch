@@ -34,18 +34,21 @@ void main() {
       await pumpHostPage(tester);
 
       await tester.tap(find.text('erreur'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 300));
+      // Laisse l'animation d'entrée se terminer : le rebuild qui suit
+      // AnimationStatus.completed est celui qui crée le timer de disparition.
+      await tester.pumpAndSettle();
       expect(find.byType(SnackBar), findsOneWidget);
 
       final SnackBar shownSnackBar =
           tester.widget<SnackBar>(find.byType(SnackBar));
       expect(shownSnackBar.duration, snackBarDisplayDuration);
 
-      // Flush le rebuild qui démarre le timer de disparition.
-      await tester.pump(const Duration(milliseconds: 50));
-      await tester.pump(snackBarDisplayDuration);
-      await tester.pump(const Duration(milliseconds: 300));
+      // Fait expirer le timer de disparition (marge au cas où la deadline
+      // coïncide avec la fin du pump), puis laisse l'animation de sortie
+      // se terminer et le SnackBar être retiré de l'arbre.
+      await tester.pump(snackBarDisplayDuration +
+          const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
       expect(find.byType(SnackBar), findsNothing);
       expect(tester.takeException(), isNull);
     });

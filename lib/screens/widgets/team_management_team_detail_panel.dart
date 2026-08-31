@@ -69,7 +69,7 @@ class TeamManagementTeamDetailPanel extends StatelessWidget {
             ),
             const SizedBox(height: 16),
           ],
-          if (controller.encounters.isNotEmpty) ...[
+          if (controller.opponentTeams.isNotEmpty) ...[
             TeamManagementMatchedPanel(
               controller: controller,
               onStateChanged: onStateChanged,
