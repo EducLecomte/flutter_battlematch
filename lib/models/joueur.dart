@@ -23,23 +23,4 @@ class Joueur {
       admin: (record.get<dynamic>('admin') as bool?) ?? false,
     );
   }
-
-  // Convertit une réponse JSON en instance de Joueur
-  factory Joueur.fromJson(Map<String, dynamic> json) {
-    return Joueur(
-      id: json['id'] as String,
-      email: json['email'] as String? ?? '',
-      nom: json['nom'] as String,
-      admin: json['admin'] as bool? ?? false,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'email': email,
-      'nom': nom,
-      'admin': admin,
-    };
-  }
 }

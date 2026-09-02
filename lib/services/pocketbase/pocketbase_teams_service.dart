@@ -1,6 +1,6 @@
 // ===========================================================================
-// Équipes MetaWar : création d'équipe (avec capitaine auto-accepté),
-// listing des équipes acceptées par utilisateur et suppression.
+// Équipes MetaWar : création d'équipe de tournoi, listing des équipes
+// (par tournoi ou par utilisateur) et suppression.
 // La gestion des membres et invitations est dans
 // pocketbase_team_membres_service.dart.
 // ===========================================================================
@@ -11,7 +11,6 @@ import 'package:pocketbase/pocketbase.dart';
 import '../../config/app_config.dart';
 import '../../models/models.dart';
 import 'pocketbase_client_holder.dart';
-import 'pocketbase_team_membres_service.dart';
 
 class PocketbaseTeamsService {
   static final PocketbaseTeamsService instance =
@@ -20,28 +19,6 @@ class PocketbaseTeamsService {
   PocketbaseTeamsService._internal();
 
   PocketbaseClientHolder get _holder => PocketbaseClientHolder.instance;
-
-  /// Crée une équipe et inscrit son créateur comme capitaine accepté.
-  Future<Team> createTeam(String nom) async {
-    final String? capitaineId = _holder.currentUserId;
-    if (capitaineId == null) throw Exception("Non authentifié");
-
-    // 1. Insertion de la Team
-    final RecordModel recordEquipe = await _holder.clientPocketBase
-        .collection(collectionNameTeams)
-        .create(body: {
-      'nom': nom,
-      'capitaine_id': capitaineId,
-    });
-
-    final Team team = Team.fromPocketBaseRecord(recordEquipe);
-
-    // 2. Ajout du capitaine dans team_membres comme membre accepté
-    await PocketbaseTeamMembresService.instance
-        .inscrireMembreAccepte(team.id, capitaineId, 'captain');
-
-    return team;
-  }
 
   /// Crée une équipe rattachée à un tournoi sans capitaine.
   Future<Team> createTeamForTournoi(String tournoiId, String nomEquipe) async {

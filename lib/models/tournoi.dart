@@ -26,14 +26,4 @@ class Tournoi {
       importEffectue: record.get<bool>('import_effectue', false),
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'nom': nom,
-      'lien_nr': lienNr,
-      'created_by': createdBy,
-      'import_effectue': importEffectue,
-    };
-  }
 }

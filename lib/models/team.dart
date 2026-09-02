@@ -26,14 +26,4 @@ class Team {
       motDePasse: record.get<String>('mot_de_passe', ''),
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'nom': nom,
-      'capitaine_id': capitaineId,
-      'tournoi_id': tournoiId,
-      'mot_de_passe': motDePasse,
-    };
-  }
 }

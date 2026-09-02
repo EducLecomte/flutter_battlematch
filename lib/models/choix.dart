@@ -23,13 +23,4 @@ class Choix {
       couleurHex: record.get<String>('couleur_hex'),
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'libelle': libelle,
-      'short': short,
-      'couleur_hex': couleurHex,
-    };
-  }
 }

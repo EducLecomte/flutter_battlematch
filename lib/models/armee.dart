@@ -20,12 +20,4 @@ class Armee {
       short: record.get<String>('short'),
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'nom': nom,
-      'short': short,
-    };
-  }
 }

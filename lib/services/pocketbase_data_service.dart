@@ -68,15 +68,11 @@ class PocketbaseDataService {
   Future<Joueur?> getCurrentJoueurProfile() =>
       _serviceAuth.getCurrentJoueurProfile();
 
-  Future<Joueur?> getJoueurProfile(String userId) =>
-      _serviceAuth.getJoueurProfile(userId);
-
   Future<void> updateJoueurProfileFields({required String nom}) =>
       _serviceAuth.updateJoueurProfileFields(nom: nom);
 
   Future<List<Joueur>> searchJoueurs(String query) =>
       _serviceAuth.searchJoueurs(query);
-  Future<Team> createTeam(String nom) => _serviceTeams.createTeam(nom);
 
   Future<List<Team>> getTeamsForUser(String userId) =>
       _serviceTeams.getTeamsForUser(userId);
@@ -105,16 +101,11 @@ class PocketbaseDataService {
   Future<Tournoi> getTournoi(String tournoiId) =>
       _serviceTournois.getTournoi(tournoiId);
 
-  Future<void> markTournoiImportEffectue(String tournoiId) =>
-      _serviceTournois.markTournoiImportEffectue(tournoiId);
-
   Future<Tournoi> updateTournoi(String tournoiId, String nom, String lienNr) =>
       _serviceTournois.updateTournoi(tournoiId, nom, lienNr);
 
   Future<void> deleteTournoi(String tournoiId) =>
       _serviceTournois.deleteTournoi(tournoiId);
-
-  Future<Team> getTeam(String teamId) => _serviceTeams.getTeam(teamId);
 
   Future<List<Team>> getTeamsForTournoi(String tournoiId) =>
       _serviceTeams.getTeamsForTournoi(tournoiId);
@@ -184,16 +175,6 @@ class PocketbaseDataService {
 
   Future<void> saveEstim(Estim estim) =>
       _serviceDashboardEstims.saveEstim(estim);
-
-  Future<void> deleteEstim(
-    String joueurId,
-    String metaAdvId,
-  ) => _serviceDashboardEstims.deleteEstim(joueurId, metaAdvId);
-
-  Future<List<Estim>> getEstims(
-    String teamId,
-    String adversaireTeamId,
-  ) => _serviceDashboardEstims.getEstims(teamId, adversaireTeamId);
 
   Stream<List<Estim>> streamEstims(
     String teamId,

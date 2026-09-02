@@ -1,9 +1,8 @@
 // ===========================================================================
 // Estimations d’un duo d’équipes MetaWar (collection estims) :
-// enregistrement/upsert, suppression, listing et flux temps réel.
+// enregistrement/upsert et flux temps réel.
 // ===========================================================================
 
-import 'package:flutter/foundation.dart';
 import 'package:pocketbase/pocketbase.dart';
 
 import '../../config/app_config.dart';
@@ -41,44 +40,6 @@ class PocketbaseDashboardEstimsService {
       await _holder.clientPocketBase
           .collection(collectionNameEstims)
           .create(body: estim.toJson());
-    }
-  }
-
-  /// Supprime une estimation précise.
-  Future<void> deleteEstim(
-    String joueurId,
-    String metaAdvId,
-  ) async {
-    final List<RecordModel> existants =
-        await _holder.clientPocketBase.collection(collectionNameEstims).getFullList(
-              filter:
-                  'joueur_id = "${_holder.echapperFiltrePocketBase(joueurId)}" '
-                  '&& meta_adv_id = "${_holder.echapperFiltrePocketBase(metaAdvId)}"',
-            );
-
-    for (final RecordModel record in existants) {
-      await _holder.clientPocketBase
-          .collection(collectionNameEstims)
-          .delete(record.id);
-    }
-  }
-
-  /// Récupère les estimations d’un duo d’équipes.
-  Future<List<Estim>> getEstims(
-    String teamId,
-    String adversaireTeamId,
-  ) async {
-    try {
-      final List<RecordModel> records =
-          await _holder.clientPocketBase
-              .collection(collectionNameEstims)
-              .getFullList(
-                filter: _filtreParEquipes(teamId, adversaireTeamId),
-              );
-      return records.map(Estim.fromPocketBaseRecord).toList();
-    } catch (exception) {
-      debugPrint('Erreur de chargement des estimations : $exception');
-      return [];
     }
   }
 

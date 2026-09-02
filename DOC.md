@@ -1,5 +1,21 @@
 # DOC.md — Cartographie technique MetaWar
 
+*[2026-09-02] Nettoyage : suppression du code mort (RESOLU). La chaîne
+d'import texte de `TeamsScreen` (bouton disparu) est supprimée :
+`teams_screen_actions.importTournamentText` + launcher + dialog txt
+standalone ; l'import de tournoi se fait uniquement depuis la carte tournoi
+(`showTournoiTeamImportDialog`, M13.5). Façade allégée : `getJoueurProfile`,
+`createTeam`, `markTournoiImportEffectue`, `getTeam`, `deleteEstim`,
+`getEstims` supprimés (les sous-services restent publics et sont appelés
+directement). `PocketbaseTeamsService.createTeam(String)` (création d'équipe
+seule, sans tournoi) et `PocketbaseDashboardEstimsService.deleteEstim`/
+`getEstims` supprimés : aucun appelant (le `saveEstim` ne purge plus les
+orphelins). Sérialisations JSON mortes retirées des modèles :
+`Joueur.fromJson`/`toJson`, `Armee.toJson`, `Choix.toJson`, `Team.toJson`,
+`Tournoi.toJson` (aucun appelant dans lib/test/tool ; `Estim`/`MetaAdv`/
+`Matched.toJson` conservés — service estims + tests). Aucune modification
+serveur ni schéma PocketBase. Validation : `flutter analyze` sans problème,
+`flutter test` 35/35. Précédent :
 *[2026-08-31] M16.11 — correctif : bypass admin des règles d'écriture
 `meta_adv` (RESOLU). L'import « équipes + listes adverses » depuis la carte
 tournoi (M15) échouait en 400 « Failed to create record » dès la première
@@ -153,9 +169,8 @@ lib/
      tournois_controller.dart       # load/add/update/delete tournoi
      tournoi_team_import_actions.dart # showTournoiTeamImportDialog : armées de
                                     # référence, dialog d'import, snackbar résumé
-     teams_screen.dart              # Équipe active + liste des équipes adverses
-                                    # du tournoi (M16, plus de rencontres)
-                                    # + bouton AppBar d'import tournoi
+      teams_screen.dart              # Équipe active + liste des équipes adverses
+                                     # du tournoi (M16, plus de rencontres)
      teams_screen_controller.dart   # bindTournoi, loadTeams, équipes adverses
                                      # du tournoi (hors équipe active)
     team_management_screen.dart    # Gestion équipes (sidebar + détail + appariements)
@@ -187,9 +202,10 @@ lib/
                                    # Dialog estimation découpé en 4 sections
     estim_dialog_controller.dart   # État/validation/sauvegarde du dialog
     estim_details_sheet.dart       # Bottom sheet détail d'estimation (édition)
-    tournament_text_import_*       # Dialog import txt : launcher (top-level
-                                   # showTournamentTextImportDialog), dialog,
-                                   # action_bar, analysis_section
+     tournament_text_import_{action_bar,analysis_section}.dart
+                                    # Sections du dialog d'import d'équipe
+                                    # (tournoi_team_import_dialog) ; launcher et
+                                    # dialog txt standalone supprimés (02/09)
     confiance_star_icon.dart       # Étoile de confiance (faible/moyen/élevée)
     team_dashboard_body.dart       # Streams imbriqués du dashboard + résumé
                                    # des scores appariés
@@ -228,9 +244,9 @@ lib/
                                        # du stream d'auth + échappement filtres
       pocketbase_auth_service.dart     # signIn/signUp/signOut, profil courant,
                                        # searchJoueurs
-       pocketbase_teams_service.dart    # CRUD teams, équipes par tournoi,
-                                        # création pour un tournoi, mot de
-                                        # passe, capitaine
+        pocketbase_teams_service.dart    # teams : équipes par tournoi/joueur,
+                                         # création pour un tournoi, mot de
+                                         # passe, capitaine
        pocketbase_team_membres_service.dart  # Membres : inscription accepté,
                                         # join mot de passe, listing, rôles
        pocketbase_team_invitations_service.dart # Invitations : pending, invite,
@@ -246,7 +262,7 @@ lib/
                                                # du compte courant (équipes
                                                # capitaine + tournois créés)
       pocketbase_dashboard_adversaires_service.dart # CRUD + stream meta_adv
-      pocketbase_dashboard_estims_service.dart      # CRUD + stream estims
+       pocketbase_dashboard_estims_service.dart      # upsert + stream estims
       pocketbase_dashboard_matched_service.dart     # CRUD + stream matched
      new_recruit_import_service.dart  # Parsing local New Recruit (JSON collé
                                       # ou texte) + correspondance armées
@@ -300,10 +316,10 @@ tool/
    passent par `showErrorSnackBar` (log debug + bouton Copier), les succès
    restent des SnackBar verts.
 3. **Services** : les écrans n'appellent JAMAIS PocketBase directement —
-   toujours via la façade `PocketbaseDataService.instance` (sauf
-   `PocketbaseTeamsService` qui invoque `PocketbaseTeamMembresService.
-   inscrireMembreAccepte` à la création d'équipe). La façade délègue aux
-   sous-services `lib/services/pocketbase/` (singletons).
+   toujours via la façade `PocketbaseDataService.instance`, qui délègue aux
+   sous-services `lib/services/pocketbase/` (singletons). Certains
+   sous-services coopèrent entre eux (ex. `PocketbaseTeamAccessService` →
+   `PocketbaseTeamsService` + `PocketbaseTeamMembresService`).
 4. **Temps réel + agrégats** : les streams SSE (opponents/estims/matched)
    sont créés UNE FOIS dans `initState` du controller dashboard ; refetch
    complet sur événement, debounce 300 ms ; rendu matrice O(1) (Maps/Sets).
@@ -311,14 +327,17 @@ tool/
    `joueurId + dashboardEstimKeySeparator + metaAdvId`, puis
    `MatchedScoreSummaryCalculator.summarize` calcule total/moyenne à partir
    du midpoint `(scoreMin + scoreMax) / 2`.
-5. **Import tournoi** : depuis `TeamsScreen`, le bouton AppBar ouvre
-   `showTournamentTextImportDialog` (launcher) → `TournamentTextImportParser`
-   (texte) ou `NewRecruitImportService.parseNewRecruitContent` (JSON collé) →
-     `TournamentTextImportService` (une équipe adverse par équipe détectée,
-     créée si absente du tournoi — M16 ; adversaires déjà présents ignorés,
-     armées inconnues comptées) → `PocketbaseDataService` (meta_adv).
-    L'import API direct (dialog New Recruit +
-   `NewRecruitApiClient`) a été supprimé : feature sans point d'entrée.
+5. **Import tournoi** : depuis la carte tournoi (`TournoisScreen`, M13.5),
+   le bouton d'import ouvre `showTournoiTeamImportDialog`
+   (`tournoi_team_import_actions.dart`) →
+   `NewRecruitImportService.parseNewRecruitContent` (JSON collé ou texte via
+   `TournamentTextImportParser`) → `PocketbaseDataService.importTeamsForTournoi`
+   → `TournamentTeamImportService` (création des équipes manquantes) +
+   `TournamentTextImportService` (une équipe adverse par équipe détectée,
+   créée si absente du tournoi — M16 ; adversaires déjà présents ignorés,
+   armées inconnues comptées) → `markTournoiImportEffectue`. L'import API
+   direct (dialog New Recruit + `NewRecruitApiClient`) et le bouton d'import
+   texte de `TeamsScreen` ont été supprimés : features sans point d'entrée.
 6. **Modèles** : `fromPocketBaseRecord` / champs snake_case ; les IDs sont
     des strings PocketBase. L'échelle d'appréciation est fixe dans
     `appreciation_scale.dart` (`--`, `-`, `=-`, `=`, `=+`, `+`, `++`);
