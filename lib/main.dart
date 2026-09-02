@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import 'screens/login_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/refreshable_screen.dart';
 import 'screens/team_management_screen.dart';
 import 'screens/tournois_screen.dart';
 import 'services/pocketbase_data_service.dart';
@@ -62,22 +63,34 @@ class HomeShell extends StatefulWidget {
 class _HomeShellState extends State<HomeShell> {
   int _indexOngletActif = 0;
 
-  static const List<Widget> _onglets = [
-    TournoisScreen(),
-    TeamManagementScreen(),
-    ProfileScreen(),
-  ];
+  // Clés d'accès aux screens : elles permettent au shell de déclencher un
+  // rafraîchissement des données de l'écran qui devient actif (voir
+  // RefreshableScreenState).
+  final GlobalKey<RefreshableScreenState<TournoisScreen>> _keyTournois =
+      GlobalKey();
+  final GlobalKey<RefreshableScreenState<TeamManagementScreen>> _keyEquipes =
+      GlobalKey();
+  final GlobalKey<RefreshableScreenState<ProfileScreen>> _keyProfil =
+      GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _indexOngletActif, children: _onglets),
+      body: IndexedStack(
+        index: _indexOngletActif,
+        children: [
+          TournoisScreen(key: _keyTournois),
+          TeamManagementScreen(key: _keyEquipes),
+          ProfileScreen(key: _keyProfil),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _indexOngletActif,
         onDestinationSelected: (int nouvelIndex) {
           setState(() {
             _indexOngletActif = nouvelIndex;
           });
+          _rafraichirOngletActif(nouvelIndex);
         },
         destinations: const [
           NavigationDestination(
@@ -98,5 +111,20 @@ class _HomeShellState extends State<HomeShell> {
         ],
       ),
     );
+  }
+
+  // Recharge les données de l'écran qui vient de devenir actif dans la
+  // barre de navigation du bas.
+  void _rafraichirOngletActif(int index) {
+    switch (index) {
+      case 0:
+        _keyTournois.currentState?.refreshOnTabActivated();
+        break;
+      case 1:
+        _keyEquipes.currentState?.refreshOnTabActivated();
+        break;
+      case 2:
+        _keyProfil.currentState?.refreshOnTabActivated();
+    }
   }
 }

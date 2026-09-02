@@ -6,5 +6,4 @@
 - dans team_membres, on va ajouter en plus l'id de team_meta, pour associé un membre de l'équipe a son armées associé. on peut avoir des membres d'équipe non joueurs (coach, pour pouvoir consulter les matrices d'estimation)
 
 ## 2
-- probleme de rafraichissement au moment du chargement des screens (sur l'ecran principal avec le bottomnavbar)
-- @team_management_screen.dart l87-89 commentaire pour raffraichir la page
+- probleme chargement de l'ecran "équipe", sur l'ecran principal avec le bottomnavbar. Il est Très long.

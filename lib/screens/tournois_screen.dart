@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import '../config/app_config.dart';
 import '../models/models.dart';
 import '../utils/error_snack_bar_presenter.dart';
+import 'refreshable_screen.dart';
 import 'teams_screen.dart'; // Écran des équipes adverses
 import 'tournoi_team_import_actions.dart';
 import 'tournois_controller.dart';
@@ -23,11 +24,18 @@ class TournoisScreen extends StatefulWidget {
   State<TournoisScreen> createState() => _TournoisScreenState();
 }
 
-class _TournoisScreenState extends State<TournoisScreen> {
+class _TournoisScreenState extends RefreshableScreenState<TournoisScreen> {
   final TournoiController _controller = TournoiController();
 
   void _notifyStateChanged() {
     if (mounted) setState(() {});
+  }
+
+  // Recharge la liste des tournois : appelé par HomeShell quand l'onglet
+  // devient actif dans la barre du bas.
+  @override
+  void refreshOnTabActivated() {
+    _loadTournois();
   }
 
   void _showInfoSnackBar(String message, Color backgroundColor) {

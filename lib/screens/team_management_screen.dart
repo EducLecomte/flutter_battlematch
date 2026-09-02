@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import '../config/app_config.dart';
 import '../utils/error_snack_bar_presenter.dart';
+import 'refreshable_screen.dart';
 import 'team_management_controller.dart';
 import 'team_management_team_actions.dart';
 import 'widgets/team_management_team_list_sidebar.dart';
@@ -20,7 +21,8 @@ class TeamManagementScreen extends StatefulWidget {
   State<TeamManagementScreen> createState() => _TeamManagementScreenState();
 }
 
-class _TeamManagementScreenState extends State<TeamManagementScreen> {
+class _TeamManagementScreenState
+    extends RefreshableScreenState<TeamManagementScreen> {
   final TeamManagementController _controller = TeamManagementController();
   final TeamManagementTeamActions _teamActions = TeamManagementTeamActions();
   final TextEditingController _searchController = TextEditingController();
@@ -29,6 +31,13 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
   @override
   void initState() {
     super.initState();
+    _loadInitialData();
+  }
+
+  // Recharge les équipes du joueur : appelé par HomeShell quand l'onglet
+  // devient actif dans la barre du bas et par le bouton de l'AppBar.
+  @override
+  void refreshOnTabActivated() {
     _loadInitialData();
   }
 
@@ -86,7 +95,11 @@ class _TeamManagementScreenState extends State<TeamManagementScreen> {
       appBar: AppBar(
         title: const Text("Mes Équipes"),
         actions: [
-          //raffraichir ?
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _loadInitialData,
+            tooltip: "Rafraîchir",
+          ),
         ],
       ),
       body: Row(

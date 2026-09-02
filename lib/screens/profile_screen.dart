@@ -10,6 +10,7 @@ import '../models/models.dart';
 import '../utils/error_snack_bar_presenter.dart';
 import 'admin_screen.dart';
 import 'profile_controller.dart';
+import 'refreshable_screen.dart';
 import 'widgets/profile_account_management_section.dart';
 import 'widgets/profile_delete_account_dialog.dart';
 import 'widgets/profile_info_card.dart';
@@ -23,11 +24,18 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends RefreshableScreenState<ProfileScreen> {
   final ProfileController _controller = ProfileController();
 
   void _notifyStateChanged() {
     if (mounted) setState(() {});
+  }
+
+  // Recharge le profil et les invitations : appelé par HomeShell quand
+  // l'onglet devient actif dans la barre du bas.
+  @override
+  void refreshOnTabActivated() {
+    _loadProfileAndInvitations();
   }
 
   void _showSnackBar(String message) {

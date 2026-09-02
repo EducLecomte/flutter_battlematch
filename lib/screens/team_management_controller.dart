@@ -58,7 +58,18 @@ class TeamManagementController {
             // Tournoi non trouvé, skip
           }
         }
-        selectedTeam = list.isEmpty ? null : list.first;
+        // Conserve l'équipe sélectionnée si elle figure encore dans la
+        // liste, afin que le rafraîchissement (changement d'onglet, bouton
+        // de l'AppBar) ne réinitialise pas la sélection sur la première.
+        final Team? equipePrecedente = selectedTeam;
+        Team? equipeConservee;
+        for (final team in list) {
+          if (team.id == equipePrecedente?.id) {
+            equipeConservee = team;
+            break;
+          }
+        }
+        selectedTeam = equipeConservee ?? (list.isEmpty ? null : list.first);
         await loadMembersForSelectedTeam();
         await loadOpponentsForSelectedTeam();
       }
