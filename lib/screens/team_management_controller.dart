@@ -31,8 +31,8 @@ class TeamManagementController {
   // Équipes adverses de l'équipe sélectionnée
   List<Team> opponentTeams = [];
 
-  // Adversaires par équipe adverse
-  Map<String, List<MetaAdv>> opponentsByOpponentTeamId = {};
+  // Adversaires (team_meta) par équipe adverse
+  Map<String, List<TeamMeta>> opponentsByOpponentTeamId = {};
 
   // Appariements par équipe adverse
   Map<String, List<Matched>> matchedByOpponentTeamId = {};
@@ -88,12 +88,11 @@ class TeamManagementController {
         selectedTeam.tournoiId,
       );
       final List<Team> opponentTeamsToDisplay = [];
-      final Map<String, List<MetaAdv>> loadedOpponents = {};
+      final Map<String, List<TeamMeta>> loadedOpponents = {};
       final Map<String, List<Matched>> loadedMatched = {};
       for (final Team opponentTeam in allTeams) {
         if (opponentTeam.id == selectedTeam.id) continue;
-        final List<MetaAdv> opponents = await _pocketbaseService.getOpponents(
-          selectedTeam.id,
+        final List<TeamMeta> opponents = await _pocketbaseService.getTeamMeta(
           opponentTeam.id,
         );
         if (opponents.isEmpty) continue;
@@ -168,7 +167,7 @@ class TeamManagementController {
   Future<bool> toggleMatched(
     Team opponentTeam,
     Joueur player,
-    MetaAdv opponent,
+    TeamMeta opponent,
   ) async {
     final selectedTeam = this.selectedTeam;
     if (selectedTeam == null) return false;

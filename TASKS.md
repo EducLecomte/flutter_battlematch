@@ -29,8 +29,8 @@ lib/
   screens/...                # inchangés sauf imports
 
 Collections PB : joueurs (auth DÉDIÉE — users natif intouché), tournois,
-teams, team_membres, rencontres, armees(16 seed), choix(7 appréciations
-fixes), meta_adv, estims, matched.
+teams, team_membres, armees(16 seed), choix(7 appréciations fixes),
+team_meta, estims, matched.
 
 ## Missions
 
@@ -372,15 +372,75 @@ fixes), meta_adv, estims, matched.
           `flutter build web` OK
           → 2026-08-30 : `flutter analyze` sans problème,
           `flutter test` 35/35, `flutter build web` OK
- - [x] M16.11 Correctif import carte tournoi : règles d'écriture `meta_adv`
-          sans bypass admin → 400 « Failed to create record » sur les équipes
-          dont le capitaine ≠ utilisateur connecté. `|| @request.auth.admin = true`
-          ajouté aux règles create/update/delete `meta_adv` (snapshot +
-          application directe serveur via superuser 2026-08-31). Vérifié
-          de bout en bout (compte admin temporaire : create/update/delete OK).
-          `matched`/`estims` inchangées.
- 
-  ## Journal erreurs/découvertes
+  - [x] M16.11 Correctif import carte tournoi : règles d'écriture `meta_adv`
+           sans bypass admin → 400 « Failed to create record » sur les équipes
+           dont le capitaine ≠ utilisateur connecté. `|| @request.auth.admin = true`
+           ajouté aux règles create/update/delete `meta_adv` (snapshot +
+           application directe serveur via superuser 2026-08-31). Vérifié
+           de bout en bout (compte admin temporaire : create/update/delete OK).
+           `matched`/`estims` inchangées.
+
+### M17 — Point 2 MEMO : rafraîchissement automatique des écrans (barre du bas)
+- [x] M17.1 Base partagée `RefreshableScreenState<T>`
+      (`lib/screens/refreshable_screen.dart`) : méthode vide
+      `refreshOnTabActivated()`
+- [x] M17.2 `HomeShell` (main.dart) : `GlobalKey<RefreshableScreenState<…>>`
+      par écran, attaché comme `key:` dans l'`IndexedStack` (liste d'écrans
+      inline — plus de `static const _onglets`) ; au `onDestinationSelected`,
+      appel de `refreshOnTabActivated()` sur l'écran devenu actif
+      (pas de rafraîchissement au premier affichage, pas de double fetch)
+- [x] M17.3 Écrans héritant de la base et relançant leur chargement existant :
+      `TournoisScreen` (`_loadTournois`), `TeamManagementScreen`
+      (`_loadInitialData`), `ProfileScreen` (`_loadProfileAndInvitations`)
+- [x] M17.4 `TeamManagementScreen` : commentaire orphelin `//raffraichir ?`
+      remplacé par un `IconButton` de rafraîchissement dans l'AppBar
+      (cohérent avec `TournoisScreen`)
+- [x] M17.5 `TeamManagementController.loadInitialData` : conservation de
+      l'équipe sélectionnée au rechargement si elle figure encore dans la
+      liste (avant : réinitialisation inconditionnelle sur la première)
+- [x] M17.6 Validation : `flutter analyze` 0 problème, `flutter test` 35/35,
+      `flutter build web` OK
+- [x] M17.7 Docs : point 2 RESOLU dans `MEMO.md`, mémoire RAG
+      → 2026-09-02 : `MEMO.md` point 2 marqué « RESOLU » + puce Résolution,
+   `DOC.md`/`TASKS.md` à jour, mémoire RAG (M17) finalisée
+
+### M18 — Point 1 MEMO : refonte `meta_adv` → `team_meta` (1 ligne par joueur par équipe)
+- [x] M18.1 Schéma PocketBase : collection `team_meta` (id `mwteammeta00001`,
+      remplace `meta_adv`) : `team_id`, `armee_id`, `nom_jo`, `liste_jo` +
+      index unique `(team_id, nom_jo)` ; `team_membres.team_meta_id` optionnel ;
+      `estims`/`matched` `meta_adv_id` → `team_meta_id` (index uniques adaptés)
+- [x] M18.2 Modèles : `TeamMeta` (`id`, `teamId`, `armeeId`, `nomJo`,
+      `listeJo`) remplace `MetaAdv` ; `Estim`/`Matched` : `metaAdvId` →
+      `teamMetaId` (`team_meta_id`) ; `app_config` : `collectionNameTeamMeta`
+- [x] M18.3 Services : `pocketbase_dashboard_adversaires_service` (nom
+      conservé) réécrit `team_meta` par équipe (`getTeamMeta`,
+      `streamTeamMeta(teamId)`, `createTeamMeta`, `updateTeamMeta`,
+      `deleteTeamMeta`) ; `saveEstim` upsert sur `(team_id,
+      adversaire_team_id, joueur_id, team_meta_id)` ; `toggleMatched`
+      `teamMetaId` ; `mettreAJourTeamMetaMembre` ; façade
+      `pocketbase_data_service` synchronisée
+- [x] M18.4 Import : `importTeamsForTournoi` crée/récupère chaque équipe une
+      fois puis `importTeamMeta` une fois par équipe ;
+      `TournamentTextImportService.importTeamMeta` upsert idempotent par
+      `(team_id, nom_jo)` (plus de doublons d'équipes ni de métas)
+- [x] M18.5 UI dashboard : `TeamDashboardController` (`streamTeamMeta` de
+      l'équipe adverse, `createTeamMeta`/`deleteTeamMeta`, `toggleMatched`
+      `TeamMeta`) ; matrice/lignes/en-têtes `TeamMeta` + clés `teamMetaId` ;
+      dialogs (adversaire, estim + `ownTeamId`, détails estim) et panel
+      appariements `TeamMeta` ; `TeamManagementController` `List<TeamMeta>`
+      via `getTeamMeta`
+- [x] M18.6 Seed/Purge + tests : `pocketbase_purge` → `collectionNameTeamMeta` ;
+      `pocketbase_seed_demo` : `team_meta` ancrée sur l'équipe adverse
+      (`team_id` + `nom_jo`), `estims`/`matched` `team_meta_id` ; tests
+      `metaAdvId` → `teamMetaId`, `memo_8` réécrit (`TeamMeta` ancré sur
+      `team_id` seul)
+- [x] M18.7 Validation : `flutter analyze` 0 problème, `flutter test` 35/35,
+      `flutter build web` OK
+- [x] M18.8 Docs : point 1 RESOLU dans `MEMO.md`, `DOC.md` à jour, mémoire
+      RAG → 2026-09-03 : `MEMO.md` point 1 « RESOLU » + puce Résolution,
+      `TASKS.md`/`DOC.md` à jour, mémoire RAG (M18)
+
+   ## Journal erreurs/découvertes
 [Date | Problème | Cause racine | Règle préventive]
 - 2026-08-21 | Code jamais compilé | pubspec sans supabase_flutter |
   toujours vérifier pubspec avant de supposer qu'un build passe

@@ -22,14 +22,16 @@ class PocketbaseDashboardEstimsService {
       '&& adversaire_team_id = "${_holder.echapperFiltrePocketBase(adversaireTeamId)}"';
 
   /// Enregistre ou met à jour une estimation (upsert guidé par l’index unique
-  /// joueur + adversaire).
+  /// équipe + équipe adverse + joueur + méta adverse).
   Future<void> saveEstim(Estim estim) async {
     final List<RecordModel> existants =
         await _holder.clientPocketBase.collection(collectionNameEstims).getFullList(
-              filter:
-                  'joueur_id = "${_holder.echapperFiltrePocketBase(estim.joueurId)}" '
-                  '&& meta_adv_id = "${_holder.echapperFiltrePocketBase(estim.metaAdvId)}"',
-            );
+               filter:
+                   'team_id = "${_holder.echapperFiltrePocketBase(estim.teamId)}" '
+                   '&& adversaire_team_id = "${_holder.echapperFiltrePocketBase(estim.adversaireTeamId)}" '
+                   '&& joueur_id = "${_holder.echapperFiltrePocketBase(estim.joueurId)}" '
+                   '&& team_meta_id = "${_holder.echapperFiltrePocketBase(estim.teamMetaId)}"',
+             );
 
     if (existants.isNotEmpty) {
       await _holder.clientPocketBase.collection(collectionNameEstims).update(

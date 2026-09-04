@@ -80,6 +80,16 @@ class PocketbaseDataService {
   Future<List<Map<String, dynamic>>> getTeamMembres(String teamId) =>
       _serviceTeamMembres.getTeamMembres(teamId);
 
+  Future<void> mettreAJourTeamMetaMembre(
+    String teamId,
+    String joueurId,
+    String? teamMetaId,
+  ) => _serviceTeamMembres.mettreAJourTeamMetaMembre(
+    teamId,
+    joueurId,
+    teamMetaId,
+  );
+
   Future<List<Map<String, dynamic>>> getPendingInvitations(String userId) =>
       _serviceTeamInvitations.getPendingInvitations(userId);
 
@@ -146,32 +156,40 @@ class PocketbaseDataService {
 
   Future<List<Choix>> getChoix() => _serviceReferentiels.getChoix();
 
-  Future<List<MetaAdv>> getOpponents(
+  Future<List<TeamMeta>> getTeamMeta(
     String teamId,
-    String adversaireTeamId,
-  ) => _serviceDashboardAdversaires.getOpponents(teamId, adversaireTeamId);
+  ) => _serviceDashboardAdversaires.getTeamMeta(teamId);
 
-  Stream<List<MetaAdv>> streamOpponents(
+  Stream<List<TeamMeta>> streamTeamMeta(
     String teamId,
-    String adversaireTeamId,
-  ) => _serviceDashboardAdversaires.streamOpponents(teamId, adversaireTeamId);
+  ) => _serviceDashboardAdversaires.streamTeamMeta(teamId);
 
-  Future<MetaAdv> createOpponent(
+  Future<TeamMeta> createTeamMeta(
     String teamId,
-    String adversaireTeamId,
     String armeeId,
-    String nomJoAdv,
-    String listeAdv,
-  ) => _serviceDashboardAdversaires.createOpponent(
+    String nomJo,
+    String listeJo,
+  ) => _serviceDashboardAdversaires.createTeamMeta(
     teamId,
-    adversaireTeamId,
     armeeId,
-    nomJoAdv,
-    listeAdv,
+    nomJo,
+    listeJo,
   );
 
-  Future<void> deleteOpponent(String opponentId) =>
-      _serviceDashboardAdversaires.deleteOpponent(opponentId);
+  Future<TeamMeta> updateTeamMeta(
+    String id, {
+    String? armeeId,
+    String? nomJo,
+    String? listeJo,
+  }) => _serviceDashboardAdversaires.updateTeamMeta(
+    id,
+    armeeId: armeeId,
+    nomJo: nomJo,
+    listeJo: listeJo,
+  );
+
+  Future<void> deleteTeamMeta(String id) =>
+      _serviceDashboardAdversaires.deleteTeamMeta(id);
 
   Future<void> saveEstim(Estim estim) =>
       _serviceDashboardEstims.saveEstim(estim);
@@ -185,12 +203,12 @@ class PocketbaseDataService {
     String teamId,
     String adversaireTeamId,
     String joueurId,
-    String metaAdvId,
+    String teamMetaId,
   ) => _serviceDashboardMatched.toggleMatched(
     teamId,
     adversaireTeamId,
     joueurId,
-    metaAdvId,
+    teamMetaId,
   );
 
   Future<List<Matched>> getMatched(

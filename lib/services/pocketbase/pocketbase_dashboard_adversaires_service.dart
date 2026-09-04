@@ -1,6 +1,7 @@
 // ===========================================================================
-// Adversaires d’une équipe MetaWar (collection meta_adv) :
-// listing, flux temps réel, création manuelle et suppression.
+// Méta des équipes MetaWar (collection team_meta) : listing, flux temps réel,
+// création, mise à jour et suppression d'un joueur d'équipe.
+// Une seule ligne par joueur dans le tournoi, indépendante des rencontres.
 // ===========================================================================
 
 import 'package:flutter/foundation.dart';
@@ -18,68 +19,78 @@ class PocketbaseDashboardAdversairesService {
 
   PocketbaseClientHolder get _holder => PocketbaseClientHolder.instance;
 
-  String _filtreParEquipes(String teamId, String adversaireTeamId) =>
-      'team_id = "${_holder.echapperFiltrePocketBase(teamId)}" '
-      '&& adversaire_team_id = "${_holder.echapperFiltrePocketBase(adversaireTeamId)}"';
+  String _filtreParEquipe(String teamId) =>
+      'team_id = "${_holder.echapperFiltrePocketBase(teamId)}"';
 
-  /// Récupère les adversaires d’un duo d’équipes.
-  Future<List<MetaAdv>> getOpponents(
-    String teamId,
-    String adversaireTeamId,
-  ) async {
+  /// Récupère la méta (joueurs + armées + listes) d'une équipe.
+  Future<List<TeamMeta>> getTeamMeta(String teamId) async {
     try {
       final List<RecordModel> records =
           await _holder.clientPocketBase
-              .collection(collectionNameMetaAdv)
+              .collection(collectionNameTeamMeta)
               .getFullList(
-                filter: _filtreParEquipes(teamId, adversaireTeamId),
+                filter: _filtreParEquipe(teamId),
                 sort: 'created',
               );
-      return records.map(MetaAdv.fromPocketBaseRecord).toList();
+      return records.map(TeamMeta.fromPocketBaseRecord).toList();
     } catch (exception) {
-      debugPrint('Erreur de chargement des adversaires : $exception');
+      debugPrint('Erreur de chargement de la méta d\'équipe : $exception');
       return [];
     }
   }
 
-  /// Flux temps réel des adversaires d’un duo d’équipes.
-  Stream<List<MetaAdv>> streamOpponents(
-    String teamId,
-    String adversaireTeamId,
-  ) {
+  /// Flux temps réel de la méta (joueurs + armées + listes) d'une équipe.
+  Stream<List<TeamMeta>> streamTeamMeta(String teamId) {
     return _holder
         .streamCollectionRecords(
-          nomCollection: collectionNameMetaAdv,
-          filtre: _filtreParEquipes(teamId, adversaireTeamId),
+          nomCollection: collectionNameTeamMeta,
+          filtre: _filtreParEquipe(teamId),
           tri: 'created',
         )
-        .map((records) => records.map(MetaAdv.fromPocketBaseRecord).toList());
+        .map((records) => records.map(TeamMeta.fromPocketBaseRecord).toList());
   }
 
-  /// Ajoute un adversaire manuellement.
-  Future<MetaAdv> createOpponent(
+  /// Ajoute un joueur à la méta d'une équipe.
+  Future<TeamMeta> createTeamMeta(
     String teamId,
-    String adversaireTeamId,
     String armeeId,
-    String nomJoAdv,
-    String listeAdv,
+    String nomJo,
+    String listeJo,
   ) async {
     final RecordModel record = await _holder.clientPocketBase
-        .collection(collectionNameMetaAdv)
+        .collection(collectionNameTeamMeta)
         .create(body: {
       'team_id': teamId,
-      'adversaire_team_id': adversaireTeamId,
       'armee_id': armeeId,
-      'nom_jo_adv': nomJoAdv,
-      'liste_adv': listeAdv,
+      'nom_jo': nomJo,
+      'liste_jo': listeJo,
     });
-    return MetaAdv.fromPocketBaseRecord(record);
+    return TeamMeta.fromPocketBaseRecord(record);
   }
 
-  /// Supprime un adversaire (estimations et appariements purgés en cascade).
-  Future<void> deleteOpponent(String opponentId) async {
+  /// Met à jour un joueur de la méta d'une équipe.
+  Future<TeamMeta> updateTeamMeta(
+    String id, {
+    String? armeeId,
+    String? nomJo,
+    String? listeJo,
+  }) async {
+    final Map<String, dynamic> body = <String, dynamic>{};
+    if (armeeId != null) body['armee_id'] = armeeId;
+    if (nomJo != null) body['nom_jo'] = nomJo;
+    if (listeJo != null) body['liste_jo'] = listeJo;
+
+    final RecordModel record = await _holder.clientPocketBase
+        .collection(collectionNameTeamMeta)
+        .update(id, body: body);
+    return TeamMeta.fromPocketBaseRecord(record);
+  }
+
+  /// Supprime un joueur de la méta d'une équipe
+  /// (estimations et appariements purgés en cascade).
+  Future<void> deleteTeamMeta(String id) async {
     await _holder.clientPocketBase
-        .collection(collectionNameMetaAdv)
-        .delete(opponentId);
+        .collection(collectionNameTeamMeta)
+        .delete(id);
   }
 }

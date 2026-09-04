@@ -83,6 +83,27 @@ class PocketbaseTeamMembresService {
     return await getTeamMembreRecord(teamId, joueurId) != null;
   }
 
+  /// Associe la méta d'un joueur à un membre (ou la dissocie si `teamMetaId`
+  /// est null). Le lien est optionnel : un coach ou un membre sans méta
+  /// laisse ce champ vide.
+  Future<void> mettreAJourTeamMetaMembre(
+    String teamId,
+    String joueurId,
+    String? teamMetaId,
+  ) async {
+    final RecordModel? recordMembre =
+        await getTeamMembreRecord(teamId, joueurId);
+    if (recordMembre == null) {
+      throw Exception("Aucune appartenance trouvée pour ce joueur.");
+    }
+    await _holder.clientPocketBase
+        .collection(collectionNameTeamMembres)
+        .update(
+          recordMembre.id,
+          body: {'team_meta_id': teamMetaId ?? ''},
+        );
+  }
+
   /// Met à jour le rôle d'un membre d'équipe existant.
   Future<void> mettreAJourRoleMembre(
     String teamId,

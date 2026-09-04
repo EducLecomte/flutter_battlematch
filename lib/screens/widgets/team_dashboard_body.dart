@@ -20,7 +20,7 @@ class TeamDashboardBody extends StatelessWidget {
   final TeamDashboardController controller;
   final TeamDashboardEstimActions estimActions;
   final bool isCaptain;
-  final Future<void> Function(MetaAdv opponent) onOpponentDeleted;
+  final Future<void> Function(TeamMeta opponent) onOpponentDeleted;
 
   const TeamDashboardBody({
     super.key,
@@ -32,7 +32,7 @@ class TeamDashboardBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<MetaAdv>>(
+    return StreamBuilder<List<TeamMeta>>(
       stream: controller.opponentsStream,
       builder: (context, opponentsSnapshot) {
         final opponents = opponentsSnapshot.data ?? [];
@@ -54,7 +54,7 @@ class TeamDashboardBody extends StatelessWidget {
                 final matches = matchedSnapshot.data ?? [];
                 final estimsByKey = {
                   for (final estim in estims)
-                    '${estim.joueurId}$dashboardEstimKeySeparator${estim.metaAdvId}':
+                    '${estim.joueurId}$dashboardEstimKeySeparator${estim.teamMetaId}':
                         estim,
                 };
                 final matchedScoreSummary = MatchedScoreSummaryCalculator.summarize(

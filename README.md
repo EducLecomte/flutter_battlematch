@@ -42,15 +42,21 @@ Le snapshot est au **format génération moderne** PocketBase (≥ 0.23 ;
 instance migrée en **0.39.11** le 2026-08-22). Il crée/met à jour :
 `joueurs` (collection `auth` **dédiée** aux profils MetaWar, champ
 `nom`, auth email+mot de passe), `tournois`, `teams`,
-`team_membres`, `armees`, `choix`, `meta_adv`, `estims`,
+`team_membres`, `armees`, `choix`, `team_meta`, `estims`,
 `matched` — relations, index uniques anti-doublon (appariements,
 estimations par joueur, armées/choix) et règles d'accès.
 
 > ⚠️ **M16 (2026-08-30) :** la collection `rencontres` a été supprimée du
-> snapshot. `meta_adv`/`estims`/`matched` sont ancrés sur le duo
+> snapshot. `estims`/`matched` sont ancrés sur le duo
 > `team_id` + `adversaire_team_id`. Lors du réimport, supprimer
 > manuellement la collection `rencontres` existante dans l'admin
 > (l'import est additif et ne la retire pas).
+
+> ⚠️ **M18 (2026-09-03) :** la collection `meta_adv` a été remplacée par
+> `team_meta` (1 ligne par joueur par équipe, ancrée sur `team_id` seul,
+> index unique `(team_id, nom_jo)`). `estims`/`matched` utilisent désormais
+> `team_meta_id`. Lors du réimport, supprimer manuellement la collection
+> `meta_adv` existante dans l'admin (l'import est additif).
 
 > ✅ La collection native `users` n'apparaît **pas** dans le snapshot :
 > l'import est **additif** et la laisse strictement intacte (l'application
@@ -128,7 +134,7 @@ dart run tool/pocketbase_purge_meta_war_records.dart
 ```
 
 Avec `--yes`, il supprime les données MetaWar dans l'ordre anti-orphelins :
-`matched`, `estims`, `meta_adv`, `team_membres`, `teams`,
+`matched`, `estims`, `team_meta`, `team_membres`, `teams`,
 `tournois`, `joueurs`. Les collections natives PocketBase (`users`,
 `_superusers`, fichiers) ne sont pas touchées.
 

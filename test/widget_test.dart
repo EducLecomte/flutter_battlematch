@@ -73,7 +73,7 @@ void main() {
         'joueur_id': 'abc123def456ghi',
         'team_id': 'team000001ab',
         'adversaire_team_id': 'adversaire0001ab',
-        'meta_adv_id': 'metaadv000001ab',
+         'team_meta_id': 'metaadv000001ab',
         'choix_id': 'choix00000001ab',
       });
 
@@ -93,13 +93,13 @@ void main() {
         'team_id': 'team000001ab',
         'adversaire_team_id': 'adversaire0001ab',
         'joueur_id': 'abc123def456ghi',
-        'meta_adv_id': 'metaadv000001ab',
+         'team_meta_id': 'metaadv000001ab',
       });
 
       final matched = Matched.fromPocketBaseRecord(record);
 
       expect(matched.joueurId, 'abc123def456ghi');
-      expect(matched.metaAdvId, 'metaadv000001ab');
+      expect(matched.teamMetaId, 'metaadv000001ab');
     });
   });
 

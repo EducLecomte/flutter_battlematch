@@ -14,20 +14,20 @@ void main() {
         teamId: 'team00001',
         adversaireTeamId: 'adversaireTeam00001',
         joueurId: 'joueur00001',
-        metaAdvId: 'adversaire00001',
+        teamMetaId: 'adversaire00001',
       );
       final unmatchedScoredPlayer = Matched(
         id: 'matched00002',
         teamId: 'team00001',
         adversaireTeamId: 'adversaireTeam00001',
         joueurId: 'joueur00002',
-        metaAdvId: 'adversaire00002',
+        teamMetaId: 'adversaire00002',
       );
       final scoredEstim = Estim(
         joueurId: 'joueur00001',
         teamId: 'team00001',
         adversaireTeamId: 'adversaireTeam00001',
-        metaAdvId: 'adversaire00001',
+        teamMetaId: 'adversaire00001',
         choixId: 'choix00001',
         scoreMin: 8,
         scoreMax: 12,
@@ -36,7 +36,7 @@ void main() {
         joueurId: 'joueur00002',
         teamId: 'team00001',
         adversaireTeamId: 'adversaireTeam00001',
-        metaAdvId: 'adversaire00002',
+        teamMetaId: 'adversaire00002',
         choixId: 'choix00001',
       );
 

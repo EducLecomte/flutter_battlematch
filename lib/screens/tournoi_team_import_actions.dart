@@ -40,9 +40,9 @@ Future<void> showTournoiTeamImportDialog({
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(
-        "Import terminé : ${completedImportSummary.createdTeamCount} "
-        "équipe(s) créée(s), "
-        "${completedImportSummary.createdOpponentCount} liste(s) adverse(s) ajoutée(s), "
+        "Import terminé : ${completedImportSummary.createdTeamCount} équipe(s) créée(s), "
+        "${completedImportSummary.createdTeamMetaCount} liste(s) ajoutée(s), "
+        "${completedImportSummary.updatedTeamMetaCount} mise(s) à jour, "
         "${completedImportSummary.skippedExistingTeamCount} équipe(s) ignorée(s).",
       ),
       backgroundColor: Colors.green,

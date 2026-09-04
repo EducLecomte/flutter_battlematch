@@ -56,7 +56,7 @@ class _TeamDashboardScreenState extends State<TeamDashboardScreen> {
     }
   }
 
-  Future<void> _deleteOpponent(MetaAdv opponent) async {
+  Future<void> _deleteOpponent(TeamMeta opponent) async {
     try {
       await _controller.deleteOpponent(opponent.id);
       if (mounted) {

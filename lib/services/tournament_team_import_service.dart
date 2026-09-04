@@ -1,6 +1,7 @@
 // ===========================================================================
 // Import des équipes d'un tournoi MetaWar depuis un contenu New Recruit déjà
-// parsé. Crée les équipes manquantes puis marque le tournoi comme importé.
+// parsé. Crée les équipes manquantes puis importe la méta (team_meta) des
+// joueurs de chaque équipe, et marque le tournoi comme importé.
 // ===========================================================================
 
 import '../models/models.dart';
@@ -12,14 +13,16 @@ class TournamentTeamImportSummary {
   final int createdTeamCount;
   final int skippedExistingTeamCount;
   final int totalTeamCount;
-  final int createdOpponentCount;
+  final int createdTeamMetaCount;
+  final int updatedTeamMetaCount;
   final int unknownArmyCount;
 
   const TournamentTeamImportSummary({
     required this.createdTeamCount,
     required this.skippedExistingTeamCount,
     required this.totalTeamCount,
-    this.createdOpponentCount = 0,
+    this.createdTeamMetaCount = 0,
+    this.updatedTeamMetaCount = 0,
     this.unknownArmyCount = 0,
   });
 }
@@ -35,7 +38,8 @@ class TournamentTeamImportService {
   final PocketbaseTournoisService _serviceTournois =
       PocketbaseTournoisService.instance;
 
-  /// Crée les équipes manquantes d'un tournoi puis marque l'import effectué.
+  /// Crée les équipes manquantes d'un tournoi, importe la méta des joueurs
+  /// de chaque équipe puis marque l'import comme effectué.
   Future<TournamentTeamImportSummary> importTeamsForTournoi({
     required String tournoiId,
     required List<Map<String, dynamic>> importedPlayers,
@@ -58,7 +62,8 @@ class TournamentTeamImportService {
 
     int createdTeamCount = 0;
     int skippedExistingTeamCount = 0;
-    int createdOpponentCount = 0;
+    int createdTeamMetaCount = 0;
+    int updatedTeamMetaCount = 0;
     int unknownArmyCount = 0;
 
     for (final String nomEquipe in nomsEquipesUniques) {
@@ -78,14 +83,13 @@ class TournamentTeamImportService {
       }
 
       final TournamentTextImportSummary summary =
-          await TournamentTextImportService.instance.importTournamentText(
-            tournoiId: tournoiId,
-            targetTeamId: equipeCible.id,
-            targetTeamName: equipeCible.nom,
-            importedPlayers: importedPlayers,
-            referenceArmies: referenceArmies,
-          );
-      createdOpponentCount += summary.createdOpponentCount;
+          await TournamentTextImportService.instance.importTeamMeta(
+        team: equipeCible,
+        players: joueursParEquipe[nomEquipe]!,
+        referenceArmies: referenceArmies,
+      );
+      createdTeamMetaCount += summary.createdTeamMetaCount;
+      updatedTeamMetaCount += summary.updatedTeamMetaCount;
       unknownArmyCount += summary.unknownArmyCount;
     }
 
@@ -95,7 +99,8 @@ class TournamentTeamImportService {
       createdTeamCount: createdTeamCount,
       skippedExistingTeamCount: skippedExistingTeamCount,
       totalTeamCount: nomsEquipesUniques.length,
-      createdOpponentCount: createdOpponentCount,
+      createdTeamMetaCount: createdTeamMetaCount,
+      updatedTeamMetaCount: updatedTeamMetaCount,
       unknownArmyCount: unknownArmyCount,
     );
   }

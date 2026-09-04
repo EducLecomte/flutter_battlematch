@@ -29,15 +29,15 @@ class PocketbaseDashboardMatchedService {
     String teamId,
     String adversaireTeamId,
     String joueurId,
-    String metaAdvId,
+    String teamMetaId,
   ) async {
     final List<RecordModel> existants =
         await _holder.clientPocketBase.collection(collectionNameMatched).getFullList(
-              filter:
-                  '${_filtreParEquipes(teamId, adversaireTeamId)} '
-                  '&& joueur_id = "${_holder.echapperFiltrePocketBase(joueurId)}" '
-                  '&& meta_adv_id = "${_holder.echapperFiltrePocketBase(metaAdvId)}"',
-            );
+               filter:
+                   '${_filtreParEquipes(teamId, adversaireTeamId)} '
+                   '&& joueur_id = "${_holder.echapperFiltrePocketBase(joueurId)}" '
+                   '&& team_meta_id = "${_holder.echapperFiltrePocketBase(teamMetaId)}"',
+             );
 
     if (existants.isNotEmpty) {
       // Déjà apparié sur cette case précise -> suppression (déverrouillage)
@@ -52,7 +52,7 @@ class PocketbaseDashboardMatchedService {
           'team_id': teamId,
           'adversaire_team_id': adversaireTeamId,
           'joueur_id': joueurId,
-          'meta_adv_id': metaAdvId,
+          'team_meta_id': teamMetaId,
         },
       );
     }

@@ -7,6 +7,6 @@ export 'choix.dart';
 export 'estim.dart';
 export 'joueur.dart';
 export 'matched.dart';
-export 'meta_adversaire.dart';
 export 'team.dart';
+export 'team_meta.dart';
 export 'tournoi.dart';

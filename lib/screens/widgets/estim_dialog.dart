@@ -15,7 +15,8 @@ import 'estim_score_section.dart';
 
 class EstimDialog extends StatefulWidget {
   final Joueur joueur;
-  final MetaAdv opponent;
+  final TeamMeta opponent;
+  final String ownTeamId;
   final List<Choix> listChoix;
   final Estim? currentEstim;
   final Future<String?> Function(Estim estim) onSave;
@@ -24,6 +25,7 @@ class EstimDialog extends StatefulWidget {
     super.key,
     required this.joueur,
     required this.opponent,
+    required this.ownTeamId,
     required this.listChoix,
     this.currentEstim,
     required this.onSave,
@@ -42,6 +44,7 @@ class _EstimDialogState extends State<EstimDialog> {
     controller = EstimDialogController(
       currentJoueur: widget.joueur,
       currentOpponent: widget.opponent,
+      ownTeamId: widget.ownTeamId,
       choiceList: widget.listChoix,
       existingEstim: widget.currentEstim,
     );

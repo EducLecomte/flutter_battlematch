@@ -32,7 +32,7 @@ abstract final class MatchedScoreSummaryCalculator {
 
     for (final matched in matchedList) {
       final estimKey =
-          '${matched.joueurId}$keySeparator${matched.metaAdvId}';
+          '${matched.joueurId}$keySeparator${matched.teamMetaId}';
       final midpoint = EstimScoreCalculator.midpointScore(estimByKey[estimKey]);
       if (midpoint != null) {
         scoredCount++;

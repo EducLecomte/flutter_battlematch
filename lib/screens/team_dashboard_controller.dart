@@ -25,8 +25,9 @@ class TeamDashboardController {
 
   // Flux temps réel créés UNE seule fois : des streams récréés à chaque
   // rebuild forceraient des résouscriptions SSE et des refetchs en cascade.
-  late final Stream<List<MetaAdv>> opponentsStream =
-      _pocketbaseService.streamOpponents(team.id, adversaireTeam.id);
+  // Les adversaires (colonnes) = la méta (team_meta) de l'équipe adverse.
+  late final Stream<List<TeamMeta>> opponentsStream =
+      _pocketbaseService.streamTeamMeta(adversaireTeam.id);
   late final Stream<List<Estim>> estimsStream =
       _pocketbaseService.streamEstims(team.id, adversaireTeam.id);
   late final Stream<List<Matched>> matchedStream =
@@ -58,14 +59,14 @@ class TeamDashboardController {
     }
   }
 
-  // Ajoute un adversaire manuellement au duo d’équipes.
+  // Ajoute manuellement un joueur à la méta de l'équipe adverse (nouvelle
+  // colonne du tableau de bord).
   Future<void> addOpponent(
     String opponentName,
     String armyList,
     Armee army,
   ) async {
-    await _pocketbaseService.createOpponent(
-      team.id,
+    await _pocketbaseService.createTeamMeta(
       adversaireTeam.id,
       army.id,
       opponentName,
@@ -73,13 +74,13 @@ class TeamDashboardController {
     );
   }
 
-  // Supprime un adversaire du duo d’équipes.
+  // Supprime un joueur de la méta de l'équipe adverse.
   Future<void> deleteOpponent(String opponentId) async {
-    await _pocketbaseService.deleteOpponent(opponentId);
+    await _pocketbaseService.deleteTeamMeta(opponentId);
   }
 
-  // Résout l’armée de référence d’un adversaire.
-  Armee armyForOpponent(MetaAdv opponent, {String fallbackName = 'Inconnue'}) {
+  // Résout l’armée de référence d'un joueur de la méta adverse.
+  Armee armyForOpponent(TeamMeta opponent, {String fallbackName = 'Inconnue'}) {
     return armies.firstWhere(
       (army) => army.id == opponent.armeeId,
       orElse: () => Armee(id: '', nom: fallbackName, short: '???'),
@@ -103,7 +104,7 @@ class TeamDashboardController {
 
   // Verrouille/déverrouille l’appariement. Retourne false si l’appariement
   // est impossible (joueur ou adversaire déjà apparié ailleurs).
-  Future<bool> toggleMatched(Joueur player, MetaAdv opponent) async {
+  Future<bool> toggleMatched(Joueur player, TeamMeta opponent) async {
     try {
       await _pocketbaseService.toggleMatched(
         team.id,

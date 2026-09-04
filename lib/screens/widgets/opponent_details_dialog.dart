@@ -10,7 +10,7 @@ import '../../models/models.dart';
 
 Future<void> showOpponentDetailsDialog(
   BuildContext context, {
-  required MetaAdv opponent,
+  required TeamMeta opponent,
   required Armee army,
   required bool canDelete,
   required Future<void> Function() onDelete,
@@ -19,10 +19,10 @@ Future<void> showOpponentDetailsDialog(
     context: context,
     builder: (dialogContext) {
       return AlertDialog(
-        title: Text(
-          "${opponent.nomJoAdv ?? 'Joueur'} (${army.nom})",
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
+         title: Text(
+           "${opponent.nomJo} (${army.nom})",
+           style: const TextStyle(fontWeight: FontWeight.bold),
+         ),
         content: SingleChildScrollView(
           child: SizedBox(
             width: 500,
@@ -41,10 +41,10 @@ Future<void> showOpponentDetailsDialog(
                     color: Colors.grey.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text(
-                    opponent.listeAdv.isNotEmpty
-                        ? opponent.listeAdv
-                        : "Aucune liste saisie.",
+                   child: Text(
+                     opponent.listeJo.isNotEmpty
+                         ? opponent.listeJo
+                         : "Aucune liste saisie.",
                     style: const TextStyle(
                       fontFamily: 'monospace',
                       fontSize: 13,

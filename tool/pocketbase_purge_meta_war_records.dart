@@ -8,7 +8,7 @@ import 'pocketbase_tool_support.dart';
 const List<String> collectionsMetaWarParDefaut = [
   collectionNameMatched,
   collectionNameEstims,
-  collectionNameMetaAdv,
+  collectionNameTeamMeta,
   collectionNameTeamMembres,
   collectionNameTeams,
   collectionNameTournois,

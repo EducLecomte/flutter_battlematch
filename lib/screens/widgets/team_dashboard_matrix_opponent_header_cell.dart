@@ -9,9 +9,9 @@ import 'package:flutter/material.dart';
 import '../../models/models.dart';
 
 class MatrixOpponentHeaderCell extends StatelessWidget {
-  final MetaAdv opponent;
+  final TeamMeta opponent;
   final Armee army;
-  final void Function(MetaAdv opponent) onOpponentTap;
+  final void Function(TeamMeta opponent) onOpponentTap;
 
   const MatrixOpponentHeaderCell({
     super.key,
@@ -35,7 +35,7 @@ class MatrixOpponentHeaderCell extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                opponent.nomJoAdv ?? 'Adv',
+                opponent.nomJo,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 13,

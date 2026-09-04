@@ -13,7 +13,7 @@ import 'team_dashboard_matrix_matchup_cell.dart';
 
 class MatrixPlayerRow {
   final Joueur player;
-  final List<MetaAdv> opponents;
+  final List<TeamMeta> opponents;
   final TeamDashboardEstimActions estimActions;
   final Map<String, Estim> estimParJoueurEtAdversaire;
   final Map<String, Choix> choixParId;
@@ -72,7 +72,7 @@ class MatrixPlayerRow {
   Widget _buildMatchupCell(
     BuildContext context,
     Joueur player,
-    MetaAdv opponent,
+    TeamMeta opponent,
   ) {
     // Estimation réelle de ce joueur sur cet adversaire (null si vide)
     final existingEstim = estimParJoueurEtAdversaire[

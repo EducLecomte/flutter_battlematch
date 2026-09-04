@@ -2,20 +2,22 @@ import '../models/models.dart';
 import 'new_recruit_import_service.dart';
 import 'pocketbase_data_service.dart';
 
+/// Résumé de l'import de la méta d'une équipe (lignes `team_meta`).
 class TournamentTextImportSummary {
-  final int createdOpponentTeamCount;
-  final int createdOpponentCount;
+  final int createdTeamMetaCount;
+  final int updatedTeamMetaCount;
   final int unknownArmyCount;
-  final int skippedDuplicateTeamCount;
 
   const TournamentTextImportSummary({
-    required this.createdOpponentTeamCount,
-    required this.createdOpponentCount,
+    required this.createdTeamMetaCount,
+    required this.updatedTeamMetaCount,
     required this.unknownArmyCount,
-    required this.skippedDuplicateTeamCount,
   });
 }
 
+/// Import de la méta des joueurs d'une équipe depuis un contenu New Recruit
+/// déjà parsé. Crée ou met à jour une seule ligne `team_meta` par joueur,
+/// de façon idempotente par `(team_id, nom_jo)`.
 class TournamentTextImportService {
   static final TournamentTextImportService instance =
       TournamentTextImportService._internal();
@@ -25,95 +27,60 @@ class TournamentTextImportService {
 
   TournamentTextImportService._internal();
 
-  Future<TournamentTextImportSummary> importTournamentText({
-    required String tournoiId,
-    required String targetTeamId,
-    required String targetTeamName,
-    required List<Map<String, dynamic>> importedPlayers,
+  Future<TournamentTextImportSummary> importTeamMeta({
+    required Team team,
+    required List<Map<String, dynamic>> players,
     required List<Armee> referenceArmies,
   }) async {
-    final Map<String, List<Map<String, dynamic>>> playersByTeamName =
-        _groupPlayersByTeamName(importedPlayers);
-    final Map<String, Team> teamsByNormalizedName = {
-      for (final Team team
-          in await _pocketbaseDataService.getTeamsForTournoi(tournoiId))
-        team.nom.trim().toLowerCase(): team,
+    final List<TeamMeta> metasExistantes =
+        await _pocketbaseDataService.getTeamMeta(team.id);
+    final Map<String, TeamMeta> metasParNomJo = {
+      for (final TeamMeta meta in metasExistantes)
+        meta.nomJo.trim().toLowerCase(): meta,
     };
 
-    int createdOpponentTeamCount = 0;
-    int createdOpponentCount = 0;
+    int createdTeamMetaCount = 0;
+    int updatedTeamMetaCount = 0;
     int unknownArmyCount = 0;
-    int skippedDuplicateTeamCount = 0;
 
-    for (final MapEntry<String, List<Map<String, dynamic>>> teamEntry
-        in playersByTeamName.entries) {
-      if (_isTargetTeam(teamEntry.key, targetTeamName)) continue;
+    for (final Map<String, dynamic> importedPlayer in players) {
+      final String nomJo = (importedPlayer['playerName'] as String? ?? '').trim();
+      if (nomJo.isEmpty) continue;
 
-      final String opponentTeamName = teamEntry.key.trim();
-      final String normalizedName = opponentTeamName.toLowerCase();
-      Team opponentTeam = teamsByNormalizedName[normalizedName] ??
-          await _pocketbaseDataService.createTeamForTournoi(
-            tournoiId,
-            opponentTeamName,
-          );
-      if (teamsByNormalizedName[normalizedName] == null) {
-        teamsByNormalizedName[normalizedName] = opponentTeam;
-        createdOpponentTeamCount++;
-      }
-
-      final List<MetaAdv> existingOpponents =
-          await _pocketbaseDataService.getOpponents(
-        targetTeamId,
-        opponentTeam.id,
-      );
-      if (existingOpponents.isNotEmpty) {
-        skippedDuplicateTeamCount++;
+      final Armee? resolvedArmy = NewRecruitImportService.instance
+          .findArmeeByName(importedPlayer['armyName'] as String,
+              referenceArmies);
+      if (resolvedArmy == null) {
+        unknownArmyCount++;
         continue;
       }
 
-      for (final Map<String, dynamic> importedPlayer in teamEntry.value) {
-        final Armee? resolvedArmy = NewRecruitImportService.instance
-            .findArmeeByName(importedPlayer['armyName'] as String,
-                referenceArmies);
-        if (resolvedArmy == null) {
-          unknownArmyCount++;
-          continue;
-        }
-
-        await _pocketbaseDataService.createOpponent(
-          targetTeamId,
-          opponentTeam.id,
+      final String listeJo = importedPlayer['listText'] as String;
+      final TeamMeta? metaExistante =
+          metasParNomJo[nomJo.trim().toLowerCase()];
+      if (metaExistante == null) {
+        await _pocketbaseDataService.createTeamMeta(
+          team.id,
           resolvedArmy.id,
-          importedPlayer['playerName'] as String,
-          importedPlayer['listText'] as String,
+          nomJo,
+          listeJo,
         );
-        createdOpponentCount++;
+        createdTeamMetaCount++;
+      } else {
+        await _pocketbaseDataService.updateTeamMeta(
+          metaExistante.id,
+          armeeId: resolvedArmy.id,
+          nomJo: nomJo,
+          listeJo: listeJo,
+        );
+        updatedTeamMetaCount++;
       }
     }
 
     return TournamentTextImportSummary(
-      createdOpponentTeamCount: createdOpponentTeamCount,
-      createdOpponentCount: createdOpponentCount,
+      createdTeamMetaCount: createdTeamMetaCount,
+      updatedTeamMetaCount: updatedTeamMetaCount,
       unknownArmyCount: unknownArmyCount,
-      skippedDuplicateTeamCount: skippedDuplicateTeamCount,
     );
   }
-
-  Map<String, List<Map<String, dynamic>>> _groupPlayersByTeamName(
-    List<Map<String, dynamic>> importedPlayers,
-  ) {
-    final Map<String, List<Map<String, dynamic>>> playersByTeamName = {};
-    for (final Map<String, dynamic> importedPlayer in importedPlayers) {
-      final String teamName = (importedPlayer['teamName'] as String? ?? '')
-          .trim();
-      if (teamName.isEmpty) continue;
-      playersByTeamName
-          .putIfAbsent(teamName, () => <Map<String, dynamic>>[])
-          .add(importedPlayer);
-    }
-    return playersByTeamName;
-  }
-
-  bool _isTargetTeam(String teamName, String targetTeamName) =>
-      teamName.trim().toLowerCase() == targetTeamName.trim().toLowerCase();
 }

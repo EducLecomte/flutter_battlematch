@@ -1,5 +1,46 @@
 # DOC.md — Cartographie technique MetaWar
 
+*[2026-09-03] M18 — point 1 MEMO : refonte `meta_adv` → `team_meta` (RESOLU).
+L'import créait des doublons d'équipes et stockait toutes les combinaisons
+d'adversaires possibles. `team_meta` remplace `meta_adv` : 1 ligne par joueur
+par équipe, ancrée UNIQUEMENT sur son `team_id` (plus de `adversaire_team_id`),
+champs `team_id`, `armee_id`, `nom_jo`, `liste_jo`, index unique
+`(team_id, nom_jo)` ; `estims`/`matched` conservent `team_id` +
+`adversaire_team_id` et remplacent `meta_adv_id` par `team_meta_id` ;
+`team_membres` gagne `team_meta_id` optionnel (membre → équipe/armée, y
+compris non-joueurs). Import upsert idempotent par `(team_id, nom_jo)`
+(`importTeamsForTournoi` crée/récupère chaque équipe une fois,
+`importTeamMeta` une fois par équipe). Service
+`pocketbase_dashboard_adversaires_service` (nom conservé) réécrit `team_meta`
+par équipe ; UI dashboard : `TeamDashboardController` lit les `team_meta` de
+l'équipe ADVERSE B (`streamTeamMeta(adversaireTeam.id)`), `EstimDialog` reçoit
+`ownTeamId` (= équipe A) car `TeamMeta` ne porte que `teamId` (= B) ; clés
+matrice `teamMetaId`. Seed démo : `team_meta` ancrée sur l'équipe adverse.
+Test de garde `memo_8` réécrit (`TeamMeta` sur `team_id` seul).
+**Import manuel du schéma PB requis** (collection `team_meta` remplace
+`meta_adv` + champs `team_meta_id` + index). Validation : `flutter analyze`
+0 problème, `flutter test` 35/35, `flutter build web` OK. Précédent :
+*[2026-09-02] M17 — point 2 MEMO : rafraîchissement automatique des écrans
+depuis la barre du bas (RESOLU). Cause racine : `HomeShell` garde les 3
+écrans en vie dans un `IndexedStack`, leur `initState` (et donc leur
+chargement de données) ne court qu'une fois → données périmées après une
+navigation dans la `NavigationBar`. Fix : base partagée
+`RefreshableScreenState<T>` (`lib/screens/refreshable_screen.dart`, méthode
+`refreshOnTabActivated()`) héritée par les states de `TournoisScreen`,
+`TeamManagementScreen` et `ProfileScreen`, qui relancent chacun leur
+chargement existant (`_loadTournois` / `_loadInitialData` /
+`_loadProfileAndInvitations`). `HomeShell` détient un
+`GlobalKey<RefreshableScreenState<…>>` par écran (attaché comme `key:`,
+liste d'écrans inline — plus de `static const _onglets`) et appelle
+`refreshOnTabActivated()` sur l'écran devenu actif dans
+`onDestinationSelected` (pas de rafraîchissement au premier affichage).
+`TeamManagementController.loadInitialData` conserve désormais l'équipe
+sélectionnée au rechargement si elle existe encore (avant : retour
+inconditionnel sur la première équipe). Le commentaire orphelin
+`//raffraichir ?` de `TeamManagementScreen` est remplacé par un `IconButton`
+de rafraîchissement (cohérent avec `TournoisScreen`). Aucune modification
+serveur ni schéma PocketBase. Validation : `flutter analyze` 0 problème,
+`flutter test` 35/35, `flutter build web` OK. Précédent :
 *[2026-09-02] Nettoyage : suppression du code mort (RESOLU). La chaîne
 d'import texte de `TeamsScreen` (bouton disparu) est supprimée :
 `teams_screen_actions.importTournamentText` + launcher + dialog txt
@@ -134,7 +175,9 @@ Précédents M9 : `Dicy`, matrice enrichie, import tournoi.*
 ```
 lib/
   main.dart                        # AuthGate (Stream auth) → Login ou HomeShell
-                                   # (NavigationBar 3 onglets : Tournois, Profil, Teams)
+                                    # (NavigationBar 3 onglets : Tournois, Équipes,
+                                    # Profil) ; HomeShell rafraîchit l'écran
+                                    # activé via RefreshableScreenState (M17)
   config/
     app_config.dart                # URL PocketBase, noms de collections,
                                     # clé session, bornes/scores/confiance
@@ -145,11 +188,11 @@ lib/
     models.dart                    # Barrel : ré-exporte les modèles ci-dessous
     appreciation_scale.dart        # Échelle fixe 7 appréciations + recherches
      armee.dart choix.dart estim.dart joueur.dart matched.dart
-      meta_adversaire.dart team.dart tournoi.dart
+      team.dart team_meta.dart tournoi.dart
                                      # M13 : Tournoi.importEffectue ;
                                      # Team.tournoiId / Team.motDePasse ;
-                                     # M16 : meta_adv/estims/matched ancrés
-                                     # sur teamId + adversaireTeamId
+                                     # M18 : team_meta (1 ligne par joueur/équipe,
+                                     # ancrée sur team_id) ; estims/matched + teamMetaId
   logic/
     estim_score_calculator.dart    # Midpoint + label compact du score
     matched_score_summary.dart     # Total/moyenne des appariements scorés
@@ -159,9 +202,12 @@ lib/
                                    # snackbar 2 s sans `action` (une `action`
                                    # impose persist=true par défaut, M15)
   screens/                         # Écrans = thin shell (init + build + refresh)
-    *_controller.dart              # Logique d'écran : TextEditingControllers,
-                                   # chargements, mutations ; onStateChanged (VoidCallback)
-    login_screen.dart              # Connexion/inscription (shell)
+     *_controller.dart              # Logique d'écran : TextEditingControllers,
+                                    # chargements, mutations ; onStateChanged (VoidCallback)
+     refreshable_screen.dart        # Base RefreshableScreenState :
+                                    # refreshOnTabActivated() rappelé par HomeShell
+                                    # à l'activation de l'onglet (M17)
+     login_screen.dart              # Connexion/inscription (shell)
     login_controller.dart          # validate() / submit() → Future<String?>
      tournois_screen.dart           # Liste des tournois + FAB ajout + actions
                                     # édition/suppression/import (précédent,
@@ -179,7 +225,7 @@ lib/
     team_management_team_actions.dart # Opérations d'écriture : retrait,
                                       # suppression, mot de passe, capitainerie
     team_dashboard_screen.dart     # Tableau de bord d'un duel (shell)
-    team_dashboard_controller.dart # Streams realtime opponents/estims/matched,
+    team_dashboard_controller.dart # Streams realtime team_meta/estims/matched,
                                    # droits d'édition par rôle (joueur/capitaine)
     team_dashboard_estim_actions.dart  # Modales d'estimation + taps cellules matrice
     profile_screen.dart            # Profil + invitations en attente (shell)
@@ -261,7 +307,7 @@ lib/
                                                # du rôle `admin`, suppression
                                                # du compte courant (équipes
                                                # capitaine + tournois créés)
-      pocketbase_dashboard_adversaires_service.dart # CRUD + stream meta_adv
+      pocketbase_dashboard_adversaires_service.dart # CRUD + stream team_meta (par équipe, M18)
        pocketbase_dashboard_estims_service.dart      # upsert + stream estims
       pocketbase_dashboard_matched_service.dart     # CRUD + stream matched
      new_recruit_import_service.dart  # Parsing local New Recruit (JSON collé
@@ -270,14 +316,14 @@ lib/
      new_recruit_armee_name_matcher.dart # matchArmeeInReference (normalisation)
     tournament_text_import_parser.dart  # Parser du format texte de tournoi
                                         # (équipes, joueurs, listes, armées)
-       tournament_text_import_service.dart # Import tournoi : adversaires
-                                           # ancrés sur l'équipe adverse
-                                           # réelle (créée si absente du
-                                           # tournoi, M16), armées inconnues,
-                                           # dédoublonnage, résumé
+       tournament_text_import_service.dart # Import tournoi : team_meta
+                                           # par équipe (upsert par
+                                           # team_id + nom_jo, M18),
+                                           # armées inconnues, dédoublonnage,
+                                           # résumé
      tournament_team_import_service.dart # Import des équipes d'un tournoi :
-                                         # création des teams manquantes,
-                                         # mark import_effectue
+                                         # création/récupération des teams (une fois),
+                                         # + team_meta par équipe (M18), mark import_effectue
 test/
    widget_test.dart                 # Tests des conversions PocketBase ↔ modèles
    admin_dialog_repro_test.dart     # Garde : dialogs d'édition admin (cycles
@@ -287,9 +333,9 @@ test/
                                           # SnackBar + sélecteur équipe statique
                                           # (le test point 7 est en attente du
                                           # fix de timing M15.4)
-    memo_8_repro_test.dart                # Garde M16 : meta_adv/estims/matched
-                                          # ancrés sur teamId + adversaireTeamId,
-                                          # sans aucun rencontre_id
+    memo_8_repro_test.dart                # Garde M16/M18 : team_meta ancrée
+                                          # sur team_id (pas adversaire_team_id) ;
+                                          # estims/matched + teamMetaId, sans rencontre_id
   appreciation_scale_test.dart     # Échelle fixe 7 appréciations
   hexadecimal_color_parser_test.dart # Parsing couleurs hexadécimales
   estim_score_calculator_test.dart # Midpoint + label score
@@ -314,17 +360,22 @@ tool/
    (`setState` si `mounted`) et délègue toute mutation. Les méthodes de
    mutation retournent `Future<String?>` (null = succès) ; les erreurs
    passent par `showErrorSnackBar` (log debug + bouton Copier), les succès
-   restent des SnackBar verts.
+   restent des SnackBar verts. Les 3 écrans du shell principal (Tournois,
+   Équipes, Profil) héritent de `RefreshableScreenState` (M17) : leur
+   `initState` ne court qu'une fois (`IndexedStack` qui les garde en vie),
+   donc à chaque activation d'onglet `HomeShell` appelle
+   `refreshOnTabActivated()` sur l'écran devenu actif pour recharger ses
+   données (pas de rafraîchissement au premier affichage).
 3. **Services** : les écrans n'appellent JAMAIS PocketBase directement —
    toujours via la façade `PocketbaseDataService.instance`, qui délègue aux
    sous-services `lib/services/pocketbase/` (singletons). Certains
    sous-services coopèrent entre eux (ex. `PocketbaseTeamAccessService` →
    `PocketbaseTeamsService` + `PocketbaseTeamMembresService`).
-4. **Temps réel + agrégats** : les streams SSE (opponents/estims/matched)
+4. **Temps réel + agrégats** : les streams SSE (team_meta/estims/matched)
    sont créés UNE FOIS dans `initState` du controller dashboard ; refetch
    complet sur événement, debounce 300 ms ; rendu matrice O(1) (Maps/Sets).
    `team_dashboard_body.dart` construit la clé
-   `joueurId + dashboardEstimKeySeparator + metaAdvId`, puis
+    `joueurId + dashboardEstimKeySeparator + teamMetaId`, puis
    `MatchedScoreSummaryCalculator.summarize` calcule total/moyenne à partir
    du midpoint `(scoreMin + scoreMax) / 2`.
 5. **Import tournoi** : depuis la carte tournoi (`TournoisScreen`, M13.5),
@@ -332,9 +383,9 @@ tool/
    (`tournoi_team_import_actions.dart`) →
    `NewRecruitImportService.parseNewRecruitContent` (JSON collé ou texte via
    `TournamentTextImportParser`) → `PocketbaseDataService.importTeamsForTournoi`
-   → `TournamentTeamImportService` (création des équipes manquantes) +
-   `TournamentTextImportService` (une équipe adverse par équipe détectée,
-   créée si absente du tournoi — M16 ; adversaires déjà présents ignorés,
+    → `TournamentTeamImportService` (création/récupération des équipes,
+    une fois) + `TournamentTextImportService` (`team_meta` par
+    équipe détectée — upsert par `team_id` + `nom_jo`, M18 ;
    armées inconnues comptées) → `markTournoiImportEffectue`. L'import API
    direct (dialog New Recruit + `NewRecruitApiClient`) et le bouton d'import
    texte de `TeamsScreen` ont été supprimés : features sans point d'entrée.
@@ -357,7 +408,7 @@ tool/
    supprime d'abord les équipes dont `capitaine_id` est l'utilisateur,
    ensuite les tournois dont `created_by` est l'utilisateur, puis le joueur
     et enfin déclenche `signOut`. Cascades PocketBase : `team_membres`,
-    `meta_adv`, `estims`, `matched` (M16 : `rencontres` supprimée).
+    `team_meta`, `estims`, `matched` (M16 : `rencontres` supprimée).
     Suppression explicite des
    équipes capitaines (champ `capitaine_id` sans cascade) et des tournois
     créés (champ `created_by` sans cascade) pour éviter les données orphelines.
@@ -381,7 +432,7 @@ tool/
     fermeture ; `TournoiListBody` + `showTournoiTeamImportDialog` condensent
     l'écran des tournois.
  10. **Maintenance PocketBase** : `tool/pocketbase_purge_meta_war_records.dart`
-    exige `--yes`, supprime `matched`, `estims`, `meta_adv`,
+    exige `--yes`, supprime `matched`, `estims`, `team_meta`,
     `team_membres`, `teams`, `tournois`, `joueurs` (feuilles → parents,
     M16 : plus de `rencontres`), et
    optionnellement `armees`/`choix` avec `--purge-referentiels` ;

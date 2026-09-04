@@ -17,11 +17,11 @@ class TeamManagementMatchedPanel extends StatelessWidget {
 
   Joueur? _findPairedMember(
     List<Matched> matched,
-    String metaAdvId,
+    String teamMetaId,
     List<Map<String, dynamic>> members,
   ) {
     for (final pairing in matched) {
-      if (pairing.metaAdvId != metaAdvId) continue;
+      if (pairing.teamMetaId != teamMetaId) continue;
       for (final member in members) {
         final Joueur player = member['joueur'];
         if (player.id == pairing.joueurId) return player;
@@ -33,7 +33,7 @@ class TeamManagementMatchedPanel extends StatelessWidget {
   Future<void> _handlePairingTap(
     BuildContext context,
     Team opponentTeam,
-    MetaAdv opponent,
+    TeamMeta opponent,
   ) async {
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     final List<Map<String, dynamic>> members = controller.members;
@@ -43,8 +43,8 @@ class TeamManagementMatchedPanel extends StatelessWidget {
     final Set<String> pairedPlayerIds =
         currentMatched.map((pairing) => pairing.joueurId).toSet();
 
-    final String opponentLabel = (opponent.nomJoAdv?.isNotEmpty ?? false)
-        ? opponent.nomJoAdv!
+    final String opponentLabel = opponent.nomJo.isNotEmpty
+        ? opponent.nomJo
         : "Adversaire";
 
     final Joueur? selectedPlayer = await showDialog<Joueur>(
@@ -64,11 +64,11 @@ class TeamManagementMatchedPanel extends StatelessWidget {
                     final isAccepted = member['statut'] == 'accepted';
                     final isAlreadyPaired =
                         pairedPlayerIds.contains(player.id);
-                    final isCurrentlyAssigned = currentMatched.any(
-                      (pairing) =>
-                          pairing.joueurId == player.id &&
-                          pairing.metaAdvId == opponent.id,
-                    );
+                     final isCurrentlyAssigned = currentMatched.any(
+                       (pairing) =>
+                           pairing.joueurId == player.id &&
+                           pairing.teamMetaId == opponent.id,
+                     );
 
                     if (!isAccepted) {
                       return ListTile(
@@ -191,9 +191,9 @@ class TeamManagementMatchedPanel extends StatelessWidget {
                         opponent.id,
                         controller.members,
                       );
-                      final String oppPseudo = (opponent.nomJoAdv?.isNotEmpty ?? false)
-                          ? opponent.nomJoAdv!
-                          : "Adversaire";
+                       final String oppPseudo = opponent.nomJo.isNotEmpty
+                           ? opponent.nomJo
+                           : "Adversaire";
                       return ListTile(
                         leading: const CircleAvatar(
                           child: Icon(Icons.person, size: 20),

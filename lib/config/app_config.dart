@@ -32,8 +32,9 @@ const String collectionNameArmees = 'armees';
 /// Référentiel statique des 7 appréciations fixes du système d'estimation.
 const String collectionNameChoix = 'choix';
 
-/// Joueurs adverses (méta adverse) d’une équipe contre une équipe adverse.
-const String collectionNameMetaAdv = 'meta_adv';
+/// Joueurs d'une équipe avec leur armée et leur liste (1 ligne par joueur,
+/// indépendante des rencontres).
+const String collectionNameTeamMeta = 'team_meta';
 
 /// Estimations saisies par nos joueurs sur chaque adversaire.
 const String collectionNameEstims = 'estims';

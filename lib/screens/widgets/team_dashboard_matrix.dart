@@ -16,10 +16,10 @@ import 'team_dashboard_matrix_player_row.dart';
 class TeamDashboardMatrix extends StatelessWidget {
   final TeamDashboardController controller;
   final TeamDashboardEstimActions estimActions;
-  final List<MetaAdv> opponents;
+  final List<TeamMeta> opponents;
   final List<Estim> estims;
   final List<Matched> matches;
-  final void Function(MetaAdv opponent) onOpponentHeaderTap;
+  final void Function(TeamMeta opponent) onOpponentHeaderTap;
 
   const TeamDashboardMatrix({
     super.key,
@@ -49,18 +49,18 @@ class TeamDashboardMatrix extends StatelessWidget {
     // firstWhere/any coûteux relancés pour chaque cellule.
     final Map<String, Estim> estimParJoueurEtAdversaire = {
       for (final estim in estims)
-        '${estim.joueurId}$dashboardEstimKeySeparator${estim.metaAdvId}':
+        '${estim.joueurId}$dashboardEstimKeySeparator${estim.teamMetaId}':
             estim,
     };
     final Set<String> joueurIdsApparies = {
       for (final appariement in matches) appariement.joueurId,
     };
     final Set<String> adversaireIdsApparies = {
-      for (final appariement in matches) appariement.metaAdvId,
+      for (final appariement in matches) appariement.teamMetaId,
     };
     final Set<String> pairesJoueurAdversaireAppariees = {
       for (final appariement in matches)
-        '${appariement.joueurId}$dashboardEstimKeySeparator${appariement.metaAdvId}',
+        '${appariement.joueurId}$dashboardEstimKeySeparator${appariement.teamMetaId}',
     };
     final Map<String, Choix> choixParId = {
       for (final choix in controller.choiceList) choix.id: choix,

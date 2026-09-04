@@ -24,7 +24,7 @@ class TeamDashboardEstimActions {
   void openEstimDialog(
     BuildContext context,
     Joueur player,
-    MetaAdv opponent,
+    TeamMeta opponent,
     Estim? currentEstim,
   ) {
     showDialog(
@@ -33,6 +33,7 @@ class TeamDashboardEstimActions {
         return EstimDialog(
           joueur: player,
           opponent: opponent,
+          ownTeamId: dashboardController.team.id,
           listChoix: dashboardController.choiceList,
           currentEstim: currentEstim,
            onSave: (newEstim) async {
@@ -48,7 +49,7 @@ class TeamDashboardEstimActions {
   void openEstimDetailsSheet(
     BuildContext context,
     Joueur player,
-    MetaAdv opponent,
+    TeamMeta opponent,
     Estim estim,
   ) {
     final choice = AppreciationScale.choiceById(
@@ -72,7 +73,7 @@ class TeamDashboardEstimActions {
   Future<void> handleCellTap(
     BuildContext context,
     Joueur player,
-    MetaAdv opponent,
+    TeamMeta opponent,
     Estim? currentEstim,
   ) async {
     if (dashboardController.currentUserProfile == null) return;
@@ -97,7 +98,7 @@ class TeamDashboardEstimActions {
   void handleCellLongPress(
     BuildContext context,
     Joueur player,
-    MetaAdv opponent,
+    TeamMeta opponent,
     Estim? existingEstim,
   ) {
     if (existingEstim != null) {

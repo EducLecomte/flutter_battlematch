@@ -12,7 +12,7 @@
 //
 // Idempotence : chaque catégorie est recherchée par sa clé naturelle
 // (email du joueur, couple team/joueur, couple tournoi/nom_equipe,
-// couple joueur/meta_adv) puis mise à jour au lieu d'être dupliquée.
+// couple équipe_adverse/pseudo_joueur) puis mise à jour au lieu d'être dupliquée.
 //
 // Prérequis : les collections MetaWar doivent exister et les référentiels
 // armées/choix être alimentés (voir pocketbase_seed_records.dart).
@@ -291,15 +291,14 @@ Future<void> main(List<String> arguments) async {
           continue;
         }
         final RecordModel adversaire = await _rechercherPremier(clientPocketBase,
-                nomCollection: collectionNameMetaAdv,
+                nomCollection: collectionNameTeamMeta,
                 filtre:
-                    'team_id = "${equipeCible.id}" && adversaire_team_id = "${equipeAdverse.id}" && nom_jo_adv = "${adversaireReference['pseudo']}"') ??
-            await clientPocketBase.collection(collectionNameMetaAdv).create(body: {
-              'team_id': equipeCible.id,
-              'adversaire_team_id': equipeAdverse.id,
+                    'team_id = "${equipeAdverse.id}" && nom_jo = "${adversaireReference['pseudo']}"') ??
+            await clientPocketBase.collection(collectionNameTeamMeta).create(body: {
+              'team_id': equipeAdverse.id,
               'armee_id': identifiantArmee,
-              'nom_jo_adv': adversaireReference['pseudo'],
-              'liste_adv': adversaireReference['liste'],
+              'nom_jo': adversaireReference['pseudo'],
+              'liste_jo': adversaireReference['liste'],
             });
         if (_estNouvelleCreation(adversaire)) nombreAdversairesCrees++;
         adversairesDeLEquipe.add(adversaire);
@@ -323,7 +322,7 @@ Future<void> main(List<String> arguments) async {
             clientPocketBase,
             nomCollection: collectionNameEstims,
             filtre:
-                'joueur_id = "${estimateur.id}" && meta_adv_id = "${adversaire.id}"',
+                'joueur_id = "${estimateur.id}" && team_meta_id = "${adversaire.id}"',
           );
           if (estimExistante != null) continue;
 
@@ -338,8 +337,8 @@ Future<void> main(List<String> arguments) async {
           await clientPocketBase.collection(collectionNameEstims).create(body: {
             'joueur_id': estimateur.id,
             'team_id': equipeCible.id,
-            'adversaire_team_id': equipeAdverse.id,
-            'meta_adv_id': adversaire.id,
+             'adversaire_team_id': equipeAdverse.id,
+             'team_meta_id': adversaire.id,
             'choix_id':
                 choixAppreciation[(indexJoueur * 2 + indexAdv) % choixAppreciation.length].id,
             'score_min': scoreMin,
@@ -370,8 +369,8 @@ Future<void> main(List<String> arguments) async {
         await clientPocketBase.collection(collectionNameMatched).create(body: {
           'team_id': equipeCible.id,
           'adversaire_team_id': premiereEquipeAdverse.id,
-          'joueur_id': listeJoueursDemo.first.id,
-          'meta_adv_id': premierAdversaire.id,
+           'joueur_id': listeJoueursDemo.first.id,
+           'team_meta_id': premierAdversaire.id,
         });
         nombreMatchedCrees++;
       }

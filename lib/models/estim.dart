@@ -6,7 +6,7 @@ class Estim {
   final String joueurId;
   final String teamId;
   final String adversaireTeamId;
-  final String metaAdvId;
+  final String teamMetaId;
   final String choixId;
   final int? scoreMin; // Optionnel (système 20-0)
   final int? scoreMax;
@@ -17,7 +17,7 @@ class Estim {
     required this.joueurId,
     required this.teamId,
     required this.adversaireTeamId,
-    required this.metaAdvId,
+    required this.teamMetaId,
     required this.choixId,
     this.scoreMin,
     this.scoreMax,
@@ -30,7 +30,7 @@ class Estim {
       joueurId: record.get<String>('joueur_id'),
       teamId: record.get<String>('team_id'),
       adversaireTeamId: record.get<String>('adversaire_team_id'),
-      metaAdvId: record.get<String>('meta_adv_id'),
+      teamMetaId: record.get<String>('team_meta_id'),
       choixId: record.get<String>('choix_id'),
       scoreMin: record.get<int?>('score_min', null),
       scoreMax: record.get<int?>('score_max', null),
@@ -44,7 +44,7 @@ class Estim {
       'joueur_id': joueurId,
       'team_id': teamId,
       'adversaire_team_id': adversaireTeamId,
-      'meta_adv_id': metaAdvId,
+      'team_meta_id': teamMetaId,
       'choix_id': choixId,
       'score_min': scoreMin,
       'score_max': scoreMax,

@@ -239,7 +239,9 @@
         "onUpdate": true
       }
     ],
-    "indexes": [],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_team_unique_tournoi_nom` ON `teams` (`tournoi_id`, `nom`)"
+    ],
     "listRule": "@request.auth.id != ''",
     "viewRule": "@request.auth.id != ''",
     "createRule": "@request.auth.admin = true",
@@ -276,6 +278,20 @@
         "required": true,
         "collectionId": "mwjoueurs000001",
         "cascadeDelete": true,
+        "minSelect": null,
+        "maxSelect": 1,
+        "displayFields": null
+      },
+      {
+        "type": "relation",
+        "id": "f_metamemb001",
+        "name": "team_meta_id",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "required": false,
+        "collectionId": "mwteammeta00001",
+        "cascadeDelete": false,
         "minSelect": null,
         "maxSelect": 1,
         "displayFields": null
@@ -477,8 +493,8 @@
     "deleteRule": "@request.auth.admin = true"
   },
   {
-    "id": "mwmetaadv000001",
-    "name": "meta_adv",
+    "id": "mwteammeta00001",
+    "name": "team_meta",
     "type": "base",
     "system": false,
     "fields": [
@@ -486,20 +502,6 @@
         "type": "relation",
         "id": "f_teammeta001",
         "name": "team_id",
-        "system": false,
-        "hidden": false,
-        "presentable": false,
-        "required": true,
-        "collectionId": "mwteams00000001",
-        "cascadeDelete": true,
-        "minSelect": null,
-        "maxSelect": 1,
-        "displayFields": null
-      },
-      {
-        "type": "relation",
-        "id": "f_advmeta001",
-        "name": "adversaire_team_id",
         "system": false,
         "hidden": false,
         "presentable": false,
@@ -526,21 +528,21 @@
       },
       {
         "type": "text",
-        "id": "f_nomjoadv001",
-        "name": "nom_jo_adv",
+        "id": "f_meta_nomjo1",
+        "name": "nom_jo",
         "system": false,
         "hidden": false,
         "presentable": true,
-        "required": false,
-        "min": null,
+        "required": true,
+        "min": 1,
         "max": 48,
         "pattern": "",
         "autogeneratePattern": ""
       },
       {
         "type": "text",
-        "id": "f_liste000001",
-        "name": "liste_adv",
+        "id": "f_meta_liste1",
+        "name": "liste_jo",
         "system": false,
         "hidden": false,
         "presentable": false,
@@ -571,7 +573,9 @@
         "onUpdate": true
       }
     ],
-    "indexes": [],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_team_meta_unique` ON `team_meta` (`team_id`, `nom_jo`)"
+    ],
     "listRule": "@request.auth.id != ''",
     "viewRule": "@request.auth.id != ''",
     "createRule": "@request.auth.id = team_id.capitaine_id || @request.auth.admin = true",
@@ -629,12 +633,12 @@
       {
         "type": "relation",
         "id": "f_metaadvesti",
-        "name": "meta_adv_id",
+        "name": "team_meta_id",
         "system": false,
         "hidden": false,
         "presentable": false,
         "required": true,
-        "collectionId": "mwmetaadv000001",
+        "collectionId": "mwteammeta00001",
         "cascadeDelete": true,
         "minSelect": null,
         "maxSelect": 1,
@@ -728,7 +732,7 @@
       }
     ],
     "indexes": [
-      "CREATE UNIQUE INDEX `idx_estim_unique_par_joueur_adversaire` ON `estims` (`joueur_id`, `meta_adv_id`)"
+      "CREATE UNIQUE INDEX `idx_estim_unique_par_joueur_adversaire` ON `estims` (`team_id`, `adversaire_team_id`, `joueur_id`, `team_meta_id`)"
     ],
     "listRule": "@request.auth.id != ''",
     "viewRule": "@request.auth.id != ''",
@@ -787,12 +791,12 @@
       {
         "type": "relation",
         "id": "f_metamatch01",
-        "name": "meta_adv_id",
+        "name": "team_meta_id",
         "system": false,
         "hidden": false,
         "presentable": false,
         "required": true,
-        "collectionId": "mwmetaadv000001",
+        "collectionId": "mwteammeta00001",
         "cascadeDelete": true,
         "minSelect": null,
         "maxSelect": 1,
@@ -821,7 +825,7 @@
     ],
     "indexes": [
       "CREATE UNIQUE INDEX `idx_matched_un_appariement_par_joueur` ON `matched` (`team_id`, `adversaire_team_id`, `joueur_id`)",
-      "CREATE UNIQUE INDEX `idx_matched_un_appariement_par_adversaire` ON `matched` (`team_id`, `adversaire_team_id`, `meta_adv_id`)"
+      "CREATE UNIQUE INDEX `idx_matched_un_appariement_par_adversaire` ON `matched` (`team_id`, `adversaire_team_id`, `team_meta_id`)"
     ],
     "listRule": "@request.auth.id != ''",
     "viewRule": "@request.auth.id != ''",

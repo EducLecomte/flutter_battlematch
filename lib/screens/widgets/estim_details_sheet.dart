@@ -14,7 +14,7 @@ import '../../utils/hex_color_parser.dart';
 void showEstimDetailsSheet(
   BuildContext context, {
   required Joueur joueur,
-  required MetaAdv opponent,
+  required TeamMeta opponent,
   required Estim estim,
   required Choix? choix,
   required bool canEdit,
@@ -42,7 +42,7 @@ void showEstimDetailsSheet(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Matchup : ${joueur.nom} contre ${opponent.nomJoAdv ?? 'Adversaire'}",
+               "Matchup : ${joueur.nom} contre ${opponent.nomJo}",
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),

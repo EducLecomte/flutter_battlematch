@@ -9,7 +9,8 @@ import '../../models/models.dart';
 /// Détient l'état du formulaire et orchestre la validation/sauvegarde.
 class EstimDialogController extends ChangeNotifier {
   final Joueur currentJoueur;
-  final MetaAdv currentOpponent;
+  final TeamMeta currentOpponent;
+  final String ownTeamId;
   final List<Choix> orderedChoiceList;
   final TextEditingController commentaireController = TextEditingController();
 
@@ -23,6 +24,7 @@ class EstimDialogController extends ChangeNotifier {
   EstimDialogController({
     required this.currentJoueur,
     required this.currentOpponent,
+    required this.ownTeamId,
     required List<Choix> choiceList,
     Estim? existingEstim,
   })  : orderedChoiceList = AppreciationScale.scaleChoices(choiceList),
@@ -78,9 +80,9 @@ class EstimDialogController extends ChangeNotifier {
     final commentValue = commentaireController.text.trim();
     return Estim(
       joueurId: currentJoueur.id,
-      teamId: currentOpponent.teamId,
-      adversaireTeamId: currentOpponent.adversaireTeamId,
-      metaAdvId: currentOpponent.id,
+      teamId: ownTeamId,
+      adversaireTeamId: currentOpponent.teamId,
+      teamMetaId: currentOpponent.id,
       choixId: choiceId,
       scoreMin: minimumScore,
       scoreMax: maximumScore,
