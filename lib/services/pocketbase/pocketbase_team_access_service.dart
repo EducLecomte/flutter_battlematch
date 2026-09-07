@@ -89,10 +89,25 @@ class PocketbaseTeamAccessService {
       throw Exception("Ce joueur n’a pas accepté cette équipe.");
     }
 
+    // L'ancien capitaine redevient un joueur s'il jouait ; s'il n'était que
+    // coach, il conserve son rôle de coach.
+    final RecordModel? recordAncienCapitaine =
+        await _serviceTeamMembres.getTeamMembreRecord(
+      teamId,
+      capitaineIdActuel,
+    );
+    final String roleAncienCapitaine = recordAncienCapitaine?.get<String>(
+          'role',
+        ) ??
+        PocketbaseTeamMembresService.roleJoueur;
+    final String roleAncienCapitaineAPres =
+        PocketbaseTeamMembresService.estRouleJoueur(roleAncienCapitaine)
+            ? PocketbaseTeamMembresService.roleJoueur
+            : PocketbaseTeamMembresService.roleCoach;
     await _serviceTeamMembres.mettreAJourRoleMembre(
       teamId,
       capitaineIdActuel,
-      PocketbaseTeamMembresService.roleJoueur,
+      roleAncienCapitaineAPres,
     );
     await _serviceTeamMembres.mettreAJourRoleMembre(
       teamId,

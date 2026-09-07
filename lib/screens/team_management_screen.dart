@@ -160,6 +160,14 @@ class _TeamManagementScreenState
                           candidate,
                           _refreshUserInterface,
                         ),
+                    onMemberRoleChanged: (player, role) =>
+                        _teamActions.changeMemberRole(
+                          context,
+                          _controller,
+                          player,
+                          role,
+                          _refreshUserInterface,
+                        ),
                   ),
           ),
         ],

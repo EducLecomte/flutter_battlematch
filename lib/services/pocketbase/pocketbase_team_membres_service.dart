@@ -27,6 +27,13 @@ class PocketbaseTeamMembresService {
   /// Rôle d'un joueur membre de l'équipe.
   static const String roleJoueur = 'player';
 
+  /// Rôle d'un membre coach : ne joue pas, n'apparaît pas dans la matrice.
+  static const String roleCoach = 'coach';
+
+  /// Indique si le rôle donné est un rôle « joueur » (apparaît dans la
+  /// matrice des appariements) : capitaine ou joueur, à l'exclusion du coach.
+  static bool estRouleJoueur(String role) => role != roleCoach;
+
   /// Insère un membre d'équipe avec un rôle et un statut donnés.
   Future<void> inscrireMembreAccepte(
     String teamId,

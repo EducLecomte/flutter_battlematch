@@ -16,6 +16,7 @@ class TeamManagementTeamDetailPanel extends StatelessWidget {
   final ValueChanged<Team> onDeleteTeam;
   final ValueChanged<String> onUpdateMotDePasse;
   final ValueChanged<Joueur> onNominateCaptain;
+  final void Function(Joueur player, String role) onMemberRoleChanged;
 
   const TeamManagementTeamDetailPanel({
     super.key,
@@ -28,6 +29,7 @@ class TeamManagementTeamDetailPanel extends StatelessWidget {
     required this.onDeleteTeam,
     required this.onUpdateMotDePasse,
     required this.onNominateCaptain,
+    required this.onMemberRoleChanged,
   });
 
   @override
@@ -84,8 +86,11 @@ class TeamManagementTeamDetailPanel extends StatelessWidget {
                   flex: 3,
                   child: TeamManagementTeamMembersPanel(
                     members: controller.members,
+                    captainId: selectedTeam.capitaineId,
+                    canChangeRole: controller.isCaptain(),
                     canRemoveMember: controller.canRemoveMember,
                     onRemoveMember: onRemoveMember,
+                    onRoleChanged: onMemberRoleChanged,
                   ),
                 ),
                 const SizedBox(width: 16),

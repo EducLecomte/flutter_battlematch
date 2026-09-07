@@ -1,5 +1,29 @@
 # DOC.md — Cartographie technique MetaWar
 
+*[2026-09-05] M19 — Points 1 et 2 MEMO : invitation capitaine + rôle
+joueur/coach (RESOLU). **Point 1** : bouton « Inviter un joueur »
+(`person_add_alt_1`) dans l'AppBar de `TeamsScreen`, visible si l'utilisateur
+est capitaine de l'équipe active (`TeamsScreenController.isCaptainOfActiveTeam`
+= comparaison `activeTeam.capitaineId` avec l'id connecté) ; ouvre
+`showTeamsScreenInvitePlayerDialog` (`teams_screen_invite_player_dialog.dart`)
+— recherche de joueurs (`TeamsScreenController.searchPlayers`, exclut les
+membres de l'équipe active via `loadActiveTeamMembers`) + invitation
+(`sendInvite` → `inviteJoueurToTeam`). **Point 2** : nouveau rôle `coach`
+dans `team_membres.role` (select `captain|player|coach`) ; le capitaine est
+identifié par `teams.capitaine_id` et non par le rôle, il peut donc être
+coach. Outil de rôle : `TeamManagementTeamMembersPanel` gagne un sélecteur
+Joueur/Coach par membre accepté (visible si capitaine), badge capitaine
+(`workspace_premium`) + coach (`sports_score`), sous-titre
+`Capitaine`/`Coach`/`Joueur`. `TeamManagementController.changeMemberRole` →
+façade `mettreAJourRoleMembre(teamId, joueurId, role)` ;
+`pocketbase_team_access_service.nommerNouveauCapitaine` préserve le statut
+coach du capitaine sortant (`player` s'il jouait, `coach` sinon). Matrice :
+`TeamDashboardController` filtre `teamMembers` aux membres acceptés
+`estRouleJoueur` (`role != coach`) — seuls les joueurs ont une ligne dans la
+matrice. Façade expose `roleCapitaine`/`roleJoueur`/`roleCoach` + helper
+`estRouleJoueur`. **Import manuel du schéma PB requis** (`team_membres.role`
++ `coach`). Validation : `flutter analyze` 0 problème, `flutter test` 35/35,
+`flutter build web` OK. Précédent :
 *[2026-09-03] M18 — point 1 MEMO : refonte `meta_adv` → `team_meta` (RESOLU).
 L'import créait des doublons d'équipes et stockait toutes les combinaisons
 d'adversaires possibles. `team_meta` remplace `meta_adv` : 1 ligne par joueur

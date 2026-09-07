@@ -20,7 +20,8 @@ class TeamDashboardController {
   List<Armee> armies = [];
   List<Choix> choiceList = [];
 
-  // Liste des membres acceptés dans l’équipe
+  // Liste des membres acceptés qui jouent dans l’équipe (les coachs sont
+  // exclus : ils n’ont pas de ligne dans la matrice des appariements).
   List<Joueur> teamMembers = [];
 
   // Flux temps réel créés UNE seule fois : des streams récréés à chaque
@@ -50,7 +51,13 @@ class TeamDashboardController {
       final memberRecords =
           await _pocketbaseService.getTeamMembres(team.id);
       teamMembers = memberRecords
-          .where((memberRecord) => memberRecord['statut'] == 'accepted')
+          .where(
+            (memberRecord) =>
+                memberRecord['statut'] == 'accepted' &&
+                PocketbaseDataService.estRouleJoueur(
+                  memberRecord['role'] as String,
+                ),
+          )
           .map<Joueur>((memberRecord) => memberRecord['joueur'] as Joueur)
           .toList();
       return null;

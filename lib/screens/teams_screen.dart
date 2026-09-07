@@ -4,6 +4,7 @@ import '../models/models.dart';
 import 'team_dashboard_screen.dart';
 import 'teams_screen_actions.dart';
 import 'teams_screen_controller.dart';
+import 'teams_screen_invite_player_dialog.dart';
 import 'teams_screen_team_access_actions.dart';
 import 'widgets/teams_screen_opponent_list.dart';
 import 'widgets/teams_screen_team_access_panel.dart';
@@ -65,6 +66,13 @@ class _TeamsScreenState extends State<TeamsScreen> {
       appBar: AppBar(
         title: Text(widget.tournoi.nom),
         actions: [
+          if (_controller.isCaptainOfActiveTeam)
+            IconButton(
+              icon: const Icon(Icons.person_add_alt_1),
+              tooltip: "Inviter un joueur",
+              onPressed: () =>
+                  showTeamsScreenInvitePlayerDialog(context, _controller),
+            ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _loadTeams,

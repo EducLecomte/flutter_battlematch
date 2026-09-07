@@ -55,6 +55,27 @@ class TeamManagementTeamActions {
     }
   }
 
+  // Met à jour le rôle d'un membre (joueur ↔ coach) et notifie l'utilisateur.
+  Future<void> changeMemberRole(
+    BuildContext context,
+    TeamManagementController controller,
+    Joueur player,
+    String role,
+    VoidCallback onStateChanged,
+  ) async {
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    final String? errorMessage = await controller.changeMemberRole(player, role);
+    if (errorMessage != null) {
+      showErrorSnackBarUsingMessenger(
+        messenger,
+        "Erreur de mise à jour du rôle : $errorMessage",
+      );
+      return;
+    }
+    onStateChanged();
+    _showSuccessSnackBar(messenger, "Rôle mis à jour.");
+  }
+
   // Supprime l'équipe après confirmation.
   Future<void> deleteTeam(
     BuildContext context,

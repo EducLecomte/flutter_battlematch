@@ -199,7 +199,11 @@ class TeamManagementController {
   // Vérifie si l'utilisateur courant peut retirer ce membre.
   bool canRemoveMember(Map<String, dynamic> member) {
     if (currentUserProfile == null) return false;
-    if (isCaptain()) return member['role'] != 'captain';
+    if (isCaptain()) {
+      // Le capitaine ne peut pas se retirer (transfert de capitainerie requis).
+      final Joueur memberPlayer = member['joueur'];
+      return memberPlayer.id != selectedTeam!.capitaineId;
+    }
     final Joueur player = member['joueur'];
     return player.id == currentUserProfile!.id;
   }
@@ -213,7 +217,7 @@ class TeamManagementController {
     return members.any((member) {
       final Joueur memberPlayer = member['joueur'];
       return memberPlayer.id == candidate.id &&
-          member['role'] != 'captain' &&
+          memberPlayer.id != selectedTeam!.capitaineId &&
           member['statut'] == 'accepted';
     });
   }
@@ -222,10 +226,29 @@ class TeamManagementController {
   List<Joueur> get captainCandidates => members
       .where(
         (member) =>
-            member['role'] != 'captain' && member['statut'] == 'accepted',
+            (member['joueur'] as Joueur).id != selectedTeam?.capitaineId &&
+            member['statut'] == 'accepted',
       )
       .map((member) => member['joueur'] as Joueur)
       .toList();
+
+  // Met à jour le rôle d'un membre (joueur ↔ coach). Retourne un message
+  // d'erreur, ou null en cas de succès.
+  Future<String?> changeMemberRole(Joueur player, String role) async {
+    final selectedTeamId = selectedTeam?.id;
+    if (selectedTeamId == null || !isCaptain()) return null;
+    try {
+      await _pocketbaseService.mettreAJourRoleMembre(
+        selectedTeamId,
+        player.id,
+        role,
+      );
+      await loadMembersForSelectedTeam();
+      return null;
+    } catch (roleError) {
+      return roleError.toString();
+    }
+  }
 
   // Remplace une équipe dans la liste et met à jour la sélection.
   void replaceTeam(Team updatedTeam) {

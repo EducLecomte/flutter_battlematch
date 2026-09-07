@@ -47,6 +47,20 @@ class PocketbaseDataService {
 
   PocketbaseDataService._internal();
 
+  /// Rôle du capitaine dans team_membres.
+  static const String roleCapitaine = PocketbaseTeamMembresService.roleCapitaine;
+
+  /// Rôle d'un joueur dans team_membres.
+  static const String roleJoueur = PocketbaseTeamMembresService.roleJoueur;
+
+  /// Rôle d'un membre coach (ne joue pas, absent de la matrice).
+  static const String roleCoach = PocketbaseTeamMembresService.roleCoach;
+
+  /// Indique si le rôle donné est un rôle « joueur » (apparaît dans la
+  /// matrice des appariements) : capitaine ou joueur, à l'exclusion du coach.
+  static bool estRouleJoueur(String role) =>
+      PocketbaseTeamMembresService.estRouleJoueur(role);
+
   Future<void> ensureInitialized() =>
       PocketbaseClientHolder.instance.ensureInitialized();
 
@@ -89,6 +103,13 @@ class PocketbaseDataService {
     joueurId,
     teamMetaId,
   );
+
+  /// Met à jour le rôle d'un membre (ex. joueur ↔ coach).
+  Future<void> mettreAJourRoleMembre(
+    String teamId,
+    String joueurId,
+    String role,
+  ) => _serviceTeamMembres.mettreAJourRoleMembre(teamId, joueurId, role);
 
   Future<List<Map<String, dynamic>>> getPendingInvitations(String userId) =>
       _serviceTeamInvitations.getPendingInvitations(userId);

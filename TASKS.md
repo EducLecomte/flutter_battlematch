@@ -440,7 +440,40 @@ team_meta, estims, matched.
       RAG → 2026-09-03 : `MEMO.md` point 1 « RESOLU » + puce Résolution,
       `TASKS.md`/`DOC.md` à jour, mémoire RAG (M18)
 
-   ## Journal erreurs/découvertes
+### M19 — Points 1 et 2 MEMO : invitation capitaine + rôle joueur/coach
+- [x] M19.1 Schéma PocketBase : `team_membres.role` select `captain|player` →
+      `captain|player|coach` (import additif à re-faire dans l'UI admin PB)
+- [x] M19.2 Services/façade : `pocketbase_team_membres_service` constante
+      `roleCoach` + helper `estRouleJoueur(role)` ; façade
+      `pocketbase_data_service` expose `roleCapitaine`/`roleJoueur`/`roleCoach`,
+      `estRouleJoueur`, `mettreAJourRoleMembre(teamId, joueurId, role)`
+      (délégation `set` du champ `role`)
+- [x] M19.3 Capitaine via `capitaine_id` : `TeamManagementController`
+      `canRemoveMember`/`canNominateCaptain`/`captainCandidates` s'appuient sur
+      `selectedTeam.capitaineId` ; `pocketbase_team_access_service`
+      `nommerNouveauCapitaine` préserve le statut coach du capitaine sortant
+      (→ `player` s'il jouait, `coach` s'il coachait)
+- [x] M19.4 Outil de rôle (M2b) : `TeamManagementTeamMembersPanel` sélecteur
+      Joueur/Coach par membre accepté (visible si capitaine) ; badge capitaine
+      (`workspace_premium`) + coach (`sports_score`) dérivés de `capitaineId`
+      et du rôle ; sous-titre `Capitaine`/`Coach`/`Joueur` ;
+      `TeamManagementController.changeMemberRole` + action
+      `TeamManagementTeamActions.changeMemberRole` + câblage
+      `TeamManagementScreen`
+- [x] M19.5 Matrice (M2c) : `TeamDashboardController` filtre `teamMembers`
+      aux membres acceptés `estRouleJoueur` (coach exclu de la matrice)
+- [x] M19.6 Invitation capitaine (M1) : `TeamsScreenController`
+      `isCaptainOfActiveTeam` (via `activeTeam.capitaineId`),
+      `searchPlayers` (exclut les membres de l'équipe active), `sendInvite` ;
+      bouton `person_add_alt_1` dans l'AppBar de `TeamsScreen` (si capitaine)
+      ouvrant `showTeamsScreenInvitePlayerDialog`
+      (`teams_screen_invite_player_dialog.dart`, recherche + invitation)
+- [x] M19.7 Validation : `flutter analyze` 0 problème, `flutter test` 35/35,
+      `flutter build web` OK
+- [x] M19.8 Docs : points 1 et 2 RESOLU dans `MEMO.md`, `TASKS.md`/`DOC.md`
+      à jour, mémoire RAG
+
+    ## Journal erreurs/découvertes
 [Date | Problème | Cause racine | Règle préventive]
 - 2026-08-21 | Code jamais compilé | pubspec sans supabase_flutter |
   toujours vérifier pubspec avant de supposer qu'un build passe
