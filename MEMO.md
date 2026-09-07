@@ -12,12 +12,11 @@
 - probleme dans le rafraichissement du tableau des estimations apres une modification 
 
 ## 4
-- une équipe ne peut pas avoir plus de joueur que de le nombre de joueur des équipe du tournoi
-- il serait bien d'identifier le nombre de joueur par équipe d'un tournoi et l'afficher dans les cards des tounois
+- il serait bien d'identifier le nombre de joueur par équipe d'un tournoi et l'afficher dans les cards des tounois sur l'ecran @tournois_screen
+- De plus, une équipe ne peut pas avoir plus de joueur que de le nombre de joueur des équipe du tournoi
 
 ## 5
-- dans @team_screen_management.dart, ajouter un bouton pour naviguer vers l'ecran du tournoi, vers l'ecran des equipes adverses (matrice)
-- ajouter un bouton pour lire la liste d'un adversaire
+- dans @team_screen_management.dart, retirer le panneau "Équipes adverse & Appariements", car trop lourd à charger. Remplacer plutot par simplement "Appariement", ou apparaitrait les informations de l'adversaire (équipes, nom, liste ...)
 
 ## 6
 - on peut retirer ligne 91-98 de @team_dashboard_screen.dart. Il n'est pas utile d'ajouter un joueur adverse (fait via l'import automatiquement)
