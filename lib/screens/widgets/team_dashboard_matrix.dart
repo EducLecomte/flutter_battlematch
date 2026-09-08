@@ -36,7 +36,7 @@ class TeamDashboardMatrix extends StatelessWidget {
     if (opponents.isEmpty) {
       return const Center(
         child: Text(
-          "Aucun adversaire n'est enregistré pour le moment.\nUtilisez 'Adversaire' ou 'New Recruit' pour configurer la ronde.",
+          "Aucun adversaire n'est enregistré pour le moment.\nUtilisez l'import New Recruit pour configurer la ronde.",
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 16, color: Colors.grey),
         ),

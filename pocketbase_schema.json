@@ -97,17 +97,6 @@
         "autogeneratePattern": ""
       },
       {
-        "type": "url",
-        "id": "f_liennr00001",
-        "name": "lien_nr",
-        "system": false,
-        "hidden": false,
-        "presentable": false,
-        "required": true,
-        "exceptDomains": null,
-        "onlyDomains": null
-      },
-      {
         "type": "bool",
         "id": "f_importeff01",
         "name": "import_effectue",

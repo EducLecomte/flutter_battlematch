@@ -110,10 +110,12 @@ class _TeamManagementScreenState
             selectedTeamId: _controller.selectedTeam?.id,
             tournoiNameById: _controller.tournoiNameById,
             onTeamSelected: (team) async {
+              final bool selectionChangee =
+                  _controller.selectedTeam?.id != team.id;
               _controller.selectedTeam = team;
+              if (selectionChangee) _controller.resetOpponents();
               _refreshUserInterface();
               await _controller.loadMembersForSelectedTeam();
-              await _controller.loadOpponentsForSelectedTeam();
               _refreshUserInterface();
             },
           ),

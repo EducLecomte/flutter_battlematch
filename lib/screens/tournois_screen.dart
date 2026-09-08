@@ -88,7 +88,6 @@ class _TournoisScreenState extends RefreshableScreenState<TournoisScreen> {
       () => _controller.updateTournoi(
         tournoi.id,
         editResult.nom,
-        editResult.lienNr,
       ),
       "Tournoi enregistré.",
     );

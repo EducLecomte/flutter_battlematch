@@ -149,14 +149,14 @@ class PocketbaseDataService {
   Future<void> deleteTeam(String teamId) => _serviceTeams.deleteTeam(teamId);
   Future<List<Tournoi>> getTournois() => _serviceTournois.getTournois();
 
-  Future<Tournoi> createTournoi(String nom, String lienNr) =>
-      _serviceTournois.createTournoi(nom, lienNr);
+  Future<Tournoi> createTournoi(String nom) =>
+      _serviceTournois.createTournoi(nom);
 
   Future<Tournoi> getTournoi(String tournoiId) =>
       _serviceTournois.getTournoi(tournoiId);
 
-  Future<Tournoi> updateTournoi(String tournoiId, String nom, String lienNr) =>
-      _serviceTournois.updateTournoi(tournoiId, nom, lienNr);
+  Future<Tournoi> updateTournoi(String tournoiId, String nom) =>
+      _serviceTournois.updateTournoi(tournoiId, nom);
 
   Future<void> deleteTournoi(String tournoiId) =>
       _serviceTournois.deleteTournoi(tournoiId);

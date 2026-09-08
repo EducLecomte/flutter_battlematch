@@ -53,7 +53,7 @@ void main() {
   });
 
   group('Tournoi', () {
-    test('valeur lien_nr absente ramenée à chaîne vide', () {
+    test('valeurs par défaut des champs optionnels', () {
       final record = RecordModel({
         'id': 'tournois000001ab',
         'nom': 'training trc2',
@@ -61,8 +61,9 @@ void main() {
 
       final tournoi = Tournoi.fromPocketBaseRecord(record);
 
-      expect(tournoi.lienNr, '');
+      expect(tournoi.nom, 'training trc2');
       expect(tournoi.createdBy, isNull);
+      expect(tournoi.importEffectue, isFalse);
     });
   });
 

@@ -1,7 +1,7 @@
 // ===========================================================================
 // Boîte de dialogue de modification de Tournoi (tournoi_edit_dialog.dart)
-// Formulaire nom + lien New Recruit ; les contrôleurs de texte appartiennent
-// au State, qui les libère dans dispose() après fermeture du dialogue.
+// Formulaire nom du tournoi ; le contrôleur de texte appartient au State,
+// qui le libère dans dispose() après fermeture du dialogue.
 // ===========================================================================
 
 import 'package:flutter/material.dart';
@@ -11,9 +11,8 @@ import '../../models/models.dart';
 /// Valeurs saisies dans le dialogue de modification, renvoyées via pop.
 class TournoiEditResult {
   final String nom;
-  final String lienNr;
 
-  const TournoiEditResult({required this.nom, required this.lienNr});
+  const TournoiEditResult({required this.nom});
 }
 
 /// Ouvre le dialogue de modification ; renvoie null si annulé.
@@ -40,14 +39,11 @@ class TournoiEditDialog extends StatefulWidget {
 class _TournoiEditDialogState extends State<TournoiEditDialog> {
   late final TextEditingController _nomController =
       TextEditingController(text: widget.tournoi.nom);
-  late final TextEditingController _lienController =
-      TextEditingController(text: widget.tournoi.lienNr);
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
     _nomController.dispose();
-    _lienController.dispose();
     super.dispose();
   }
 
@@ -55,7 +51,6 @@ class _TournoiEditDialogState extends State<TournoiEditDialog> {
     if (_formKey.currentState!.validate()) {
       Navigator.of(context).pop(TournoiEditResult(
         nom: _nomController.text,
-        lienNr: _lienController.text,
       ));
     }
   }
@@ -73,17 +68,6 @@ class _TournoiEditDialogState extends State<TournoiEditDialog> {
               controller: _nomController,
               decoration: const InputDecoration(
                 labelText: "Nom du tournoi (obligatoire)",
-                border: OutlineInputBorder(),
-              ),
-              validator: (value) => (value == null || value.trim().isEmpty)
-                  ? "Obligatoire"
-                  : null,
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _lienController,
-              decoration: const InputDecoration(
-                labelText: "Lien New Recruit (obligatoire)",
                 border: OutlineInputBorder(),
               ),
               validator: (value) => (value == null || value.trim().isEmpty)

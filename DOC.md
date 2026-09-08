@@ -261,7 +261,9 @@ lib/
                                      # du tournoi (hors équipe active)
     team_management_screen.dart    # Gestion équipes (sidebar + détail + appariements)
     team_management_controller.dart # Logique gestion d'équipe : membres,
-                                    # rencontres, adversaires, appariements
+                                     # rencontres, adversaires (chargés à la
+                                     # demande, une fois par sélection, M23),
+                                     # appariements
     team_management_team_actions.dart # Opérations d'écriture : retrait,
                                       # suppression, mot de passe, capitainerie
     team_dashboard_screen.dart     # Tableau de bord d'un duel (shell)
@@ -309,7 +311,6 @@ lib/
                                      # team_selector (M15) : affichage statique
                                      # Text du nom d'équipe active (pas de
                                      # DropdownButton)
-     add_opponent_dialog.dart       # Dialog ajout adversaire (top-level show*)
     opponent_details_dialog.dart   # Bottom sheet détail adversaire (top-level
                                    # show*, onDelete : Future<void> Function())
     profile_{info_card,invitations_section,teams_section}.dart
@@ -453,7 +454,8 @@ tool/
    équipes capitaines (champ `capitaine_id` sans cascade) et des tournois
     créés (champ `created_by` sans cascade) pour éviter les données orphelines.
 9. **M13 tournois/équipes** : création/suppression de tournoi admin-only ;
-   `TournoiController.addTournoi` valide nom + lien New Recruit non vides ;
+    `TournoiController.addTournoi` valide le nom non vide (point 4.3 MEMO :
+    champ `lien_nr` retiré de la BDD et du code) ;
    `TournamentTeamImportService` crée les équipes manquantes puis appelle
    `markTournoiImportEffectue` ; `PocketbaseTeamAccessService` gère
    claim/join/nomination. M13.8 : `TeamManagementTeamActions` extrait les
@@ -461,10 +463,15 @@ tool/
    avec capture de `ScaffoldMessengerState` avant les gaps async. M13.9 :
    `ProfileController` charge `getTeamsForUser` + tournois distincts,
     `ProfileTeamsSection` affiche les équipes groupées par tournoi. M13.10 :
-    `TeamManagementController.loadOpponentsForSelectedTeam` charge
-    adversaires/appariements (M16 : par équipe adverse, plus de rencontres) ;
-    `TeamManagementMatchedPanel` affiche les équipes adverses en `ExpansionTile`
-     avec dialog d'appariement membre ↔ liste via `toggleMatched`. M14 :
+     `TeamManagementController.loadOpponentsForSelectedTeam` charge
+     adversaires/appariements (M16 : par équipe adverse, plus de rencontres) ;
+     `TeamManagementMatchedPanel` affiche les équipes adverses en `ExpansionTile`
+      avec dialog d'appariement membre ↔ liste via `toggleMatched`. M23 :
+      chargement paresseux des adversaires (point 6 MEMO) — le panneau
+      « Appariements » ne déclenche les requêtes qu'au tap « Afficher les
+      adversaires », une fois par sélection ; `resetOpponents()` au changement
+      d'équipe, résultat périmé ignoré si la sélection change pendant le
+      chargement. M14 :
     `updateTournoi` complète le CRUD
     (service/controller/`TournoiEditDialog` + bouton admin sur `TournoiCard`) ;
     les contrôleurs de texte des dialogs appartiennent au State (libérés dans

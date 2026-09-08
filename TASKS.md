@@ -499,6 +499,17 @@ team_meta, estims, matched.
 - [x] M21.4 Complément du point 4.2 : suppression de l'affichage « Lien: <newRecruitURL> » dans `TournoiCard` (le champ `lien_nr` reste présent dans les formulaires)
 - [x] M21.5 Validation : `flutter analyze` sans problème, `flutter test` 44/44 ; points 4.1 et 4.2 RESOLU dans MEMO.md
 
+### M22 — Points 4.3 et 5 MEMO (2026-09-08) : suppression du champ lien_nr + retrait de l'ajout d'adversaire
+- [x] M22.1 Point 4.3 : champ `lien_nr` retiré de `pocketbase_schema.json` (collection `tournois`) et de tout le code (modèle `Tournoi`, `PocketbaseTournoisService` create/update, façade `PocketbaseDataService`, `TournoiController` sans `lienController`, dialogues d'ajout/édition à un seul champ, test du modèle réécrit)
+- [x] M22.2 Point 5 : bouton « Ajouter un adversaire » retiré de l'AppBar de `TeamDashboardScreen` ; `add_opponent_dialog.dart` et `TeamDashboardController.addOpponent` supprimés (orphelins) ; message d'état vide de `TeamDashboardMatrix` mis à jour ; suppression d'adversaire conservée
+- [x] M22.3 Validation : `flutter analyze` sans problème, `flutter test` 44/44 ; points 4.3 et 5 RESOLU dans MEMO.md, `DOC.md` et `README.md` à jour
+
+### M23 — Point 6 MEMO (2026-09-08) : panneau « Appariements » à chargement paresseux
+- [x] M23.1 `TeamManagementController` : ajout de `opponentsLoaded`, `isLoadingOpponents`, `_opponentsLoadInFlight` (déduplication des requêtes concurrentes) ; `loadOpponentsForSelectedTeam()` une seule fois par sélection, garde anti-résultat périmé si l'équipe change pendant le chargement, `tournoiId` vide → marqué chargé sans requête ; `resetOpponents()` ; suppression du chargement systématique dans `loadInitialData()` (reset si le rafraîchissement change la sélection)
+- [x] M23.2 `TeamManagementScreen.onTeamSelected` : plus d'appel `loadOpponentsForSelectedTeam()`, `resetOpponents()` au changement d'équipe ; `TeamManagementTeamDetailPanel` affiche toujours le panneau
+- [x] M23.3 `TeamManagementMatchedPanel` réécrit : titre « Appariements », états non chargé (carte « Afficher les adversaires ») / chargement (spinner) / chargé (cartes par équipe adverse, joueurs, appariement capitaine) ; erreur de chargement en snackbar
+- [x] M23.4 Validation : `flutter analyze` sans problème, `flutter test` 44/44 ; point 6 RESOLU dans MEMO.md
+
     ## Journal erreurs/découvertes
 [Date | Problème | Cause racine | Règle préventive]
 - 2026-08-21 | Code jamais compilé | pubspec sans supabase_flutter |

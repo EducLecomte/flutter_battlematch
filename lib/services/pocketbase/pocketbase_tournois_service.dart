@@ -33,25 +33,20 @@ class PocketbaseTournoisService {
   }
 
   /// Crée un tournoi au nom de l'administrateur connecté.
-  Future<Tournoi> createTournoi(String nom, String lienNr) async {
+  Future<Tournoi> createTournoi(String nom) async {
     final String? createdById = _holder.currentUserId;
     if (createdById == null) throw Exception("Non authentifié");
     final String nomNettoye = nom.trim();
-    final String lienNrNettoye = lienNr.trim();
     if (nomNettoye.isEmpty) {
       throw Exception("Le nom du tournoi est obligatoire.");
-    }
-    if (lienNrNettoye.isEmpty) {
-      throw Exception("Le lien New Recruit du tournoi est obligatoire.");
     }
 
     final RecordModel record = await _holder.clientPocketBase
         .collection(collectionNameTournois)
         .create(body: {
-       'nom': nomNettoye,
-       'lien_nr': lienNrNettoye,
-       'created_by': createdById,
-     });
+        'nom': nomNettoye,
+        'created_by': createdById,
+      });
     return Tournoi.fromPocketBaseRecord(record);
   }
 
@@ -63,22 +58,17 @@ class PocketbaseTournoisService {
     return Tournoi.fromPocketBaseRecord(record);
   }
 
-  /// Modifie le nom et le lien New Recruit d'un tournoi.
-  Future<Tournoi> updateTournoi(String tournoiId, String nom, String lienNr) async {
+  /// Modifie le nom d'un tournoi.
+  Future<Tournoi> updateTournoi(String tournoiId, String nom) async {
     final String nomNettoye = nom.trim();
-    final String lienNrNettoye = lienNr.trim();
     if (nomNettoye.isEmpty) {
       throw Exception("Le nom du tournoi est obligatoire.");
-    }
-    if (lienNrNettoye.isEmpty) {
-      throw Exception("Le lien New Recruit du tournoi est obligatoire.");
     }
 
     final RecordModel record = await _holder.clientPocketBase
         .collection(collectionNameTournois)
         .update(tournoiId, body: {
       'nom': nomNettoye,
-      'lien_nr': lienNrNettoye,
     });
     return Tournoi.fromPocketBaseRecord(record);
   }

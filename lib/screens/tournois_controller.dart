@@ -24,9 +24,8 @@ class TournoiController {
 
   bool get estAdministrateur => profilJoueurCourant?.admin ?? false;
 
-  // Contrôleurs pour l'ajout
+  // Contrôleur pour l'ajout
   final TextEditingController nomController = TextEditingController();
-  final TextEditingController lienController = TextEditingController();
 
   // Indique si le chargement est en cours
   bool isLoading = true;
@@ -67,47 +66,36 @@ class TournoiController {
     );
   }
 
-  // Crée un nouveau tournoi à partir des champs du formulaire.
+  // Crée un nouveau tournoi à partir du champ du formulaire.
   // Retourne null en succès, ou un message d'erreur.
   Future<String?> addTournoi({required VoidCallback onStateChanged}) async {
     final String tournoiNom = nomController.text.trim();
-    final String tournoiLien = lienController.text.trim();
 
-    if (tournoiNom.isEmpty || tournoiLien.isEmpty) {
-      return "Le nom et le lien New Recruit sont obligatoires.";
+    if (tournoiNom.isEmpty) {
+      return "Le nom du tournoi est obligatoire.";
     }
 
     try {
-      await _pocketbaseService.createTournoi(tournoiNom, tournoiLien);
+      await _pocketbaseService.createTournoi(tournoiNom);
 
       nomController.clear();
-      lienController.clear();
       return null;
     } catch (addError) {
       return "Erreur d'ajout : ${addError.toString()}";
     }
   }
 
-  // Modifie le nom et le lien New Recruit d'un tournoi.
+  // Modifie le nom d'un tournoi.
   // Retourne null en succès, ou un message d'erreur.
-  Future<String?> updateTournoi(
-    String tournoiId,
-    String nom,
-    String lienNr,
-  ) async {
+  Future<String?> updateTournoi(String tournoiId, String nom) async {
     final String tournoiNom = nom.trim();
-    final String tournoiLien = lienNr.trim();
 
-    if (tournoiNom.isEmpty || tournoiLien.isEmpty) {
-      return "Le nom et le lien New Recruit sont obligatoires.";
+    if (tournoiNom.isEmpty) {
+      return "Le nom du tournoi est obligatoire.";
     }
 
     try {
-      await _pocketbaseService.updateTournoi(
-        tournoiId,
-        tournoiNom,
-        tournoiLien,
-      );
+      await _pocketbaseService.updateTournoi(tournoiId, tournoiNom);
       return null;
     } catch (updateError) {
       return "Erreur de modification : ${updateError.toString()}";
@@ -125,9 +113,8 @@ class TournoiController {
     }
   }
 
-  // Libère les contrôleurs de texte.
+  // Libère le contrôleur de texte.
   void dispose() {
     nomController.dispose();
-    lienController.dispose();
   }
 }

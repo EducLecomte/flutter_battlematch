@@ -28,7 +28,9 @@ class TeamManagementController {
   // Indique si une recherche de joueurs est en cours
   bool isSearching = false;
 
-  // Équipes adverses de l'équipe sélectionnée
+  // Équipes adverses de l'équipe sélectionnée. Chargées à la demande par le
+  // panneau « Appariements » (point 6 MEMO) : plus de chargement systématique
+  // au démarrage ou au changement d'équipe.
   List<Team> opponentTeams = [];
 
   // Adversaires (team_meta) par équipe adverse
@@ -36,6 +38,15 @@ class TeamManagementController {
 
   // Appariements par équipe adverse
   Map<String, List<Matched>> matchedByOpponentTeamId = {};
+
+  // Les adversaires de l'équipe sélectionnée ont-ils déjà été chargés ?
+  bool opponentsLoaded = false;
+
+  // Un chargement des adversaires est-il en cours ?
+  bool isLoadingOpponents = false;
+
+  // Chargement en cours, pour éviter les requêtes concurrentes.
+  Future<String?>? _opponentsLoadInFlight;
 
   // Mapping tournoi ID → nom du tournoi
   Map<String, String> tournoiNameById = {};
@@ -70,8 +81,12 @@ class TeamManagementController {
           }
         }
         selectedTeam = equipeConservee ?? (list.isEmpty ? null : list.first);
+        // Si le rafraîchissement a changé l'équipe sélectionnée (ex. équipe
+        // supprimée), les adversaires chargés appartiennent à l'ancienne.
+        if (selectedTeam?.id != equipePrecedente?.id) {
+          resetOpponents();
+        }
         await loadMembersForSelectedTeam();
-        await loadOpponentsForSelectedTeam();
       }
       return null;
     } catch (loadError) {
@@ -79,10 +94,34 @@ class TeamManagementController {
     }
   }
 
-  // Charge les équipes adverses, listes et appariements de l'équipe sélectionnée.
+  // Charge les équipes adverses, leurs joueurs et les appariements de
+  // l'équipe sélectionnée — une seule fois par sélection, à la demande du
+  // panneau « Appariements » (point 6 MEMO : le chargement est paresseux
+  // pour ne plus alourdir l'écran de gestion d'équipe).
   Future<String?> loadOpponentsForSelectedTeam() async {
-    final selectedTeam = this.selectedTeam;
+    if (opponentsLoaded) return null;
+    final Team? selectedTeam = this.selectedTeam;
     if (selectedTeam == null) return null;
+    if (selectedTeam.tournoiId.isEmpty) {
+      // Équipe sans tournoi : aucune adversaire possible.
+      opponentsLoaded = true;
+      return null;
+    }
+
+    final Future<String?>? inFlight = _opponentsLoadInFlight;
+    if (inFlight != null) return inFlight;
+
+    final Future<String?> loadFuture = _loadOpponents(selectedTeam);
+    _opponentsLoadInFlight = loadFuture;
+    try {
+      return await loadFuture;
+    } finally {
+      _opponentsLoadInFlight = null;
+    }
+  }
+
+  Future<String?> _loadOpponents(Team selectedTeam) async {
+    isLoadingOpponents = true;
     try {
       final List<Team> allTeams = await _pocketbaseService.getTeamsForTournoi(
         selectedTeam.tournoiId,
@@ -103,13 +142,29 @@ class TeamManagementController {
           opponentTeam.id,
         );
       }
+      // Ignore le résultat si l'équipe sélectionnée a changé pendant le
+      // chargement : les données appartiendraient à l'ancienne sélection.
+      if (selectedTeam.id != this.selectedTeam?.id) return null;
       opponentTeams = opponentTeamsToDisplay;
       opponentsByOpponentTeamId = loadedOpponents;
       matchedByOpponentTeamId = loadedMatched;
+      opponentsLoaded = true;
       return null;
     } catch (opponentsError) {
       return opponentsError.toString();
+    } finally {
+      isLoadingOpponents = false;
     }
+  }
+
+  // Changement d'équipe sélectionnée : les adversaires déjà chargés
+  // appartiennent à l'ancienne sélection, on repart de zéro.
+  void resetOpponents() {
+    opponentTeams = [];
+    opponentsByOpponentTeamId = {};
+    matchedByOpponentTeamId = {};
+    opponentsLoaded = false;
+    _opponentsLoadInFlight = null;
   }
 
   // Charge les membres de l'équipe sélectionnée.

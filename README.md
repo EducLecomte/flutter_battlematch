@@ -183,9 +183,9 @@ flutter analyze           # analyse statique
 - Inscription/connexion joueurs (collection dédiée `joueurs`, session web
   persistante, mot de passe : 8 caractères minimum, une majuscule,
   un caractère spécial)
-- Tournois gérés par les admins : création avec lien New Recruit, import des
-  équipes, suppression ; ouverture bloquée pour les non-admins si l'import des
-  équipes n'est pas effectué
+- Tournois gérés par les admins : création, import des équipes, suppression ;
+  ouverture bloquée pour les non-admins si l'import des équipes n'est pas
+  effectué
 - Équipes : réclamation d'une équipe sans capitaine, join par mot de passe,
   gestion du mot de passe, nomination d'un capitaine, invitations, retrait de
   membres

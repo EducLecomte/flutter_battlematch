@@ -66,21 +66,6 @@ class TeamDashboardController {
     }
   }
 
-  // Ajoute manuellement un joueur à la méta de l'équipe adverse (nouvelle
-  // colonne du tableau de bord).
-  Future<void> addOpponent(
-    String opponentName,
-    String armyList,
-    Armee army,
-  ) async {
-    await _pocketbaseService.createTeamMeta(
-      adversaireTeam.id,
-      army.id,
-      opponentName,
-      armyList,
-    );
-  }
-
   // Supprime un joueur de la méta de l'équipe adverse.
   Future<void> deleteOpponent(String opponentId) async {
     await _pocketbaseService.deleteTeamMeta(opponentId);

@@ -1,6 +1,6 @@
 // ===========================================================================
 // Boîte de dialogue d'ajout de Tournoi (tournoi_add_dialog.dart)
-// Formulaire nom + lien New Recruit obligatoire, piloté par le
+// Formulaire nom du tournoi obligatoire, piloté par le
 // TournoiController de l'écran des tournois.
 // ===========================================================================
 
@@ -29,14 +29,6 @@ class TournoiAddDialog extends StatelessWidget {
             controller: tournoiController.nomController,
             decoration: const InputDecoration(
               labelText: "Nom du tournoi (obligatoire)",
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 16),
-          TextFormField(
-            controller: tournoiController.lienController,
-            decoration: const InputDecoration(
-              labelText: "Lien New Recruit (obligatoire)",
               border: OutlineInputBorder(),
             ),
           ),

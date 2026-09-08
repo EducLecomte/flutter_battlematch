@@ -12,7 +12,6 @@ import '../models/models.dart';
 import '../utils/error_snack_bar_presenter.dart';
 import 'team_dashboard_controller.dart';
 import 'team_dashboard_estim_actions.dart';
-import 'widgets/add_opponent_dialog.dart';
 import 'widgets/team_dashboard_body.dart';
 
 class TeamDashboardScreen extends StatefulWidget {
@@ -88,14 +87,6 @@ class _TeamDashboardScreenState extends State<TeamDashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("vs ${widget.adversaireTeam.nom}"),
-        actions: [
-          if (isCaptain)
-            IconButton(
-              icon: const Icon(Icons.person_add_outlined),
-              tooltip: "Ajouter un adversaire",
-              onPressed: () => showAddOpponentDialog(context, _controller),
-            ),
-        ],
       ),
       body: TeamDashboardBody(
         controller: _controller,

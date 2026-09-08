@@ -25,14 +25,20 @@
 - ~~retire les liens vers les tournois, c'est inutile au final~~
 - Résolu : l'affichage « Lien: <newRecruitURL> » a été retiré de `TournoiCard` ; le champ `lien_nr` reste obligatoire dans les formulaires de création/édition d'un tournoi.
 
-## 4.3
-- retirer le champs en BDD concernant les URL de tournoi (ainsi que toute reference dans le code ( lorsd e la création des tournois par exemple))
+## 4.3 [RESOLU]
+- ~~retirer le champs en BDD concernant les URL de tournoi (ainsi que toute reference dans le code ( lorsd e la création des tournois par exemple))~~
+- Résolu : champ `lien_nr` retiré de `pocketbase_schema.json` (collection `tournois`) et de tout le code : modèle `Tournoi`, `PocketbaseTournoisService.createTournoi/updateTournoi` (validation + corps de requête), façade `PocketbaseDataService`, `TournoiController` (suppression du `lienController`), dialogues d'ajout/édition de tournoi (un seul champ « Nom »), test du modèle mis à jour. `pocketbase_schema.json` est à réimporter dans l'admin PocketBase.
 
-## 5 - ajout d'adversaier inutile
-- on peut retirer ligne 91-98 de @team_dashboard_screen. Il n'est pas utile d'ajouter un joueur adverse (fait via l'import automatiquement)
+## 5 - [RESOLU] ajout d'adversaire inutile
+- ~~on peut retirer ligne 91-98 de @team_dashboard_screen. Il n'est pas utile d'ajouter un joueur adverse (fait via l'import automatiquement)~~
+- Résolu : bouton « Ajouter un adversaire » retiré de l'AppBar de `TeamDashboardScreen` ; fichiers devenus orphelins supprimés (`add_opponent_dialog.dart`, `TeamDashboardController.addOpponent`) ; message d'état vide de la matrice mis à jour (plus de référence au bouton, seul l'import New Recruit configure les adversaires). La suppression d'un adversaire (dialog détails, capitaine) est conservée.
 
-## 6 - ecran de gestion d'equipe a modifier
-- dans @team_screen_management, retirer le panneau "Équipes adverse & Appariements", car trop lourd à charger. Remplacer plutot par simplement "Appariement", ou apparaitrait les informations de l'adversaire (équipes, nom, liste ...)
+## 6 [RESOLU] - ecran de gestion d'equipe a modifier
+- ~~dans @team_screen_management, retirer le panneau "Équipes adverse & Appariements", car trop lourd à charger. Remplacer plutot par simplement "Appariement", ou apparaitrait les informations de l'adversaire (équipes, nom, liste ...)~~
+- Résolu : le panneau est renommé « Appariements » et ses données (équipes adverses, joueurs, appariements) ne sont plus chargées systématiquement au démarrage ni au changement d'équipe (1 + 2×N requêtes). Chargement paresseux une fois par sélection : le panneau affiche d'abord une carte « Afficher les adversaires » (spinner pendant le chargement) ; après chargement, les cartes par équipe adverse (nom, joueurs, état d'appariement) avec appariement par le capitaine. Les données sont réinitialisées au changement d'équipe ; un chargement dont l'équipe a changé entre-temps est ignoré.
+
+## 6.1
+- le point 6 n'est pas resolu. Je ne neux pus voir apparaitre l'ensemble des équipes et adversaire. Seulement les adverses, si il y a un appariement d'effectuer.
 
 ## 7 - Verification des scrollsviews dans le team management
 - probleme de Renderflex overflowed dans @team_management_team_members_panel (The overflowing RenderFlex has an orientation of Axis.vertical.)
