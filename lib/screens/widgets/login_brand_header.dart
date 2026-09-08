@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 class LoginBrandHeader extends StatelessWidget {
   final bool isSignUp;
 
-  const LoginBrandHeader({
-    super.key,
-    required this.isSignUp,
-  });
+  const LoginBrandHeader({super.key, required this.isSignUp});
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +28,9 @@ class LoginBrandHeader extends StatelessWidget {
           ),
         ),
         Text(
-          isSignUp
-              ? "Création de compte"
-              : "Connexion Capitaine & Joueurs",
+          isSignUp ? "Création de compte" : "Connexion Capitaine & Joueurs",
           textAlign: TextAlign.center,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: Colors.grey,
-          ),
+          style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
         ),
       ],
     );

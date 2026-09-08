@@ -25,6 +25,7 @@ class TeamManagementTeamMembersPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -32,10 +33,12 @@ class TeamManagementTeamMembersPanel extends StatelessWidget {
           style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        Expanded(
-          child: ListView.builder(
-            itemCount: members.length,
-            itemBuilder: (context, index) {
+        // shrinkWrap (point 7 MEMO) : la liste prend sa hauteur naturelle,
+        // c'est la page de détail qui défile.
+        ListView.builder(
+          shrinkWrap: true,
+          itemCount: members.length,
+          itemBuilder: (context, index) {
               final member = members[index];
               final Joueur player = member['joueur'];
               final String role = member['role'];
@@ -86,13 +89,12 @@ class TeamManagementTeamMembersPanel extends StatelessWidget {
                     ],
                   ),
                 ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
+               );
+             },
+           ),
+       ],
+     );
+   }
 
   /// Sélecteur de rôle : capitaine (joueur / coach) ou membre (joueur / coach).
   Widget _buildRoleSelector(

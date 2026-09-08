@@ -36,11 +36,17 @@ class TeamManagementTeamDetailPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final selectedTeam = controller.selectedTeam!;
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    // La zone de détail défile verticalement (point 7 MEMO) : le contenu
+    // (paramètres, appariements, membres, invitations) peut dépasser la
+    // hauteur de l'écran — une Column fixe provoquait des RenderFlex
+    // overflowed (Axis.vertical).
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -77,37 +83,38 @@ class TeamManagementTeamDetailPanel extends StatelessWidget {
             onStateChanged: onStateChanged,
           ),
           const SizedBox(height: 16),
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          // Les deux colonnes prennent leur hauteur naturelle (lists
+          // shrinkWrap) ; la page gère le défilement.
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 3,
+                child: TeamManagementTeamMembersPanel(
+                  members: controller.members,
+                  captainId: selectedTeam.capitaineId,
+                  canChangeRole: controller.isCaptain(),
+                  canRemoveMember: controller.canRemoveMember,
+                  onRemoveMember: onRemoveMember,
+                  onRoleChanged: onMemberRoleChanged,
+                ),
+              ),
+              const SizedBox(width: 16),
+              if (controller.isCaptain())
                 Expanded(
-                  flex: 3,
-                  child: TeamManagementTeamMembersPanel(
-                    members: controller.members,
-                    captainId: selectedTeam.capitaineId,
-                    canChangeRole: controller.isCaptain(),
-                    canRemoveMember: controller.canRemoveMember,
-                    onRemoveMember: onRemoveMember,
-                    onRoleChanged: onMemberRoleChanged,
+                  flex: 2,
+                  child: TeamManagementTeamInvitePanel(
+                    searchController: searchController,
+                    searchResults: controller.searchResults,
+                    isSearching: controller.isSearching,
+                    onSearchTextChanged: onSearchTextChanged,
+                    onSendInvite: onSendInvite,
                   ),
                 ),
-                const SizedBox(width: 16),
-                if (controller.isCaptain())
-                  Expanded(
-                    flex: 2,
-                    child: TeamManagementTeamInvitePanel(
-                      searchController: searchController,
-                      searchResults: controller.searchResults,
-                      isSearching: controller.isSearching,
-                      onSearchTextChanged: onSearchTextChanged,
-                      onSendInvite: onSendInvite,
-                    ),
-                  ),
-              ],
-            ),
+            ],
           ),
         ],
+        ),
       ),
     );
   }

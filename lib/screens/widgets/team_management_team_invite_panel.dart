@@ -24,6 +24,7 @@ class TeamManagementTeamInvitePanel extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
@@ -41,31 +42,37 @@ class TeamManagementTeamInvitePanel extends StatelessWidget {
               onChanged: onSearchTextChanged,
             ),
             const SizedBox(height: 16),
-            Expanded(
-              child: isSearching
-                  ? const Center(child: CircularProgressIndicator())
-                  : searchResults.isEmpty
-                      ? const Center(
-                          child: Text(
-                            "Aucun joueur trouvé",
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        )
-                      : ListView.builder(
-                          itemCount: searchResults.length,
-                          itemBuilder: (context, index) {
-                            final player = searchResults[index];
-                            return ListTile(
-                              title: Text(player.nom),
-                              subtitle: Text(player.email),
-                              trailing: IconButton(
-                                icon: const Icon(Icons.person_add_alt_1, color: Colors.blueAccent),
-                                onPressed: () => onSendInvite(player.id),
-                              ),
-                            );
-                          },
-                        ),
-            ),
+            // Hauteur naturelle (point 7 MEMO) : c'est la page de détail
+            // qui défile, pas ce panneau.
+            if (isSearching)
+              const SizedBox(
+                height: 120,
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else if (searchResults.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: const Text(
+                  "Aucun joueur trouvé",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              )
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: searchResults.length,
+                itemBuilder: (context, index) {
+                  final player = searchResults[index];
+                  return ListTile(
+                    title: Text(player.nom),
+                    subtitle: Text(player.email),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.person_add_alt_1, color: Colors.blueAccent),
+                      onPressed: () => onSendInvite(player.id),
+                    ),
+                  );
+                },
+              ),
           ],
         ),
       ),

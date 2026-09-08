@@ -12,6 +12,12 @@ import '../team_management_controller.dart';
 /// Appariements » chargé systématiquement (plusieurs requêtes par équipe
 /// adverse), l'écran ne déclenche ces requêtes que quand l'utilisateur
 /// affiche la section.
+///
+/// Affichage (point 6.1 MEMO) : l'ensemble des équipes et adversaires
+/// n'est plus listé ; seules les équipes adverses comportant des joueurs
+/// NON appariés (appariements d'effectif à effectuer) sont affichées,
+/// avec l'action d'appariement réservée au capitaine. Les appariements
+/// existants restent gérables depuis la matrice du tableau de bord.
 class TeamManagementMatchedPanel extends StatelessWidget {
   final TeamManagementController controller;
   final VoidCallback onStateChanged;
@@ -180,9 +186,10 @@ class TeamManagementMatchedPanel extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: const Icon(Icons.link),
-        title: const Text("Afficher les adversaires"),
+        title: const Text("Afficher les appariements à effectuer"),
         subtitle: const Text(
-          "Charge les équipes adverses et leurs appariements au besoin.",
+          "Charge les équipes adverses au besoin ; ne liste que les "
+          "joueurs non appariés.",
         ),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => _handleLoadOpponentsTap(context),
@@ -190,8 +197,11 @@ class TeamManagementMatchedPanel extends StatelessWidget {
     );
   }
 
-  // Cartes par équipe adverse une fois les données chargées.
-  List<Widget> _buildOpponentCards(BuildContext context) {
+  // Une fois les données chargées : une carte par équipe adverse
+  // comportant au moins un joueur non apparié (point 6.1 MEMO —
+  // l'ensemble des équipes et adversaires n'est plus affiché). État
+  // vide si tous les joueurs adverses sont déjà appariés.
+  List<Widget> _buildPendingPairingCards(BuildContext context) {
     final List<Team> opponentTeams = controller.opponentTeams;
 
     if (opponentTeams.isEmpty) {
@@ -208,82 +218,91 @@ class TeamManagementMatchedPanel extends StatelessWidget {
       ];
     }
 
-    return opponentTeams.map((opponentTeam) {
-      final opponents =
+    final List<Widget> cards = [];
+    for (final Team opponentTeam in opponentTeams) {
+      final List<TeamMeta> opponents =
           controller.opponentsByOpponentTeamId[opponentTeam.id] ?? [];
-      final matched =
+      final List<Matched> matched =
           controller.matchedByOpponentTeamId[opponentTeam.id] ?? [];
+      final List<TeamMeta> pendingOpponents = opponents
+          .where(
+            (opponent) =>
+                _findPairedMember(matched, opponent.id, controller.members) ==
+                null,
+          )
+          .toList();
+      if (pendingOpponents.isEmpty) continue;
 
-      return Card(
-        margin: const EdgeInsets.only(bottom: 8),
-        child: ExpansionTile(
-          title: Text(
-            "Adversaire : ${opponentTeam.nom}",
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          children: opponents.isEmpty
-              ? const [
-                  Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text(
-                      "Aucun adversaire pour cette équipe.",
-                      style: TextStyle(color: Colors.grey),
-                    ),
+      cards.add(
+        Card(
+          margin: const EdgeInsets.only(bottom: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+                child: Text(
+                  "Adversaire : ${opponentTeam.nom} — "
+                  "${pendingOpponents.length} joueur(s) non apparié(s)",
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              for (final TeamMeta opponent in pendingOpponents)
+                ListTile(
+                  leading: const CircleAvatar(
+                    child: Icon(Icons.person, size: 20),
                   ),
-                ]
-              : opponents.map((opponent) {
-                  final pairedMember = _findPairedMember(
-                    matched,
-                    opponent.id,
-                    controller.members,
-                  );
-                  final String oppPseudo = opponent.nomJo.isNotEmpty
-                      ? opponent.nomJo
-                      : "Adversaire";
-                  return ListTile(
-                    leading: const CircleAvatar(
-                      child: Icon(Icons.person, size: 20),
-                    ),
-                    title: Text(
-                      oppPseudo,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          pairedMember != null
-                              ? "Apparié : ${pairedMember.nom}"
-                              : "Non apparié",
-                          style: TextStyle(
-                            color: pairedMember != null
-                                ? Colors.green
-                                : Colors.grey,
-                            fontWeight: pairedMember != null
-                                ? FontWeight.bold
-                                : FontWeight.normal,
+                  title: Text(
+                    opponent.nomJo.isNotEmpty ? opponent.nomJo : "Adversaire",
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: opponent.listeJo.isNotEmpty
+                      ? Text(
+                          "Liste : ${opponent.listeJo}",
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
                           ),
-                        ),
-                      ],
-                    ),
-                    trailing: controller.isCaptain()
-                        ? IconButton(
-                            icon: const Icon(Icons.link),
-                            tooltip: "Apparier",
-                            onPressed: () => _handlePairingTap(
-                              context,
-                              opponentTeam,
-                              opponent,
-                            ),
-                          )
-                        : pairedMember != null
-                            ? const Icon(Icons.lock, size: 16)
-                            : null,
-                  );
-                }).toList(),
+                        )
+                      : null,
+                  trailing: controller.isCaptain()
+                      ? IconButton(
+                          icon: const Icon(Icons.link),
+                          tooltip: "Apparier",
+                          onPressed: () => _handlePairingTap(
+                            context,
+                            opponentTeam,
+                            opponent,
+                          ),
+                        )
+                      : null,
+                ),
+            ],
+          ),
         ),
       );
-    }).toList();
+    }
+
+    if (cards.isEmpty) {
+      return const [
+        Card(
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.green),
+                SizedBox(width: 12),
+                Text(
+                  "Aucun appariement à effectuer.",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ];
+    }
+    return cards;
   }
 
   @override
@@ -299,7 +318,7 @@ class TeamManagementMatchedPanel extends StatelessWidget {
               ?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        if (controller.opponentsLoaded) ..._buildOpponentCards(context)
+        if (controller.opponentsLoaded) ..._buildPendingPairingCards(context)
         else _buildLoadCard(context),
       ],
     );

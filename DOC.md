@@ -465,13 +465,20 @@ tool/
     `ProfileTeamsSection` affiche les équipes groupées par tournoi. M13.10 :
      `TeamManagementController.loadOpponentsForSelectedTeam` charge
      adversaires/appariements (M16 : par équipe adverse, plus de rencontres) ;
-     `TeamManagementMatchedPanel` affiche les équipes adverses en `ExpansionTile`
-      avec dialog d'appariement membre ↔ liste via `toggleMatched`. M23 :
-      chargement paresseux des adversaires (point 6 MEMO) — le panneau
-      « Appariements » ne déclenche les requêtes qu'au tap « Afficher les
-      adversaires », une fois par sélection ; `resetOpponents()` au changement
-      d'équipe, résultat périmé ignoré si la sélection change pendant le
-      chargement. M14 :
+      `TeamManagementMatchedPanel` affiche les équipes adverses avec
+       dialog d'appariement membre ↔ liste via `toggleMatched`. M23 :
+       chargement paresseux des adversaires (point 6 MEMO) — le panneau
+       « Appariements » ne déclenche les requêtes qu'au tap « Afficher les
+       appariements à effectuer », une fois par sélection ; `resetOpponents()`
+       au changement d'équipe, résultat périmé ignoré si la sélection change
+       pendant le chargement. M24 (point 6.1 MEMO) : le panneau ne liste que
+       les adversaires **non appariés** (une carte par équipe adverse ayant au
+       moins un joueur sans appariement + compteur d'attentes, état vide si
+       tout est apparié) ; l'annulation d'un appariement se fait depuis la
+       matrice du dashboard. M25 (point 7 MEMO) : la zone de détail est
+       enveloppée dans un `SingleChildScrollView` (colonne `mainAxisSize.min`)
+       et les listes membres/invitations sont en `shrinkWrap` — plus de
+       RenderFlex overflow vertical sur écran court. M14 :
     `updateTournoi` complète le CRUD
     (service/controller/`TournoiEditDialog` + bouton admin sur `TournoiCard`) ;
     les contrôleurs de texte des dialogs appartiennent au State (libérés dans

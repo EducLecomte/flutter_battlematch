@@ -510,6 +510,20 @@ team_meta, estims, matched.
 - [x] M23.3 `TeamManagementMatchedPanel` réécrit : titre « Appariements », états non chargé (carte « Afficher les adversaires ») / chargement (spinner) / chargé (cartes par équipe adverse, joueurs, appariement capitaine) ; erreur de chargement en snackbar
 - [x] M23.4 Validation : `flutter analyze` sans problème, `flutter test` 44/44 ; point 6 RESOLU dans MEMO.md
 
+### M24 — Point 6.1 MEMO (2026-09-08) : panneau « Appariements » limité aux adversaires non appariés
+- [x] M24.1 `TeamManagementMatchedPanel` : `_buildOpponentCards` → `_buildPendingPairingCards` — une carte par équipe adverse ayant au moins un `TeamMeta` sans `Matched` correspondant (`_findPairedMember`), compteur « N joueur(s) non apparié(s) » dans l'en-tête, liste d'armée en sous-titre ; état vide « Aucun appariement à effectuer. » ; carte « Aucune équipe adverse avec des joueurs enregistrés. » si `opponentTeams` vide
+- [x] M24.2 Action d'appariement (`Icons.link`, capitaine-only) conservée par joueur en attente ; annulation d'un appariement existant documentée comme relevant de la matrice du dashboard (`toggleMatched` par tap de cellule) — plus de rôle de déverrouillage dans le panneau de gestion
+- [x] M24.3 Carte de chargement renommée « Afficher les appariements à effectuer » (sous-titre : ne liste que les joueurs non appariés)
+- [x] M24.4 Test de régression `test/team_management_detail_panel_test.dart` (groupe « MEMO 6.1 ») : liste des non appariés, adversaire apparié masqué, état vide quand tout est apparié
+
+### M25 — Point 7 MEMO (2026-09-08) : défilement vertical de la zone de détail (plus de RenderFlex overflow)
+- [x] M25.1 `TeamManagementTeamDetailPanel` : `SingleChildScrollView` + `Column(mainAxisSize.min)` autour du contenu ; suppression de l'`Expanded` vertical externe autour du Row membres/invitations
+- [x] M25.2 `TeamManagementTeamMembersPanel` : `Expanded(ListView.builder)` → `ListView.builder(shrinkWrap: true)`, colonne `mainAxisSize.min`
+- [x] M25.3 `TeamManagementTeamInvitePanel` : `Expanded` (spinner/texte/`ListView`) → `SizedBox` de chargement / `Padding` de texte vide / `ListView.builder(shrinkWrap: true)`, colonne `mainAxisSize.min`
+- [x] M25.4 Sidebar 250 px et `Expanded` horizontaux (flex 3/2 du Row membres/invitations) inchangés (contextes à largeur bornée)
+- [x] M25.5 Test de régression « MEMO 7 » : viewport 900×350, pas d'exception au rendu, `pixels` du scroll de page augmente après drag
+- [x] M25.6 Validation : `flutter analyze` sans problème, `flutter test` 47/47, `flutter build web` OK ; points 6.1 et 7 RESOLU dans MEMO.md
+
     ## Journal erreurs/découvertes
 [Date | Problème | Cause racine | Règle préventive]
 - 2026-08-21 | Code jamais compilé | pubspec sans supabase_flutter |
