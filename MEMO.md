@@ -35,11 +35,11 @@
 
 ## 6 [RESOLU] - ecran de gestion d'equipe a modifier
 - ~~dans @team_screen_management, retirer le panneau "Équipes adverse & Appariements", car trop lourd à charger. Remplacer plutot par simplement "Appariement", ou apparaitrait les informations de l'adversaire (équipes, nom, liste ...)~~
-- Résolu : le panneau est renommé « Appariements » et ses données (équipes adverses, joueurs, appariements) ne sont plus chargées systématiquement au démarrage ni au changement d'équipe (1 + 2×N requêtes). Chargement paresseux une fois par sélection : le panneau affiche d'abord une carte « Afficher les adversaires » (spinner pendant le chargement) ; après chargement, les cartes par équipe adverse (nom, joueurs, état d'appariement) avec appariement par le capitaine. Les données sont réinitialisées au changement d'équipe ; un chargement dont l'équipe a changé entre-temps est ignoré. L'affichage a ensuite été resserré au point 6.1 (seuls les adversaires non appariés sont listés).
+- Résolu : le panneau est renommé « Appariements » et ses données (équipes adverses, joueurs, appariements) ne sont plus chargées systématiquement au démarrage ni au changement d'équipe (1 + 2×N requêtes). Chargement paresseux une fois par sélection : le panneau affiche d'abord une carte « Afficher les appariements » (spinner pendant le chargement) ; après chargement, la liste des joueurs de l'équipe appariés avec leur adversaire (point 6.1). Les données sont réinitialisées au changement d'équipe ; un chargement dont l'équipe a changé entre-temps est ignoré.
 
 ## 6.1 [RESOLU]
 - ~~le point 6 n'est pas resolu. Je ne veux plus voir apparaitre l'ensemble des équipes et adversaire. Seulement les adverses, si il y a un appariement d'effectif.~~
-- Résolu : le panneau « Appariements » ne liste plus que les adversaires **non appariés** (appariements d'effectif à effectuer) : une carte par équipe adverse ayant au moins un joueur sans appariement, avec le compteur de joueurs en attente ; l'action d'appariement reste réservée au capitaine ; état vide « Aucun appariement à effectuer. » quand tout est apparié. L'annulation d'un appariement existant se fait depuis la matrice du tableau de bord (tap sur la cellule, `toggleMatched`), le panneau de gestion n'ayant plus de rôle de déverrouillage. Tests de régression dans `test/team_management_detail_panel_test.dart`.
+- Résolu : le panneau « Appariements » liste les **joueurs de l'équipe qui sont appariés**, avec l'adversaire correspondant (pseudo, liste d'armée si renseignée, équipe adverse) — un joueur peut apparaître plusieurs fois (un appariement par équipe adverse). Un joueur sans appariement n'apparaît pas ; s'il n'y a aucun appariement, rien n'est affiché. Le panneau est en lecture seule : l'appariement et l'annulation se font depuis la matrice du tableau de bord (tap sur une cellule, `toggleMatched`). Tests de régression dans `test/team_management_detail_panel_test.dart`.
 
 ## 7 [RESOLU] - Verification des scrollsviews dans le team management
 - ~~probleme de Renderflex overflowed dans @team_management_team_members_panel (The overflowing RenderFlex has an orientation of Axis.vertical.)~~
@@ -50,11 +50,11 @@
 ## 8 - polorpicker admin
 - dans l'administration, ajouter un colorpicker lors de l'édition des appréciations
 
-## 9 - tuto
-- la premiere fois qu'un utilisateur se connecte, afficher un tutoriel d'explication/utilisation dans un dialog.
-
-## 10 - validation login
+## 9 - validation login
 - ajouter une validation de formulaire pour @login_screen, avec la touche entrée
+
+## 10 - tuto
+- la premiere fois qu'un utilisateur se connecte, afficher un tutoriel d'explication/utilisation dans un dialog.
 
 ## 11 - Ajout de setting
 - ajouter dans le profil, une catégorie "parametres"

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../config/app_config.dart';
 import '../../models/models.dart';
 import '../../utils/error_snack_bar_presenter.dart';
 import '../team_management_controller.dart';
@@ -13,11 +12,12 @@ import '../team_management_controller.dart';
 /// adverse), l'écran ne déclenche ces requêtes que quand l'utilisateur
 /// affiche la section.
 ///
-/// Affichage (point 6.1 MEMO) : l'ensemble des équipes et adversaires
-/// n'est plus listé ; seules les équipes adverses comportant des joueurs
-/// NON appariés (appariements d'effectif à effectuer) sont affichées,
-/// avec l'action d'appariement réservée au capitaine. Les appariements
-/// existants restent gérables depuis la matrice du tableau de bord.
+/// Affichage (point 6.1 MEMO) : le panneau liste les joueurs de l'équipe
+/// qui sont appariés, avec l'adversaire avec lequel ils le sont (pseudo et
+/// liste d'armée). Un joueur sans appariement n'apparaît pas ; s'il n'y a
+/// aucun appariement, rien n'est affiché. Le panneau est en lecture seule :
+/// l'appariement et l'annulation se font depuis la matrice du tableau de
+/// bord (tap sur une cellule, `toggleMatched`).
 class TeamManagementMatchedPanel extends StatelessWidget {
   final TeamManagementController controller;
   final VoidCallback onStateChanged;
@@ -27,21 +27,6 @@ class TeamManagementMatchedPanel extends StatelessWidget {
     required this.controller,
     required this.onStateChanged,
   });
-
-  Joueur? _findPairedMember(
-    List<Matched> matched,
-    String teamMetaId,
-    List<Map<String, dynamic>> members,
-  ) {
-    for (final pairing in matched) {
-      if (pairing.teamMetaId != teamMetaId) continue;
-      for (final member in members) {
-        final Joueur player = member['joueur'];
-        if (player.id == pairing.joueurId) return player;
-      }
-    }
-    return null;
-  }
 
   // Déclenche le chargement paresseux des adversaires, puis notifie
   // l'écran du changement d'état.
@@ -58,118 +43,40 @@ class TeamManagementMatchedPanel extends StatelessWidget {
     }
   }
 
-  Future<void> _handlePairingTap(
-    BuildContext context,
-    Team opponentTeam,
-    TeamMeta opponent,
-  ) async {
-    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-    final List<Map<String, dynamic>> members = controller.members;
-    final List<Matched> currentMatched =
-        controller.matchedByOpponentTeamId[opponentTeam.id] ?? [];
-
-    final Set<String> pairedPlayerIds =
-        currentMatched.map((pairing) => pairing.joueurId).toSet();
-
-    final String opponentLabel = opponent.nomJo.isNotEmpty
-        ? opponent.nomJo
-        : "Adversaire";
-
-    final Joueur? selectedPlayer = await showDialog<Joueur>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text("Apparier à : $opponentLabel"),
-        content: SizedBox(
-          width: 320,
-          child: members.isEmpty
-              ? const Text("Aucun membre dans l'équipe.")
-              : ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: members.length,
-                  itemBuilder: (context, index) {
-                    final member = members[index];
-                    final Joueur player = member['joueur'];
-                    final isAccepted = member['statut'] == 'accepted';
-                    final isAlreadyPaired =
-                        pairedPlayerIds.contains(player.id);
-                    final isCurrentlyAssigned = currentMatched.any(
-                      (pairing) =>
-                          pairing.joueurId == player.id &&
-                          pairing.teamMetaId == opponent.id,
-                    );
-
-                    if (!isAccepted) {
-                      return ListTile(
-                        title: Text(player.nom),
-                        subtitle: const Text("Invitation en attente"),
-                        enabled: false,
-                      );
-                    }
-
-                    return ListTile(
-                      leading: Icon(
-                        isCurrentlyAssigned
-                            ? Icons.radio_button_checked
-                            : Icons.radio_button_off,
-                        color: isCurrentlyAssigned
-                            ? Colors.green
-                            : Colors.grey,
-                      ),
-                      title: Text(player.nom),
-                      subtitle: isAlreadyPaired && !isCurrentlyAssigned
-                          ? const Text(
-                              "Déjà apparié ailleurs",
-                              style: TextStyle(color: Colors.orange),
-                            )
-                          : null,
-                      onTap: isAlreadyPaired && !isCurrentlyAssigned
-                          ? null
-                          : () => Navigator.of(dialogContext).pop(player),
-                    );
-                  },
-                ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text("Fermer"),
-          ),
-        ],
-      ),
-    );
-
-    if (selectedPlayer == null) return;
-
-    final bool success = await controller.toggleMatched(
-      opponentTeam,
-      selectedPlayer,
-      opponent,
-    );
-
-    if (!context.mounted) return;
-
-    if (success) {
-      onStateChanged();
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(
-            "Appariement : ${selectedPlayer.nom} → $opponentLabel",
-          ),
-          backgroundColor: Colors.green,
-          duration: snackBarDisplayDuration,
-        ),
-      );
-    } else {
-      messenger.showSnackBar(
-        SnackBar(
-          content: const Text(
-            "Appariement impossible : joueur ou liste déjà engagé.",
-          ),
-          backgroundColor: Colors.redAccent,
-          duration: snackBarDisplayDuration,
-        ),
-      );
+  // Un joueur peut être apparié avec un adversaire par équipe adverse
+  // (index unique PB par (team, adversaire_team, joueur)) : retourne toutes
+  // les paires (joueur de l'équipe, équipe adverse, adversaire apparié),
+  // dans l'ordre de l'effectif.
+  List<({Joueur joueur, Team team, TeamMeta meta})> _buildPairedEntries() {
+    final List<({Joueur joueur, Team team, TeamMeta meta})> entries = [];
+    for (final member in controller.members) {
+      final Joueur player = member['joueur'];
+      for (final Team opponentTeam in controller.opponentTeams) {
+        final List<Matched> matched =
+            controller.matchedByOpponentTeamId[opponentTeam.id] ?? [];
+        for (final pairing in matched) {
+          if (pairing.joueurId != player.id) continue;
+          final List<TeamMeta> opponents =
+              controller.opponentsByOpponentTeamId[opponentTeam.id] ?? [];
+          for (final TeamMeta opponent in opponents) {
+            if (opponent.id == pairing.teamMetaId) {
+              entries.add((joueur: player, team: opponentTeam, meta: opponent));
+            }
+          }
+        }
+      }
     }
+    return entries;
+  }
+
+  // Libellé de l'adversaire apparié : pseudo, liste d'armée (si renseignée)
+  // et équipe adverse.
+  String _formatOpponent(Team opponentTeam, TeamMeta opponent) {
+    final String nom =
+        opponent.nomJo.isNotEmpty ? opponent.nomJo : "Adversaire";
+    final String liste =
+        opponent.listeJo.isNotEmpty ? " — ${opponent.listeJo}" : "";
+    return "$nom$liste (${opponentTeam.nom})";
   }
 
   // Carte affichée tant que les adversaires ne sont pas chargés :
@@ -186,10 +93,10 @@ class TeamManagementMatchedPanel extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: const Icon(Icons.link),
-        title: const Text("Afficher les appariements à effectuer"),
+        title: const Text("Afficher les appariements"),
         subtitle: const Text(
-          "Charge les équipes adverses au besoin ; ne liste que les "
-          "joueurs non appariés.",
+          "Charge les équipes adverses au besoin ; affiche les appariements "
+          "de vos joueurs.",
         ),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => _handleLoadOpponentsTap(context),
@@ -197,112 +104,39 @@ class TeamManagementMatchedPanel extends StatelessWidget {
     );
   }
 
-  // Une fois les données chargées : une carte par équipe adverse
-  // comportant au moins un joueur non apparié (point 6.1 MEMO —
-  // l'ensemble des équipes et adversaires n'est plus affiché). État
-  // vide si tous les joueurs adverses sont déjà appariés.
-  List<Widget> _buildPendingPairingCards(BuildContext context) {
-    final List<Team> opponentTeams = controller.opponentTeams;
+  // Une fois les données chargées : liste des joueurs de l'équipe qui sont
+  // appariés, avec l'adversaire correspondant (point 6.1 MEMO). Rien n'est
+  // affiché s'il n'y a aucun appariement.
+  List<Widget> _buildPairedPlayerCards(BuildContext context) {
+    final List<({Joueur joueur, Team team, TeamMeta meta})> entries =
+        _buildPairedEntries();
 
-    if (opponentTeams.isEmpty) {
-      return const [
-        Card(
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              "Aucune équipe adverse avec des joueurs enregistrés.",
-              style: TextStyle(color: Colors.grey),
-            ),
-          ),
-        ),
-      ];
+    if (entries.isEmpty) {
+      return const [];
     }
 
-    final List<Widget> cards = [];
-    for (final Team opponentTeam in opponentTeams) {
-      final List<TeamMeta> opponents =
-          controller.opponentsByOpponentTeamId[opponentTeam.id] ?? [];
-      final List<Matched> matched =
-          controller.matchedByOpponentTeamId[opponentTeam.id] ?? [];
-      final List<TeamMeta> pendingOpponents = opponents
-          .where(
-            (opponent) =>
-                _findPairedMember(matched, opponent.id, controller.members) ==
-                null,
-          )
-          .toList();
-      if (pendingOpponents.isEmpty) continue;
-
-      cards.add(
-        Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
-                child: Text(
-                  "Adversaire : ${opponentTeam.nom} — "
-                  "${pendingOpponents.length} joueur(s) non apparié(s)",
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+    return [
+      Card(
+        child: Column(
+          children: [
+            for (final entry in entries)
+              ListTile(
+                leading: const CircleAvatar(
+                  child: Icon(Icons.person, size: 20),
+                ),
+                title: Text(
+                  entry.joueur.nom,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                subtitle: Text(
+                  _formatOpponent(entry.team, entry.meta),
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ),
-              for (final TeamMeta opponent in pendingOpponents)
-                ListTile(
-                  leading: const CircleAvatar(
-                    child: Icon(Icons.person, size: 20),
-                  ),
-                  title: Text(
-                    opponent.nomJo.isNotEmpty ? opponent.nomJo : "Adversaire",
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  subtitle: opponent.listeJo.isNotEmpty
-                      ? Text(
-                          "Liste : ${opponent.listeJo}",
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
-                        )
-                      : null,
-                  trailing: controller.isCaptain()
-                      ? IconButton(
-                          icon: const Icon(Icons.link),
-                          tooltip: "Apparier",
-                          onPressed: () => _handlePairingTap(
-                            context,
-                            opponentTeam,
-                            opponent,
-                          ),
-                        )
-                      : null,
-                ),
-            ],
-          ),
+          ],
         ),
-      );
-    }
-
-    if (cards.isEmpty) {
-      return const [
-        Card(
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Icon(Icons.check_circle, color: Colors.green),
-                SizedBox(width: 12),
-                Text(
-                  "Aucun appariement à effectuer.",
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ];
-    }
-    return cards;
+      ),
+    ];
   }
 
   @override
@@ -318,7 +152,7 @@ class TeamManagementMatchedPanel extends StatelessWidget {
               ?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        if (controller.opponentsLoaded) ..._buildPendingPairingCards(context)
+        if (controller.opponentsLoaded) ..._buildPairedPlayerCards(context)
         else _buildLoadCard(context),
       ],
     );

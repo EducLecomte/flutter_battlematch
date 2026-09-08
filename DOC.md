@@ -465,17 +465,19 @@ tool/
     `ProfileTeamsSection` affiche les équipes groupées par tournoi. M13.10 :
      `TeamManagementController.loadOpponentsForSelectedTeam` charge
      adversaires/appariements (M16 : par équipe adverse, plus de rencontres) ;
-      `TeamManagementMatchedPanel` affiche les équipes adverses avec
-       dialog d'appariement membre ↔ liste via `toggleMatched`. M23 :
-       chargement paresseux des adversaires (point 6 MEMO) — le panneau
-       « Appariements » ne déclenche les requêtes qu'au tap « Afficher les
-       appariements à effectuer », une fois par sélection ; `resetOpponents()`
-       au changement d'équipe, résultat périmé ignoré si la sélection change
-       pendant le chargement. M24 (point 6.1 MEMO) : le panneau ne liste que
-       les adversaires **non appariés** (une carte par équipe adverse ayant au
-       moins un joueur sans appariement + compteur d'attentes, état vide si
-       tout est apparié) ; l'annulation d'un appariement se fait depuis la
-       matrice du dashboard. M25 (point 7 MEMO) : la zone de détail est
+       `TeamManagementMatchedPanel` affiche les appariements de l'équipe.
+        M23 : chargement paresseux des adversaires (point 6 MEMO) — le panneau
+        « Appariements » ne déclenche les requêtes qu'au tap « Afficher les
+        appariements », une fois par sélection ; `resetOpponents()`
+        au changement d'équipe, résultat périmé ignoré si la sélection change
+        pendant le chargement. M26 (point 6.1 MEMO, correction de M24) : le
+        panneau liste les **joueurs de l'équipe qui sont appariés**, avec
+        l'adversaire correspondant (pseudo, liste d'armée, équipe adverse) —
+        un joueur apparaît une fois par équipe adverse ; un joueur sans
+        appariement n'apparaît pas et, sans aucun appariement, rien n'est
+        affiché. Le panneau est en lecture seule : l'appariement et l'annulation
+        se font depuis la matrice du dashboard (`toggleMatched`).
+        M25 (point 7 MEMO) : la zone de détail est
        enveloppée dans un `SingleChildScrollView` (colonne `mainAxisSize.min`)
        et les listes membres/invitations sont en `shrinkWrap` — plus de
        RenderFlex overflow vertical sur écran court. M14 :

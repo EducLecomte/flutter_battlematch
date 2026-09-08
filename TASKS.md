@@ -524,6 +524,13 @@ team_meta, estims, matched.
 - [x] M25.5 Test de régression « MEMO 7 » : viewport 900×350, pas d'exception au rendu, `pixels` du scroll de page augmente après drag
 - [x] M25.6 Validation : `flutter analyze` sans problème, `flutter test` 47/47, `flutter build web` OK ; points 6.1 et 7 RESOLU dans MEMO.md
 
+### M26 — Point 6.1 MEMO (2026-09-08) : correction d'interprétation — joueurs de l'équipe appariés et leur adversaire
+- [x] M26.1 Clarification utilisateur : le panneau ne liste PAS les adversaires à appareiller, mais les **joueurs de l'équipe** qui sont appariés, avec l'adversaire correspondant ; si un joueur n'a pas d'adversaire apparié, rien ne s'affiche pour lui ; si aucun appariement, rien n'est affiché (M24 remplacé)
+- [x] M26.2 `TeamManagementMatchedPanel` réécrit : `_buildPairedEntries` parcourt l'effectif et résout chaque `Matched` (`joueurId`) → `TeamMeta` + équipe adverse ; un joueur apparaît une fois par équipe adverse (index unique PB par trio) ; libellé adversaire « Pseudo — Liste (Équipe) » (liste omise si vide) ; joueur non apparié masqué, aucun appariement → aucune carte ; panneau en lecture seule (dialog d'appariement et `_findPairedMember` supprimés ; l'appariement/annulation reste dans la matrice du dashboard via `toggleMatched`)
+- [x] M26.3 Carte de chargement renommée « Afficher les appariements » (sous-titre : charge les équipes adverses au besoin, affiche les appariements de vos joueurs)
+- [x] M26.4 Tests `test/team_management_detail_panel_test.dart` réécrits (groupe « MEMO 6.1 », 3 états) : appariement partiel (seul Membre 2 affiché avec « Pseudo 2 (Adversaire 1) », capitaine masqué), tous appariés (capitaine = 2 entrées, une par équipe adverse), aucun appariement (aucune Card ni message dans le panneau)
+- [x] M26.5 Validation : `flutter analyze` sans problème, `flutter test` 48/48, `flutter build web` OK ; point 6.1 réécrit dans MEMO.md, `DOC.md` à jour, mémoire RAG corrigée
+
     ## Journal erreurs/découvertes
 [Date | Problème | Cause racine | Règle préventive]
 - 2026-08-21 | Code jamais compilé | pubspec sans supabase_flutter |
