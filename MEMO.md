@@ -26,7 +26,7 @@
 - Résolu : l'affichage « Lien: <newRecruitURL> » a été retiré de `TournoiCard` ; le champ `lien_nr` reste obligatoire dans les formulaires de création/édition d'un tournoi.
 
 ## 4.3
-- retirer le champs en BDD concernant les URL de tournoi
+- retirer le champs en BDD concernant les URL de tournoi (ainsi que toute reference dans le code ( lorsd e la création des tournois par exemple))
 
 ## 5 - ajout d'adversaier inutile
 - on peut retirer ligne 91-98 de @team_dashboard_screen. Il n'est pas utile d'ajouter un joueur adverse (fait via l'import automatiquement)
