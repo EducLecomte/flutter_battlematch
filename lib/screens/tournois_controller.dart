@@ -16,6 +16,9 @@ class TournoiController {
   // Liste des tournois chargés
   List<Tournoi> tournois = [];
 
+  // Taille d'équipe (nb de joueurs importés) par tournoi, pour l'affichage.
+  final Map<String, int> tailleEquipeParTournoi = {};
+
   // Profil de l'utilisateur courant (droits admin inclus)
   Joueur? profilJoueurCourant;
 
@@ -38,6 +41,7 @@ class TournoiController {
       profilJoueurCourant = await _pocketbaseService.getCurrentJoueurProfile();
       final listeTournois = await _pocketbaseService.getTournois();
       tournois = listeTournois;
+      await _chargerTaillesEquipes();
       return null;
     } catch (loadError) {
       return "Erreur de chargement : ${loadError.toString()}";
@@ -45,6 +49,22 @@ class TournoiController {
       isLoading = false;
       onStateChanged();
     }
+  }
+
+  // Charge la taille d'équipe de chaque tournoi importé (nombre de joueurs
+  // importés = lignes team_meta). Les tournois non importés n'ont pas de
+  // taille affichable.
+  Future<void> _chargerTaillesEquipes() async {
+    tailleEquipeParTournoi.clear();
+    final List<Tournoi> tournoisImportes = tournois
+        .where((tournoi) => tournoi.importEffectue)
+        .toList();
+    await Future.wait(
+      tournoisImportes.map((tournoi) async {
+        tailleEquipeParTournoi[tournoi.id] =
+            await _pocketbaseService.getTailleEquipeTournoi(tournoi.id);
+      }),
+    );
   }
 
   // Crée un nouveau tournoi à partir des champs du formulaire.

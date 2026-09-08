@@ -39,6 +39,16 @@ class PocketbaseDashboardAdversairesService {
     }
   }
 
+  /// Nombre de joueurs importés dans la méta d'une équipe : c'est la taille
+  /// d'équipe du tournoi (une ligne team_meta = un joueur importé).
+  Future<int> compterTeamMeta(String teamId) async {
+    final List<RecordModel> records =
+        await _holder.clientPocketBase
+            .collection(collectionNameTeamMeta)
+            .getFullList(filter: _filtreParEquipe(teamId));
+    return records.length;
+  }
+
   /// Flux temps réel de la méta (joueurs + armées + listes) d'une équipe.
   Stream<List<TeamMeta>> streamTeamMeta(String teamId) {
     return _holder

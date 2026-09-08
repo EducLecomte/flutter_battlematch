@@ -90,6 +90,29 @@ class PocketbaseTeamMembresService {
     return await getTeamMembreRecord(teamId, joueurId) != null;
   }
 
+  /// Rôle courant d'un membre (ou null s'il n'appartient pas à l'équipe).
+  Future<String?> getRoleMembre(String teamId, String joueurId) async {
+    final RecordModel? recordMembre =
+        await getTeamMembreRecord(teamId, joueurId);
+    return recordMembre?.get<String>('role');
+  }
+
+  /// Nombre de membres « joueurs » de l'équipe (capitaine ou joueur, statut
+  /// accepté ou en attente). Le coach n'est pas compté. C'est cet effectif qui
+  /// est comparé à la taille d'équipe (nombre de joueurs importés, team_meta)
+  /// pour interdire à une équipe de dépasser la taille du tournoi.
+  Future<int> compterJoueursEquipe(String teamId) async {
+    final List<RecordModel> records =
+        await _holder.clientPocketBase
+            .collection(collectionNameTeamMembres)
+            .getFullList(
+              filter:
+                  'team_id = "${_holder.echapperFiltrePocketBase(teamId)}" '
+                  '&& role != "$roleCoach"',
+            );
+    return records.length;
+  }
+
   /// Associe la méta d'un joueur à un membre (ou la dissocie si `teamMetaId`
   /// est null). Le lien est optionnel : un coach ou un membre sans méta
   /// laisse ce champ vide.

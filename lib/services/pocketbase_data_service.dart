@@ -61,6 +61,11 @@ class PocketbaseDataService {
   static bool estRouleJoueur(String role) =>
       PocketbaseTeamMembresService.estRouleJoueur(role);
 
+  /// Indique si le passage de [roleActuel] à [nouveauRole] ajoute un membre
+  /// « joueur » à l'effectif (coach → capitaine ou joueur).
+  static bool transitionAjouteJoueur(String roleActuel, String nouveauRole) =>
+      roleActuel == roleCoach && estRouleJoueur(nouveauRole);
+
   Future<void> ensureInitialized() =>
       PocketbaseClientHolder.instance.ensureInitialized();
 
@@ -94,6 +99,10 @@ class PocketbaseDataService {
   Future<List<Map<String, dynamic>>> getTeamMembres(String teamId) =>
       _serviceTeamMembres.getTeamMembres(teamId);
 
+  /// Nombre de membres « joueurs » (capitaine ou joueur) d'une équipe.
+  Future<int> compterJoueursEquipe(String teamId) =>
+      _serviceTeamMembres.compterJoueursEquipe(teamId);
+
   Future<void> mettreAJourTeamMetaMembre(
     String teamId,
     String joueurId,
@@ -104,18 +113,32 @@ class PocketbaseDataService {
     teamMetaId,
   );
 
-  /// Met à jour le rôle d'un membre (ex. joueur ↔ coach).
+  /// Met à jour le rôle d'un membre (ex. joueur ↔ coach). Une transition qui
+  /// ajoute un membre « joueur » (coach → capitaine/joueur) est bloquée si
+  /// l'équipe a déjà atteint la taille du tournoi.
   Future<void> mettreAJourRoleMembre(
     String teamId,
     String joueurId,
     String role,
-  ) => _serviceTeamMembres.mettreAJourRoleMembre(teamId, joueurId, role);
+  ) async {
+    final String? roleActuel =
+        await _serviceTeamMembres.getRoleMembre(teamId, joueurId);
+    if (roleActuel == null) {
+      throw Exception("Aucune appartenance trouvée pour ce joueur.");
+    }
+    if (transitionAjouteJoueur(roleActuel, role)) {
+      await _verifierCapaciteAjoutJoueur(teamId);
+    }
+    await _serviceTeamMembres.mettreAJourRoleMembre(teamId, joueurId, role);
+  }
 
   Future<List<Map<String, dynamic>>> getPendingInvitations(String userId) =>
       _serviceTeamInvitations.getPendingInvitations(userId);
 
-  Future<void> inviteJoueurToTeam(String teamId, String joueurId) =>
-      _serviceTeamInvitations.inviteJoueurToTeam(teamId, joueurId);
+  Future<void> inviteJoueurToTeam(String teamId, String joueurId) async {
+    await _verifierCapaciteAjoutJoueur(teamId);
+    await _serviceTeamInvitations.inviteJoueurToTeam(teamId, joueurId);
+  }
 
   Future<void> acceptTeamInvite(String teamId, String joueurId) =>
       _serviceTeamInvitations.acceptTeamInvite(teamId, joueurId);
@@ -141,19 +164,60 @@ class PocketbaseDataService {
   Future<List<Team>> getTeamsForTournoi(String tournoiId) =>
       _serviceTeams.getTeamsForTournoi(tournoiId);
 
+  /// Taille d'équipe d'un tournoi : nombre de joueurs importés (lignes
+  /// team_meta) par équipe. Les équipes d'un tournoi ayant la même taille, la
+  /// plus grande est retenue. Retourne 0 si aucune équipe ou aucun joueur
+  /// n'est importé.
+  Future<int> getTailleEquipeTournoi(String tournoiId) async {
+    final List<Team> equipes =
+        await _serviceTeams.getTeamsForTournoi(tournoiId);
+    if (equipes.isEmpty) return 0;
+    final List<int> tailles = await Future.wait(
+      equipes.map(
+        (equipe) => _serviceDashboardAdversaires.compterTeamMeta(equipe.id),
+      ),
+    );
+    int tailleMax = 0;
+    for (final int taille in tailles) {
+      if (taille > tailleMax) tailleMax = taille;
+    }
+    return tailleMax;
+  }
+
+  /// Vérifie qu'ajouter un membre « joueur » ne fait pas dépasser la taille
+  /// d'équipe (nombre de joueurs importés, team_meta) et lève une exception
+  /// sinon. Sans méta importée (taille inconnue), aucune restriction.
+  Future<void> _verifierCapaciteAjoutJoueur(String teamId) async {
+    final int tailleEquipe =
+        await _serviceDashboardAdversaires.compterTeamMeta(teamId);
+    if (tailleEquipe == 0) return; // taille inconnue : pas de restriction
+    final int joueursActuels =
+        await _serviceTeamMembres.compterJoueursEquipe(teamId);
+    if (joueursActuels >= tailleEquipe) {
+      throw Exception(
+        "L'équipe est déjà complète ($joueursActuels/$tailleEquipe joueurs).",
+      );
+    }
+  }
+
   Future<Team> createTeamForTournoi(String tournoiId, String nomEquipe) =>
       _serviceTeams.createTeamForTournoi(tournoiId, nomEquipe);
 
   Future<Team> updateTeamMotDePasse(String teamId, String motDePasse) =>
       _serviceTeams.updateTeamMotDePasse(teamId, motDePasse);
 
-  Future<Team> reclamerEquipeEnCapitaine(String teamId) =>
-      _serviceTeamAccess.reclamerEquipeEnCapitaine(teamId);
+  Future<Team> reclamerEquipeEnCapitaine(String teamId) async {
+    await _verifierCapaciteAjoutJoueur(teamId);
+    return _serviceTeamAccess.reclamerEquipeEnCapitaine(teamId);
+  }
 
   Future<Team> rejoindreEquipeAvecMotDePasse(
     String teamId,
     String motDePasse,
-  ) => _serviceTeamAccess.rejoindreEquipeAvecMotDePasse(teamId, motDePasse);
+  ) async {
+    await _verifierCapaciteAjoutJoueur(teamId);
+    return _serviceTeamAccess.rejoindreEquipeAvecMotDePasse(teamId, motDePasse);
+  }
 
   Future<Team> nommerNouveauCapitaine(
     String teamId,

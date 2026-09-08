@@ -470,8 +470,34 @@ team_meta, estims, matched.
       (`teams_screen_invite_player_dialog.dart`, recherche + invitation)
 - [x] M19.7 Validation : `flutter analyze` 0 problème, `flutter test` 35/35,
       `flutter build web` OK
-- [x] M19.8 Docs : points 1 et 2 RESOLU dans `MEMO.md`, `TASKS.md`/`DOC.md`
-      à jour, mémoire RAG
+ - [x] M19.8 Docs : points 1 et 2 RESOLU dans `MEMO.md`, `TASKS.md`/`DOC.md`
+       à jour, mémoire RAG
+
+### M20 — Point 4 MEMO : taille d'équipe par tournoi + plafond de joueurs
+- [x] M20.1 Services : `PocketbaseTeamMembresService.compterJoueursEquipe(teamId)`
+      (effectif « joueurs » = capitaine + joueur, `role != coach`, accepté ou
+      en attente) et `PocketbaseDashboardAdversairesService.compterTeamMeta(teamId)`
+      (nb de joueurs importés = taille d'équipe)
+- [x] M20.2 Façade `PocketbaseDataService` : `getTailleEquipeTournoi(tournoiId)`
+      (max des comptes `team_meta` des équipes du tournoi), garde privée
+      `_verifierCapaciteAjoutJoueur(teamId)` (lève une exception si l'équipe
+      atteint la taille ; aucune restriction sans `team_meta`) ; garde appliquée
+      à `inviteJoueurToTeam`, `reclamerEquipeEnCapitaine` et
+      `rejoindreEquipeAvecMotDePasse`
+- [x] M20.3 Écran tournois : `TournoiController.tailleEquipeParTournoi` +
+      `_chargerTaillesEquipes()` (tournois `importEffectue` uniquement) après
+      `loadTournois` ; `TournoiListBody`/`TournoiCard` affichent
+      « Taille d'équipe : X joueurs » quand > 0 ; câblage `TournoisScreen`
+- [x] M20.4 Validation : `flutter analyze` 0 problème, `flutter test` 35/35,
+      `flutter build web` OK
+- [x] M20.5 Docs : point 4 RESOLU dans `MEMO.md`, `DOC.md` à jour, mémoire RAG
+
+### M21 — Points 4.1 et 4.2 MEMO (2026-09-08) : plafond coach→joueur + retrait du lien New Recruit
+- [x] M21.1 `PocketbaseTeamMembresService.getRoleMembre` + helper pur `PocketbaseDataService.transitionAjouteJoueur` ; `mettreAJourRoleMembre` bloque `coach → capitaine/joueur` si l'équipe a atteint la taille du tournoi
+- [x] M21.2 `TeamManagementTeamActions.changeMemberRole` appelle `onStateChanged` en cas d'échec pour resynchroniser le dropdown de rôle
+- [x] M21.3 Tests `test/team_member_role_test.dart` (transitions de rôle + widget tests du panneau « Membres de l'équipe »)
+- [x] M21.4 Complément du point 4.2 : suppression de l'affichage « Lien: <newRecruitURL> » dans `TournoiCard` (le champ `lien_nr` reste présent dans les formulaires)
+- [x] M21.5 Validation : `flutter analyze` sans problème, `flutter test` 44/44 ; points 4.1 et 4.2 RESOLU dans MEMO.md
 
     ## Journal erreurs/découvertes
 [Date | Problème | Cause racine | Règle préventive]

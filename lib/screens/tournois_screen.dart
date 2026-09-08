@@ -159,6 +159,7 @@ class _TournoisScreenState extends RefreshableScreenState<TournoisScreen> {
         isLoading: _controller.isLoading,
         tournois: _controller.tournois,
         estAdministrateur: _controller.estAdministrateur,
+        tailleEquipeParTournoi: _controller.tailleEquipeParTournoi,
         onDeleteTournoi: (tournoiId) => _runTournoiOperation(
           () => _controller.deleteTournoi(tournoiId),
           "Tournoi supprimé.",

@@ -1,8 +1,7 @@
 // ===========================================================================
 // Carte d'un Tournoi (tournoi_card.dart)
-// Affiche le nom et le lien New Recruit d'un tournoi, avec actions
-// d'ouverture, d'import des équipes (admin), de modification (admin)
-// et de suppression (admin).
+// Affiche le nom d'un tournoi, avec actions d'ouverture, d'import des
+// équipes (admin), de modification (admin) et de suppression (admin).
 // ===========================================================================
 
 import 'package:flutter/material.dart';
@@ -12,6 +11,7 @@ import '../../models/models.dart';
 class TournoiCard extends StatelessWidget {
   final Tournoi tournoi;
   final bool estAdministrateur;
+  final int tailleEquipe;
   final ValueChanged<String>? onDeleteTournoi;
   final VoidCallback? onOpenTournoi;
   final VoidCallback? onImportTeams;
@@ -21,6 +21,7 @@ class TournoiCard extends StatelessWidget {
     super.key,
     required this.tournoi,
     required this.estAdministrateur,
+    this.tailleEquipe = 0,
     this.onDeleteTournoi,
     this.onOpenTournoi,
     this.onImportTeams,
@@ -60,7 +61,6 @@ class TournoiCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String lienNewRecruit = tournoi.lienNr;
     final bool importRequis = !tournoi.importEffectue;
 
     return Card(
@@ -76,12 +76,11 @@ class TournoiCard extends StatelessWidget {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Lien: $lienNewRecruit",
-              style: const TextStyle(color: Colors.blueAccent),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+            if (tailleEquipe > 0)
+              Text(
+                "Taille d'équipe : $tailleEquipe joueur${tailleEquipe == 1 ? '' : 's'}",
+                style: const TextStyle(color: Colors.green, fontSize: 12),
+              ),
             if (importRequis)
               const Padding(
                 padding: EdgeInsets.only(top: 4),

@@ -1,5 +1,21 @@
 # DOC.md — Cartographie technique MetaWar
 
+*[2026-09-06] M20 — Point 4 MEMO : taille d'équipe par tournoi + plafond de
+joueurs (RESOLU). La taille d'équipe = nombre de joueurs importés (nb de
+lignes `team_meta` de l'équipe). Affichage : `TournoiController`
+(`tailleEquipeParTournoi` + `_chargerTaillesEquipes()`, tournois
+`importEffectue` uniquement, après `loadTournois`) → `TournoiListBody` →
+`TournoiCard` (param `tailleEquipe`, affiche « Taille d'équipe : X joueurs »
+si > 0) ; taille d'un tournoi = max des comptes `team_meta` de ses équipes
+(`getTailleEquipeTournoi`). Plafond : garde `_verifierCapaciteAjoutJoueur`
+(lève « L'équipe est déjà complète (X/Y joueurs). ») appliquée dans la façade
+`PocketbaseDataService` avant `inviteJoueurToTeam`, `reclamerEquipeEnCapitaine`
+et `rejoindreEquipeAvecMotDePasse` ; effectif « joueurs » =
+`compterJoueursEquipe` (rôles `captain`/`player`, i.e. `role != coach` — le
+coach ne compte pas, les invitations pending comptent) ; aucune restriction si
+aucun `team_meta`. Aucune modification de schéma PocketBase. Validation :
+`flutter analyze` 0 problème, `flutter test` 35/35, `flutter build web` OK.
+Précédent :
 *[2026-09-05] M19 — Points 1 et 2 MEMO : invitation capitaine + rôle
 joueur/coach (RESOLU). **Point 1** : bouton « Inviter un joueur »
 (`person_add_alt_1`) dans l'AppBar de `TeamsScreen`, visible si l'utilisateur
@@ -236,7 +252,7 @@ lib/
      tournois_screen.dart           # Liste des tournois + FAB ajout + actions
                                     # édition/suppression/import (précédent,
                                     # 163 lignes)
-     tournois_controller.dart       # load/add/update/delete tournoi
+      tournois_controller.dart       # load/add/update/delete tournoi + tailles d'équipes importées (M20)
      tournoi_team_import_actions.dart # showTournoiTeamImportDialog : armées de
                                     # référence, dialog d'import, snackbar résumé
       teams_screen.dart              # Équipe active + liste des équipes adverses
@@ -263,7 +279,7 @@ lib/
   screens/widgets/                 # Composants UI atomiques (1 fichier = 1 rôle)
     login_*                        # brand_header / form_fields / submit_actions
      tournoi_card.dart              # Carte tournoi (suppression confirmée
-                                    # interne, actions admin édition/import)
+                                     # interne, actions admin édition/import, taille d'équipe si > 0 (M20))
      tournoi_add_dialog.dart        # Dialog ajout tournoi
      tournoi_edit_dialog.dart       # Dialog modification tournoi (StatefulWidget,
                                     # contrôleurs libérés dans dispose)
@@ -308,7 +324,7 @@ lib/
   services/
       pocketbase_data_service.dart   # Façade singleton : surface API historique
                                      # (ex-SupabaseService) → délégation totale
-                                      # aux sous-services ci-dessous (~242 lg)
+                                       # aux sous-services ci-dessous (~242 lg) ; garde capacité équipe (M20)
     pocketbase/
       pocketbase_client_holder.dart    # Client PB + AsyncAuthStore + yield initial
                                        # du stream d'auth + échappement filtres
@@ -318,7 +334,7 @@ lib/
                                          # création pour un tournoi, mot de
                                          # passe, capitaine
        pocketbase_team_membres_service.dart  # Membres : inscription accepté,
-                                        # join mot de passe, listing, rôles
+                                         # join mot de passe, listing, rôles, compterJoueursEquipe (M20)
        pocketbase_team_invitations_service.dart # Invitations : pending, invite,
                                         # accept, decline/remove
        pocketbase_team_access_service.dart # Claim capitaine, join mot de passe,
@@ -331,7 +347,7 @@ lib/
                                                # du rôle `admin`, suppression
                                                # du compte courant (équipes
                                                # capitaine + tournois créés)
-      pocketbase_dashboard_adversaires_service.dart # CRUD + stream team_meta (par équipe, M18)
+       pocketbase_dashboard_adversaires_service.dart # CRUD + stream team_meta (par équipe, M18) + compterTeamMeta (M20)
        pocketbase_dashboard_estims_service.dart      # upsert + stream estims
       pocketbase_dashboard_matched_service.dart     # CRUD + stream matched
      new_recruit_import_service.dart  # Parsing local New Recruit (JSON collé
@@ -461,7 +477,17 @@ tool/
     M16 : plus de `rencontres`), et
    optionnellement `armees`/`choix` avec `--purge-referentiels` ;
    `tool/pocketbase_seed_test_accounts.dart` crée ou met à jour les comptes
-   `test1` à `test4` dans `joueurs` avec des mots de passe conformes.
+    `test1` à `test4` dans `joueurs` avec des mots de passe conformes.
+ 11. **Taille d'équipe + plafond (M20)** : après `loadTournois`,
+     `TournoiController._chargerTaillesEquipes()` charge, pour chaque tournoi
+     importé, `PocketbaseDataService.getTailleEquipeTournoi` (max des comptes
+     `team_meta` des équipes du tournoi, via `compterTeamMeta`) ; `TournoiCard`
+     l'affiche si > 0. Côté plafond, la façade applique
+     `_verifierCapaciteAjoutJoueur(teamId)` avant tout ajout de membre « joueur »
+     (invitation capitaine, réclamation en capitaine, join par mot de passe) :
+     si l'effectif (`compterJoueursEquipe`, `role != coach`, pending inclus)
+     atteint la taille de l'équipe, une exception est levée et remontée par les
+     snackbars d'erreur des écrans équipes.
 
 ## Contraintes de code (voir AGENTS.md)
 

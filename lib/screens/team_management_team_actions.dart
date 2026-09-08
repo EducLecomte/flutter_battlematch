@@ -66,6 +66,7 @@ class TeamManagementTeamActions {
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     final String? errorMessage = await controller.changeMemberRole(player, role);
     if (errorMessage != null) {
+      onStateChanged();
       showErrorSnackBarUsingMessenger(
         messenger,
         "Erreur de mise à jour du rôle : $errorMessage",

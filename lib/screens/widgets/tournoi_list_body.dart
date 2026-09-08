@@ -13,6 +13,7 @@ class TournoiListBody extends StatelessWidget {
   final bool isLoading;
   final List<Tournoi> tournois;
   final bool estAdministrateur;
+  final Map<String, int> tailleEquipeParTournoi;
   final ValueChanged<String> onDeleteTournoi;
   final void Function(Tournoi tournoi) onOpenTournoi;
   final void Function(Tournoi tournoi) onImportTeams;
@@ -23,6 +24,7 @@ class TournoiListBody extends StatelessWidget {
     required this.isLoading,
     required this.tournois,
     required this.estAdministrateur,
+    this.tailleEquipeParTournoi = const {},
     required this.onDeleteTournoi,
     required this.onOpenTournoi,
     required this.onImportTeams,
@@ -53,6 +55,7 @@ class TournoiListBody extends StatelessWidget {
         return TournoiCard(
           tournoi: tournoi,
           estAdministrateur: estAdministrateur,
+          tailleEquipe: tailleEquipeParTournoi[tournoi.id] ?? 0,
           onDeleteTournoi: estAdministrateur ? onDeleteTournoi : null,
           onOpenTournoi: () => onOpenTournoi(tournoi),
           onImportTeams: estAdministrateur && !tournoi.importEffectue
