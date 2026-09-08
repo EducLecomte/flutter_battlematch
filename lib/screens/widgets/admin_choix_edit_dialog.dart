@@ -2,14 +2,17 @@
 // Dialogue de création / modification d'une appréciation
 // (admin_choix_edit_dialog.dart)
 // Les contrôleurs de texte appartiennent au State, qui les libère dans
-// dispose() ; l'aperçu de couleur se met à jour via setState ; les valeurs
-// validées sont renvoyées à [onSave] après fermeture du dialogue.
+// dispose() ; l'aperçu de couleur se met à jour via setState ; le swatch
+// de couleur ouvre le sélecteur (admin_color_picker_dialog.dart) et
+// resynchronise le champ hexadécimal ; les valeurs validées sont renvoyées
+// à [onSave] après fermeture du dialogue.
 // ===========================================================================
 
 import 'package:flutter/material.dart';
 
 import '../../models/models.dart';
 import '../../utils/hex_color_parser.dart';
+import 'admin_color_picker_dialog.dart';
 
 /// Taille de l'échantillon de couleur affiché dans le dialogue.
 const double adminCouleurSwatchTaille = 40.0;
@@ -79,6 +82,18 @@ class _ChoixEditDialogState extends State<ChoixEditDialog> {
     }
   }
 
+  Future<void> _openColorPicker(BuildContext context) async {
+    final Color? couleur = await showAdminColorPickerDialog(
+      context: context,
+      initialColor:
+          HexColorParser.parseHexadecimalColor(_couleurController.text),
+    );
+    if (couleur == null || !mounted) return;
+    setState(() {
+      _couleurController.text = HexColorParser.colorToHexString(couleur);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final Color? couleurApercu =
@@ -137,13 +152,23 @@ class _ChoixEditDialogState extends State<ChoixEditDialog> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                Container(
-                  width: adminCouleurSwatchTaille,
-                  height: adminCouleurSwatchTaille,
-                  decoration: BoxDecoration(
-                    color: couleurApercu ?? Colors.transparent,
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(6.0),
+                Tooltip(
+                  message: "Choisir la couleur",
+                  child: InkWell(
+                    onTap: () => _openColorPicker(context),
+                    child: Container(
+                      width: adminCouleurSwatchTaille,
+                      height: adminCouleurSwatchTaille,
+                      decoration: BoxDecoration(
+                        color: couleurApercu ?? Colors.transparent,
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(6.0),
+                      ),
+                      child: couleurApercu == null
+                          ? const Icon(Icons.palette,
+                              size: 20.0, color: Colors.grey)
+                          : null,
+                    ),
                   ),
                 ),
               ],

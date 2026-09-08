@@ -62,6 +62,7 @@ La correction, la compréhension de l'architecture et la vérification sont prio
 
 ### Active Knowledge & Error Log
 *Format d'entrée : Date/Contexte | Problème rencontré | Cause racine | Règle préventive*
+- 2026-09-08 / Colorpicker admin (M27) | Assertion « RenderShrinkWrappingViewport does not support returning intrinsic dimensions » dans le contenu d'un dialog d'appréciation | `AlertDialog` calcule la largeur intrinsèque de son contenu pour se dimensionner ; un viewport `shrinkWrap` (`GridView`/`ListView`) ne supporte pas les dimensions intrinsèques | Ne jamais placer un viewport shrink-wrap comme contenu direct d'un `AlertDialog` : utiliser `Wrap`, `Column`/`Row` ou un layout de hauteur fixe (borné via `ConstrainedBox` si besoin)
 
 ## 8. CONVENTIONS GIT
 - Commits atomiques : un changement logique par commit.

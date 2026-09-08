@@ -318,10 +318,15 @@ lib/
                                             # de compte (cartes profil)
     profile_delete_account_dialog.dart      # Confirmation AlertDialog
                                             # avant suppression de compte
-    admin_{armeees,choix,joueurs}_tab.dart   # Onglets admin : list + actions
-     admin_{armee,choix}_edit_dialog.dart     # Dialogues d'édition (StatefulWidget :
-                                     # le State possède et libère les contrôleurs
-                                     # dans dispose ; aperçu couleur pour les choix)
+     admin_{armeees,choix,joueurs}_tab.dart   # Onglets admin : list + actions
+      admin_{armee,choix}_edit_dialog.dart     # Dialogues d'édition (StatefulWidget :
+                                      # le State possède et libère les contrôleurs
+                                      # dans dispose ; swatch couleur cliquable
+                                      # pour les choix → sélecteur ci-contre)
+      admin_color_picker_dialog.dart           # Sélecteur de couleur (M27) : grille
+                                      # des 19 teintes Material 500 en Wrap borné,
+                                      # tap = sélection, Valider → Color (ValueKey hex
+                                      # par échantillon pour les tests)
   services/
       pocketbase_data_service.dart   # Façade singleton : surface API historique
                                      # (ex-SupabaseService) → délégation totale

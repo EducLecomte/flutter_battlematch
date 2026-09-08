@@ -47,8 +47,9 @@
 - ~~ajouter des scrollsviews, car si beaucoup d'information, il y a des dépassements~~
 - Résolu : la zone de détail de `TeamManagementScreen` est enveloppée dans un `SingleChildScrollView` (colonne `mainAxisSize.min`) — c'est la page qui défile. Les `Expanded` verticaux internes (panneaux membres et invitations) sont remplacés par des `ListView` `shrinkWrap` / widgets de hauteur naturelle ; les `Expanded` horizontaux (répartition largeur membres/invitations) et la sidebar 250 px restent inchangés. Test de régression d'overflow + scroll dans `test/team_management_detail_panel_test.dart`.
 
-## 8 - polorpicker admin
-- dans l'administration, ajouter un colorpicker lors de l'édition des appréciations
+## 8 [RESOLU] - polorpicker admin
+- ~~dans l'administration, ajouter un colorpicker lors de l'édition des appréciations~~
+- Résolu : le swatch de couleur du dialog d'appréciation (`admin_choix_edit_dialog.dart`) est cliquable et ouvre un sélecteur (`admin_color_picker_dialog.dart`) : grille des 19 teintes Material (500), tap pour sélectionner, « Valider » pour confirmer. La couleur choisie est resynchronisée dans le champ hexadécimal (`HexColorParser.colorToHexString`, format `#RRGGBB` stocké), qui reste éditable à la main ; `AdminController.saveChoix` continue de normaliser/valider la valeur. Tests : `test/hexadecimal_color_parser_test.dart` (`colorToHexString`) et `test/admin_dialog_repro_test.dart` (flux picker → champ hex → Enregistrer).
 
 ## 9 - validation login
 - ajouter une validation de formulaire pour @login_screen, avec la touche entrée

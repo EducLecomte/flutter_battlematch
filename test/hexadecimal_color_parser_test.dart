@@ -1,5 +1,6 @@
 // Tests unitaires du parsing sécurisé des couleurs hexadécimales.
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:flutter_metawar/utils/hex_color_parser.dart';
@@ -33,6 +34,15 @@ void main() {
       expect(HexColorParser.normalizeHexadecimalColor(''), isNull);
       expect(HexColorParser.normalizeHexadecimalColor('#FFF'), isNull);
       expect(HexColorParser.normalizeHexadecimalColor('#GGGGGG'), isNull);
+    });
+
+    test('convertit une couleur en #RRGGBB majuscule (alpha ignoré)', () {
+      expect(HexColorParser.colorToHexString(const Color(0xFFFBC02D)),
+          '#FBC02D');
+      expect(HexColorParser.colorToHexString(const Color(0x800A1B2C)),
+          '#0A1B2C');
+      expect(
+          HexColorParser.colorToHexString(Colors.amber.shade500), '#FFC107');
     });
   });
 }

@@ -531,6 +531,13 @@ team_meta, estims, matched.
 - [x] M26.4 Tests `test/team_management_detail_panel_test.dart` réécrits (groupe « MEMO 6.1 », 3 états) : appariement partiel (seul Membre 2 affiché avec « Pseudo 2 (Adversaire 1) », capitaine masqué), tous appariés (capitaine = 2 entrées, une par équipe adverse), aucun appariement (aucune Card ni message dans le panneau)
 - [x] M26.5 Validation : `flutter analyze` sans problème, `flutter test` 48/48, `flutter build web` OK ; point 6.1 réécrit dans MEMO.md, `DOC.md` à jour, mémoire RAG corrigée
 
+### M27 — Point 8 MEMO (2026-09-08) : colorpicker dans l'édition des appréciations
+- [x] M27.1 `HexColorParser.colorToHexString(Color)` : conversion `Color` → `#RRGGBB` majuscule (format stocké PocketBase, alpha ignoré) ; test unitaire dans `test/hexadecimal_color_parser_test.dart`
+- [x] M27.2 `admin_color_picker_dialog.dart` créé : grille de 19 teintes Material (500 des familles Material) en `Wrap` borné à 6 colonnes (un `GridView shrinkWrap` dans le contenu d'un `AlertDialog` lève une assertion sur les dimensions intrinsèques — voir journal) ; tap = sélection (bordure primaire), « Valider » renvoie la `Color`, « Annuler »/fermeture → `null` ; chaque échantillon porte une `ValueKey` hex pour les tests
+- [x] M27.3 `admin_choix_edit_dialog.dart` : le swatch d'aperçu devient cliquable (Tooltip « Choisir la couleur », icône palette quand la couleur est absente) et ouvre le sélecteur ; la couleur choisie est resynchronisée dans le champ hexadécimal, qui reste éditable à la main (validation `#RRGGBB` inchangée, normalisation dans `AdminController.saveChoix`)
+- [x] M27.4 Test widget dans `test/admin_dialog_repro_test.dart` : ouvrir le dialog → swatch → picker → sélection ambrée 500 → « Valider » → champ hex `#FFC107` → « Enregistrer »
+- [x] M27.5 Validation : `flutter analyze` sans problème, `flutter test` 50/50, `flutter build web` OK ; point 8 RESOLU dans MEMO.md, `DOC.md` à jour
+
     ## Journal erreurs/découvertes
 [Date | Problème | Cause racine | Règle préventive]
 - 2026-08-21 | Code jamais compilé | pubspec sans supabase_flutter |
@@ -638,6 +645,13 @@ team_meta, estims, matched.
     `persist = persist ?? action != null`) ; le timer d'auto-dismiss fire
     mais `ScaffoldMessengerState` respecte `persist` et ne masque pas le
     SnackBar (bug app réel, pas seulement de test) | un SnackBar qui doit
-    s'auto-fermer ne doit pas avoir d'`action` (ou passer `persist: false`
-    explicitement) ; pour diagnostiquer un SnackBar persistant en test,
-    vérifier d'abord `persist`/`action` avant d'incriminer le timing FakeAsync
+     s'auto-fermer ne doit pas avoir d'`action` (ou passer `persist: false`
+     explicitement) ; pour diagnostiquer un SnackBar persistant en test,
+     vérifier d'abord `persist`/`action` avant d'incriminer le timing FakeAsync
+- 2026-09-08 | Colorpicker M27 : « RenderShrinkWrappingViewport does not
+   support returning intrinsic dimensions » dans le contenu du dialog
+   d'appréciation | `AlertDialog` calcule la largeur intrinsèque du contenu
+   pour se dimensionner ; un viewport `shrinkWrap` (`GridView`) ne supporte
+   pas les dimensions intrinsèques | jamais de viewport shrink-wrap
+   (GridView/ListView) comme contenu direct d'un `AlertDialog` : utiliser
+   `Wrap`, `Column`/`Row` ou un layout de hauteur fixe (borné si besoin)

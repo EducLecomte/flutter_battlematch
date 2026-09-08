@@ -1,4 +1,5 @@
-// Conversion sécurisée d'une couleur hexadécimale `#RRGGBB` en `Color`.
+// Conversions sécurisées entre couleurs hexadécimales `#RRGGBB` (format
+// stocké dans PocketBase) et `Color`.
 
 import 'package:flutter/material.dart';
 
@@ -27,6 +28,14 @@ abstract final class HexColorParser {
     if (colorValue == null) {
       return null;
     }
+    return '#${colorValue.toRadixString(hexadecimalRadix).padLeft(
+        expectedHexadecimalDigitCount, '0').toUpperCase()}';
+  }
+
+  /// Convertit une couleur en chaîne `#RRGGBB` majuscule (format stocké dans
+  /// PocketBase) ; la composante alpha est ignorée.
+  static String colorToHexString(Color color) {
+    final int colorValue = 0x00FFFFFF & color.toARGB32();
     return '#${colorValue.toRadixString(hexadecimalRadix).padLeft(
         expectedHexadecimalDigitCount, '0').toUpperCase()}';
   }

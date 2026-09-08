@@ -112,6 +112,47 @@ void main() {
     }
   });
 
+  testWidgets("dialogue choix : colorpicker met à jour le champ couleur",
+      (tester) async {
+    await pumpHostPage(tester);
+
+    await tester.tap(find.text("choix"));
+    await tester.pumpAndSettle();
+    expect(find.text("Ajouter une appréciation"), findsOneWidget);
+
+    await tester.enterText(
+      find.widgetWithText(TextFormField, "Libellé (ex : Entre 8 et 12)"),
+      "Entre 8 et 12",
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, "Initiales (ex : 8-12)"),
+      "8-12",
+    );
+
+    // Ouvre le sélecteur depuis le swatch.
+    await tester.tap(find.byTooltip("Choisir la couleur"));
+    await tester.pumpAndSettle();
+    expect(find.text("Choisir une couleur"), findsOneWidget);
+
+    // Sélectionne l'ambre 500 (#FFC107) puis valide.
+    await tester.tap(find.byKey(const ValueKey<String>("#FFC107")));
+    await tester.pump();
+    await tester.tap(find.text("Valider"));
+    await tester.pumpAndSettle();
+    expect(find.text("Choisir une couleur"), findsNothing);
+
+    final Finder champCouleur = find.widgetWithText(
+        TextFormField, "Couleur hexadécimale (ex : #FBC02D)");
+    final TextEditingController controllerChampCouleur =
+        (champCouleur.evaluate().single.widget as TextFormField).controller!;
+    expect(controllerChampCouleur.text, "#FFC107");
+
+    await tester.tap(find.text("Enregistrer"));
+    await tester.pumpAndSettle();
+    expect(savedCount, 1);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets("dialogue choix : annuler puis rouvrir sans exception",
       (tester) async {
     await pumpHostPage(tester);
