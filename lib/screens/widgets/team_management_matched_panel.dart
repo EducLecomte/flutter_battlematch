@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../logic/estim_score_calculator.dart';
 import '../../models/models.dart';
 import '../../utils/error_snack_bar_presenter.dart';
+import '../../utils/hex_color_parser.dart';
 import '../team_management_controller.dart';
 
 /// Panel « Appariements » de la gestion d'équipe.
@@ -98,14 +99,13 @@ class TeamManagementMatchedPanel extends StatelessWidget {
         ? opponent.nomJo
         : "Adversaire";
     final String liste = opponent.listeJo.isNotEmpty
-        ? " — ${opponent.listeJo}"
+        ? " \n${opponent.listeJo}"
         : "";
-    return "$nom$liste (${opponentTeam.nom})";
+    return "$nom$liste ";
   }
 
-  // Carte affichée tant que les adversaires ne sont pas chargés :
-  // spinner pendant le chargement, sinon le bouton de chargement à la demande.
-  Widget _buildLoadCard(BuildContext context) {
+  // Indique l'état du chargement automatique des appariements.
+  Widget _buildLoadingCard() {
     if (controller.isLoadingOpponents) {
       return const Card(
         child: Padding(
@@ -116,14 +116,9 @@ class TeamManagementMatchedPanel extends StatelessWidget {
     }
     return Card(
       child: ListTile(
-        leading: const Icon(Icons.link),
-        title: const Text("Afficher les appariements"),
-        subtitle: const Text(
-          "Charge les équipes adverses au besoin ; affiche les appariements "
-          "de vos joueurs.",
-        ),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () => _handleLoadOpponentsTap(context),
+        leading: const Icon(Icons.error_outline),
+        title: const Text("Impossible de charger les appariements"),
+        subtitle: Text(controller.opponentsLoadError ?? "Erreur inconnue"),
       ),
     );
   }
@@ -134,28 +129,92 @@ class TeamManagementMatchedPanel extends StatelessWidget {
   ) {
     final estimationsByKey =
         controller.estimationsByOpponentTeamId[team.id] ?? const {};
-    if (estimationsByKey.isEmpty) {
-      return 'Aucune estimation';
-    }
+    final estimations = <Estim>[];
 
     double totalScore = 0;
-    int scoredCount = 0;
 
     for (final entry in group) {
       final key = '${entry.joueur.id}::${entry.meta.id}';
       final estim = estimationsByKey[key];
+      if (estim == null) continue;
+      estimations.add(estim);
       final midpoint = EstimScoreCalculator.midpointScore(estim);
       if (midpoint == null) continue;
-      scoredCount++;
       totalScore += midpoint;
     }
 
-    if (scoredCount == 0) {
-      return 'Aucune estimation validée';
+    if (estimations.isEmpty) {
+      return 'Aucune estimation';
     }
 
-    final averageScore = totalScore / scoredCount;
-    return 'Estimation: $scoredCount/${group.length} • total ${totalScore.toStringAsFixed(1)} • moyenne ${averageScore.toStringAsFixed(1)}';
+    final scoredEstimations = estimations
+        .where((estim) => EstimScoreCalculator.midpointScore(estim) != null)
+        .toList();
+    final averageScore = scoredEstimations.isEmpty
+        ? null
+        : totalScore / scoredEstimations.length;
+    final firstEstimation = estimations.first;
+    final choice = AppreciationScale.choiceById(
+      controller.choiceList,
+      firstEstimation.choixId,
+    );
+    final appreciation = choice?.short ?? AppreciationScale.unknownLabel;
+    final averageLabel = averageScore?.toStringAsFixed(1) ?? '-';
+    return '$appreciation • moyenne $averageLabel • confiance ${firstEstimation.confiance}';
+  }
+
+  Color? _estimationColor(
+    Team team,
+    List<({Joueur joueur, Team team, TeamMeta meta})> group,
+  ) {
+    final estimationsByKey =
+        controller.estimationsByOpponentTeamId[team.id] ?? const {};
+    for (final entry in group) {
+      final key = '${entry.joueur.id}::${entry.meta.id}';
+      final estimation = estimationsByKey[key];
+      final choice = AppreciationScale.choiceById(
+        controller.choiceList,
+        estimation?.choixId,
+      );
+      final color = HexColorParser.parseHexadecimalColor(
+        choice?.couleurHex ?? '',
+      );
+      if (color != null) return color;
+    }
+    return null;
+  }
+
+  IconData _estimationIcon(
+    Team team,
+    List<({Joueur joueur, Team team, TeamMeta meta})> group,
+  ) {
+    final estimationsByKey =
+        controller.estimationsByOpponentTeamId[team.id] ?? const {};
+    for (final entry in group) {
+      final key = '${entry.joueur.id}::${entry.meta.id}';
+      final estimation = estimationsByKey[key];
+      final choice = AppreciationScale.choiceById(
+        controller.choiceList,
+        estimation?.choixId,
+      );
+      switch (choice?.short) {
+        case '--':
+          return Icons.sentiment_very_dissatisfied;
+        case '-':
+          return Icons.sentiment_dissatisfied;
+        case '=-':
+          return Icons.remove_circle_outline;
+        case '=':
+          return Icons.sentiment_neutral;
+        case '=+':
+          return Icons.add_circle_outline;
+        case '+':
+          return Icons.sentiment_satisfied;
+        case '++':
+          return Icons.sentiment_very_satisfied;
+      }
+    }
+    return Icons.help_outline;
   }
 
   // Une fois les données chargées : liste des joueurs de l'équipe qui sont
@@ -188,38 +247,47 @@ class TeamManagementMatchedPanel extends StatelessWidget {
         child: Column(
           children: [
             for (final adversaireKey in orderedKeys)
-              ExpansionTile(
-                leading: const CircleAvatar(
-                  child: Icon(Icons.shield, size: 20),
-                ),
-                title: Text(
-                  grouped[adversaireKey]!.first.team.nom,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                subtitle: Text(
-                  _formatEstimationSummary(
-                    grouped[adversaireKey]!.first.team,
-                    grouped[adversaireKey]!,
-                  ),
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-                children: [
-                  for (final entry in grouped[adversaireKey]!)
-                    ListTile(
-                      dense: true,
-                      title: Text(
-                        entry.joueur.nom,
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                      subtitle: Text(
-                        _formatOpponent(entry.team, entry.meta),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
+              Builder(
+                builder: (context) {
+                  final group = grouped[adversaireKey]!;
+                  final estimationColor = _estimationColor(
+                    group.first.team,
+                    group,
+                  );
+                  return ExpansionTile(
+                    leading: CircleAvatar(
+                      backgroundColor: estimationColor ?? Colors.grey.shade300,
+                      child: Icon(
+                        _estimationIcon(group.first.team, group),
+                        size: 20,
+                        color: estimationColor == null
+                            ? Colors.grey
+                            : Colors.white,
                       ),
                     ),
-                ],
+                    title: Text(
+                      group.first.team.nom,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: Text(
+                      _formatEstimationSummary(group.first.team, group),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                    children: [
+                      for (final entry in group)
+                        ListTile(
+                          dense: true,
+                          title: Text(
+                            _formatOpponent(entry.team, entry.meta),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
               ),
           ],
         ),
@@ -230,6 +298,16 @@ class TeamManagementMatchedPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    if (!controller.opponentsLoaded &&
+        !controller.opponentsLoadRequested &&
+        !controller.isLoadingOpponents) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) {
+          _handleLoadOpponentsTap(context);
+        }
+      });
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,7 +322,7 @@ class TeamManagementMatchedPanel extends StatelessWidget {
         if (controller.opponentsLoaded)
           ..._buildPairedPlayerCards(context)
         else
-          _buildLoadCard(context),
+          _buildLoadingCard(),
       ],
     );
   }

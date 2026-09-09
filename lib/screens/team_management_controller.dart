@@ -22,6 +22,9 @@ class TeamManagementController {
   // Profil du joueur actuellement connecté
   Joueur? currentUserProfile;
 
+  // Choix d'appréciation et leurs couleurs
+  List<Choix> choiceList = [];
+
   // Résultats de la recherche de joueurs à inviter
   List<Joueur> searchResults = [];
 
@@ -48,6 +51,12 @@ class TeamManagementController {
   // Un chargement des adversaires est-il en cours ?
   bool isLoadingOpponents = false;
 
+  // Le chargement automatique a-t-il déjà été tenté ?
+  bool opponentsLoadRequested = false;
+
+  // Erreur du dernier chargement automatique, si nécessaire.
+  String? opponentsLoadError;
+
   // Chargement en cours, pour éviter les requêtes concurrentes.
   Future<String?>? _opponentsLoadInFlight;
 
@@ -60,6 +69,7 @@ class TeamManagementController {
       final profile = await _pocketbaseService.getCurrentJoueurProfile();
       if (profile != null) {
         currentUserProfile = profile;
+        choiceList = await _pocketbaseService.getChoix();
         final list = await _pocketbaseService.getTeamsForUser(profile.id);
         teams = list;
         // Charge les noms des tournois associés aux équipes
@@ -103,8 +113,13 @@ class TeamManagementController {
   // pour ne plus alourdir l'écran de gestion d'équipe).
   Future<String?> loadOpponentsForSelectedTeam() async {
     if (opponentsLoaded) return null;
+    if (opponentsLoadRequested && !isLoadingOpponents) {
+      return opponentsLoadError;
+    }
     final Team? selectedTeam = this.selectedTeam;
     if (selectedTeam == null) return null;
+    opponentsLoadRequested = true;
+    opponentsLoadError = null;
     if (selectedTeam.tournoiId.isEmpty) {
       // Équipe sans tournoi : aucune adversaire possible.
       opponentsLoaded = true;
@@ -164,6 +179,7 @@ class TeamManagementController {
       opponentsLoaded = true;
       return null;
     } catch (opponentsError) {
+      opponentsLoadError = opponentsError.toString();
       return opponentsError.toString();
     } finally {
       isLoadingOpponents = false;
@@ -178,6 +194,8 @@ class TeamManagementController {
     matchedByOpponentTeamId = {};
     estimationsByOpponentTeamId = {};
     opponentsLoaded = false;
+    opponentsLoadRequested = false;
+    opponentsLoadError = null;
     _opponentsLoadInFlight = null;
   }
 
