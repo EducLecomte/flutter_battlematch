@@ -183,6 +183,9 @@ flutter analyze           # analyse statique
 - Inscription/connexion joueurs (collection dédiée `joueurs`, session web
   persistante, mot de passe : 8 caractères minimum, une majuscule,
   un caractère spécial)
+- Tutoriel de bienvenue : affiché dans un dialog bloquant à la première
+  connexion sur l'appareil (drapeau « vu » stocké en local, par navigateur),
+  tour d'horizon des écrans principaux (MEMO 10)
 - Tournois gérés par les admins : création, import des équipes, suppression ;
   ouverture bloquée pour les non-admins si l'import des équipes n'est pas
   effectué

@@ -544,6 +544,16 @@ team_meta, estims, matched.
 - [x] M28.3 Tests `test/login_screen_test.dart` (aucun réseau) : `LoginFormFields` isolé avec callback factice (Entrée sur chacun des 3 champs → 1 soumission) ; `LoginScreen` complet (email invalide + mot de passe vide + Entrée → les deux erreurs de validation affichées, pas de spinner)
 - [x] M28.4 Validation : `flutter analyze` sans problème, `flutter test` 54/54, `flutter build web` OK ; point 9 RESOLU dans MEMO.md, `DOC.md` à jour
 
+### M29 — Point 10 MEMO (2026-09-09) : tutoriel de bienvenue à la première connexion
+- [x] M29.1 Clé locale `sharedPreferencesKeyTutorielVu` (`'metawar_tutoriel_vu'`) ajoutée à `app_config.dart` ; le drapeau « tutoriel vu » est stocké en local (par navigateur) plutôt qu'en champ PocketBase `joueurs` — pas de migration de schéma, tests sans réseau
+- [x] M29.2 `tutoriel_dialog.dart` : `TutorielDialog` (StatelessWidget) + `showTutorielDialog(BuildContext)` réutilisable (MEMO 11) ; dialog bloquant (`barrierDismissible: false`), titre « Bienvenue sur MetaWar ! », 5 `_LigneTutoriel` (Tournois, Équipes, Tableau de bord, Mode capitaine, Profil), bouton « C’est parti ! » qui `pop`
+- [x] M29.3 Structure dialog robuste : `Dialog(insetPadding 24)` → `ConstrainedBox(maxWidth 540, maxHeight = hauteur écran - 2×24)` → `Column(mainAxisSize.min)` avec contenu en `Flexible(fit: FlexFit.loose, child: SingleChildScrollView(...))` et bouton de validation en **pied fixe** (`Padding` + `Align` centerRight) — le `Dialog` ne borne pas la hauteur de son enfant : sans cette borne, le `SingleChildScrollView` devenait aussi haut que son contenu et le bouton sortait de l'écran
+- [x] M29.4 `tutoriel_gate.dart` : `TutorielGate` (StatefulWidget) ; `initState` → `addPostFrameCallback(_verifierTutoriel)` (le `Navigator` doit être prêt avant `showDialog`) ; lit le drapeau, affiche le tutoriel s'il est absent, le pose à `true` après fermeture ; `mounted` vérifié après chaque `await` ; `build` renvoie `widget.child`
+- [x] M29.5 `main.dart` : `AuthGate` authentifié retourne `const TutorielGate(child: HomeShell())` (import `screens/widgets/tutoriel_gate.dart`)
+- [x] M29.6 Tests `test/tutorial_gate_test.dart` (aucun réseau, `SharedPreferences.setMockInitialValues`) : « affiché 1re connexion puis plus jamais » (titre présent → tap `find.byType(ElevatedButton)` → titre absent + drapeau `true`) ; « non affiché quand le drapeau est posé »
+- [x] M29.7 Erreurs Flutter détectées/corrigées : (a) overflow `RenderFlex` du titre `Row` sous la police Ahem des tests → `Text` enveloppé dans `Expanded` ; (b) bouton hors écran / scroll non borné → `ConstrainedBox` + `Flexible(FlexFit.loose)` + pied fixe (cf. journal) ; (c) `BoxFit.loose` (inexistant) remplacé par `FlexFit.loose`
+- [x] M29.8 Validation : `flutter analyze` sans problème, `flutter test` 56/56, `flutter build web` OK ; point 10 RESOLU dans MEMO.md, `DOC.md` à jour
+
     ## Journal erreurs/découvertes
 [Date | Problème | Cause racine | Règle préventive]
 - 2026-08-21 | Code jamais compilé | pubspec sans supabase_flutter |
@@ -661,10 +671,20 @@ team_meta, estims, matched.
     pas les dimensions intrinsèques | jamais de viewport shrink-wrap
     (GridView/ListView) comme contenu direct d'un `AlertDialog` : utiliser
     `Wrap`, `Column`/`Row` ou un layout de hauteur fixe (borné si besoin)
- - 2026-09-09 | Entrée M28 : `onFieldSubmitted: (_) => onSubmit` (sans `()`)
-    compile sans avertissement mais la soumission n'est jamais exécutée |
-    dans une fonction fléchée, le callback sans `()` est une tear-off
-    (elle produit la fonction sans l'appeler) ; Dart autorise le retour
-    d'une valeur dans un contexte `void`, donc l'analyseur ne signale
-    rien | pour un callback `ValueChanged<String>`, écrire toujours
-    `(_) => callback()` avec les `()`, jamais la tear-off nue `(_) => callback`
+  - 2026-09-09 | Entrée M28 : `onFieldSubmitted: (_) => onSubmit` (sans `()`)
+     compile sans avertissement mais la soumission n'est jamais exécutée |
+     dans une fonction fléchée, le callback sans `()` est une tear-off
+     (elle produit la fonction sans l'appeler) ; Dart autorise le retour
+     d'une valeur dans un contexte `void`, donc l'analyseur ne signale
+     rien | pour un callback `ValueChanged<String>`, écrire toujours
+     `(_) => callback()` avec les `()`, jamais la tear-off nue `(_) => callback`
+  - 2026-09-09 | Tutoriel M29 : le bouton de validation du dialog sort de
+     l'écran (tests : tap manqué, bouton en y≈734 sur 800×600 ; prod : écran
+     court) | le `Dialog` n'applique qu'un `minWidth` (280) par défaut et ne
+     borne PAS la hauteur de son enfant : un `SingleChildScrollView` s'étale
+     donc sur la hauteur de son contenu (police Ahem très haute en tests) au
+     lieu de déborder en défilement | pour un dialog au contenu variable,
+     borner explicitement la hauteur (`ConstrainedBox(maxHeight: écran -
+     insets)`) et placer l'action de validation dans un **pied fixe** hors de
+     la zone `Flexible`/`SingleChildScrollView` ; le contenu défilant va dans
+     un `Flexible(fit: FlexFit.loose)` (pas `BoxFit.loose`, inexistant)

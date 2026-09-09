@@ -1,5 +1,23 @@
 # DOC.md — Cartographie technique MetaWar
 
+*[2026-09-09] M29 — Point 10 MEMO : tutoriel de bienvenue à la première
+connexion (RESOLU). À la première connexion sur l'appareil, `TutorielGate`
+(`tutoriel_gate.dart`, StatefulWidget) enveloppe `HomeShell` (côté authentifié
+de `AuthGate` dans `main.dart`) et présente le tutoriel de bienvenue
+(`tutoriel_dialog.dart`, `showTutorielDialog`, réutilisable pour MEMO 11) —
+dialog bloquant (`barrierDismissible: false`), 5 lignes (Tournois, Équipes,
+Tableau de bord, Mode capitaine, Profil), bouton « C’est parti ! ». Le drapeau
+« vu » est stocké en LOCAL dans `SharedPreferences` (`sharedPreferencesKeyTutorielVu`,
+par navigateur) plutôt qu'en champ PocketBase `joueurs` : pas de migration de
+schéma, tests sans réseau. Structure dialog robuste : `Dialog` → `ConstrainedBox`
+(`maxWidth 540`, `maxHeight = écran - 2×24`) → `Column` avec contenu en
+`Flexible(fit: FlexFit.loose, child: SingleChildScrollView)` et bouton de
+validation en **pied fixe** — le `Dialog` ne borne pas la hauteur de son enfant
+(sans cette borne, le scroll s'étalait et le bouton sortait de l'écran).
+Pièges Flutter corrigés : overflow `RenderFlex` du titre (police Ahem) → `Text`
+dans `Expanded` ; `BoxFit.loose` inexistant → `FlexFit.loose`. Validation :
+`flutter analyze` sans problème, `flutter test` 56/56, `flutter build web` OK.
+Précédent :
 *[2026-09-06] M20 — Point 4 MEMO : taille d'équipe par tournoi + plafond de
 joueurs (RESOLU). La taille d'équipe = nombre de joueurs importés (nb de
 lignes `team_meta` de l'équipe). Affichage : `TournoiController`
@@ -214,10 +232,13 @@ Précédents M9 : `Dicy`, matrice enrichie, import tournoi.*
 
 ```
 lib/
-  main.dart                        # AuthGate (Stream auth) → Login ou HomeShell
-                                    # (NavigationBar 3 onglets : Tournois, Équipes,
-                                    # Profil) ; HomeShell rafraîchit l'écran
-                                    # activé via RefreshableScreenState (M17)
+  main.dart                        # AuthGate (Stream auth) → Login ou
+                                     # TutorielGate(HomeShell) (NavigationBar 3
+                                     # onglets : Tournois, Équipes, Profil) ;
+                                     # HomeShell rafraîchit l'écran activé via
+                                     # RefreshableScreenState (M17) ; le tutoriel
+                                     # de bienvenue s'affiche à la 1re connexion
+                                     # (MEMO 10 / M29)
   config/
     app_config.dart                # URL PocketBase, noms de collections,
                                     # clé session, bornes/scores/confiance
@@ -324,11 +345,17 @@ lib/
                                       # le State possède et libère les contrôleurs
                                       # dans dispose ; swatch couleur cliquable
                                       # pour les choix → sélecteur ci-contre)
-      admin_color_picker_dialog.dart           # Sélecteur de couleur (M27) : grille
-                                      # des 19 teintes Material 500 en Wrap borné,
-                                      # tap = sélection, Valider → Color (ValueKey hex
-                                      # par échantillon pour les tests)
-  services/
+       admin_color_picker_dialog.dart           # Sélecteur de couleur (M27) : grille
+                                       # des 19 teintes Material 500 en Wrap borné,
+                                       # tap = sélection, Valider → Color (ValueKey hex
+                                       # par échantillon pour les tests)
+     tutoriel_dialog.dart               # Dialog de bienvenue (MEMO 10/M29) :
+                                       # showTutorielDialog (réutilisable, MEMO 11),
+                                       # contenu défilant borné + bouton en pied fixe
+     tutoriel_gate.dart                 # TutorielGate (MEMO 10/M29) : affiche le
+                                       # tutoriel à la 1re connexion (drapeau local
+                                       # SharedPreferences), sinon laisse passer child
+   services/
       pocketbase_data_service.dart   # Façade singleton : surface API historique
                                      # (ex-SupabaseService) → délégation totale
                                        # aux sous-services ci-dessous (~242 lg) ; garde capacité équipe (M20)
@@ -385,9 +412,12 @@ test/
                                           # estims/matched + teamMetaId, sans rencontre_id
   appreciation_scale_test.dart     # Échelle fixe 7 appréciations
   hexadecimal_color_parser_test.dart # Parsing couleurs hexadécimales
-  estim_score_calculator_test.dart # Midpoint + label score
-  matched_score_summary_test.dart  # Agrégats des appariements scorés
-tool/
+   estim_score_calculator_test.dart # Midpoint + label score
+   matched_score_summary_test.dart  # Agrégats des appariements scorés
+   tutorial_gate_test.dart          # Garde MEMO 10 (M29) : tutoriel affiché à la
+                                     # 1re connexion puis masqué (drapeau local),
+                                     # non affiché si drapeau déjà posé
+ tool/
   pocketbase_seed_records.dart     # Seed idempotent 16 armées + 7 appréciations
                                    # fixes
   pocketbase_seed_demo_records.dart # Jeu de données démo multi-joueurs
@@ -401,7 +431,12 @@ tool/
 
 1. **Auth** : `main.dart` écoutre `PocketbaseDataService.authStateChanges`
    (stream émettant la valeur courante immédiatement — yield initial dans
-   `pocketbase_client_holder.dart`) → LoginScreen ou HomeShell.
+   `pocketbase_client_holder.dart`) → LoginScreen ou `TutorielGate(HomeShell)`.
+   Côté authentifié, `TutorielGate` (MEMO 10/M29) lit le drapeau local
+   `sharedPreferencesKeyTutorielVu` (SharedPreferences, par navigateur) et, s'il
+   est absent, présente `showTutorielDialog` (dialog bloquant) avant de poser
+   le drapeau — le tutoriel n'est donc affiché qu'à la première connexion sur
+   l'appareil ; re-visionnable depuis les paramètres (MEMO 11, à venir).
 2. **Écrans** : chaque écran = shell StatefulWidget qui instancie son
    `*_controller` dans `initState`, s'abonne à `onStateChanged`
    (`setState` si `mounted`) et délègue toute mutation. Les méthodes de

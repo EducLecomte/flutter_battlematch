@@ -55,8 +55,9 @@
 - ~~ajouter une validation de formulaire pour @login_screen, avec la touche entrée~~
 - Résolu : la validation du formulaire (format email, règles du mot de passe, pseudo requis à l'inscription) était déjà en place et déclenchée par `_submit()` ; la touche Entrée sur chaque champ (`onFieldSubmitted` dans `LoginFormFields`) invoque désormais le même `_submit()` que le bouton, donc la même validation avant toute soumission. Tests : `test/login_screen_test.dart` (Entrée → callback de soumission, Entrée avec saisie invalide → erreurs affichées sans soumission).
 
-## 10 - tuto
-- la premiere fois qu'un utilisateur se connecte, afficher un tutoriel d'explication/utilisation dans un dialog.
+## 10 [RESOLU] - tuto
+- ~~la premiere fois qu'un utilisateur se connecte, afficher un tutoriel d'explication/utilisation dans un dialog.~~
+- Résolu : `TutorielGate` (enveloppe de `HomeShell` dans `AuthGate`, `main.dart`) affiche le tutoriel (`tutoriel_dialog.dart`, `showTutorielDialog`) à la première connexion sur l'appareil. Le drapeau « vu » est stocké en local dans `SharedPreferences` (`sharedPreferencesKeyTutorielVu`, par navigateur) : pas de migration de schéma PocketBase. Le dialog est bloquant (barrière non dismissible), son contenu défile si trop long et le bouton de validation est en pied fixe (toujours visible). Tests : `test/tutorial_gate_test.dart` (affiché 1re fois puis plus jamais ; non affiché si drapeau posé). La re-visualisation est prévue au point 11.
 
 ## 11 - Ajout de setting
 - ajouter dans le profil, une catégorie "parametres"

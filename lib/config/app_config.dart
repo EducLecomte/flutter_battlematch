@@ -49,6 +49,11 @@ const String collectionNameMatched = 'matched';
 /// Clé SharedPreferences stockant la session PocketBase sérialisée.
 const String sharedPreferencesKeyAuthSession = 'metawar_pocketbase_auth_session';
 
+/// Clé SharedPreferences du drapeau « tutoriel de bienvenue déjà affiché ».
+/// Stockage local (par navigateur) : le tutoriel s'affiche à la première
+/// connexion sur un appareil donné, sans migration de schéma PocketBase.
+const String sharedPreferencesKeyTutorielVu = 'metawar_tutoriel_vu';
+
 // ---------------------------------------------------------------------------
 // Paramètres du tableau de bord d'équipe et des estimations
 // ---------------------------------------------------------------------------

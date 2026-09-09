@@ -11,6 +11,7 @@ import 'screens/profile_screen.dart';
 import 'screens/refreshable_screen.dart';
 import 'screens/team_management_screen.dart';
 import 'screens/tournois_screen.dart';
+import 'screens/widgets/tutoriel_gate.dart';
 import 'services/pocketbase_data_service.dart';
 
 Future<void> main() async {
@@ -46,7 +47,9 @@ class AuthGate extends StatelessWidget {
       stream: PocketbaseDataService.instance.authStateChanges,
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         final bool estAuthentifie = snapshot.data ?? false;
-        return estAuthentifie ? const HomeShell() : const LoginScreen();
+        return estAuthentifie
+            ? const TutorielGate(child: HomeShell())
+            : const LoginScreen();
       },
     );
   }
