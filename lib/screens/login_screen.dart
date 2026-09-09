@@ -88,6 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         emailController: _controller.emailController,
                         passwordController: _controller.passwordController,
                         nomController: _controller.nomController,
+                        onSubmit: _submit,
                       ),
                       const SizedBox(height: 24),
                       LoginSubmitActions(

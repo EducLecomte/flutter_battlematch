@@ -538,6 +538,12 @@ team_meta, estims, matched.
 - [x] M27.4 Test widget dans `test/admin_dialog_repro_test.dart` : ouvrir le dialog → swatch → picker → sélection ambrée 500 → « Valider » → champ hex `#FFC107` → « Enregistrer »
 - [x] M27.5 Validation : `flutter analyze` sans problème, `flutter test` 50/50, `flutter build web` OK ; point 8 RESOLU dans MEMO.md, `DOC.md` à jour
 
+### M28 — Point 9 MEMO (2026-09-09) : soumission du formulaire de connexion à la touche Entrée
+- [x] M28.1 `LoginFormFields` : nouveau callback `onSubmit` (`VoidCallback`) ; `onFieldSubmitted: (_) => onSubmit()` sur les champs email, mot de passe et pseudo — la touche Entrée déclenche la même soumission que le bouton
+- [x] M28.2 `LoginScreen` : transmission de `onSubmit: _submit` ; la validation existante par `formKey` (`LoginController.validate()`) s'exécute avant toute soumission, quel que soit le déclencheur
+- [x] M28.3 Tests `test/login_screen_test.dart` (aucun réseau) : `LoginFormFields` isolé avec callback factice (Entrée sur chacun des 3 champs → 1 soumission) ; `LoginScreen` complet (email invalide + mot de passe vide + Entrée → les deux erreurs de validation affichées, pas de spinner)
+- [x] M28.4 Validation : `flutter analyze` sans problème, `flutter test` 54/54, `flutter build web` OK ; point 9 RESOLU dans MEMO.md, `DOC.md` à jour
+
     ## Journal erreurs/découvertes
 [Date | Problème | Cause racine | Règle préventive]
 - 2026-08-21 | Code jamais compilé | pubspec sans supabase_flutter |
@@ -652,6 +658,13 @@ team_meta, estims, matched.
    support returning intrinsic dimensions » dans le contenu du dialog
    d'appréciation | `AlertDialog` calcule la largeur intrinsèque du contenu
    pour se dimensionner ; un viewport `shrinkWrap` (`GridView`) ne supporte
-   pas les dimensions intrinsèques | jamais de viewport shrink-wrap
-   (GridView/ListView) comme contenu direct d'un `AlertDialog` : utiliser
-   `Wrap`, `Column`/`Row` ou un layout de hauteur fixe (borné si besoin)
+    pas les dimensions intrinsèques | jamais de viewport shrink-wrap
+    (GridView/ListView) comme contenu direct d'un `AlertDialog` : utiliser
+    `Wrap`, `Column`/`Row` ou un layout de hauteur fixe (borné si besoin)
+ - 2026-09-09 | Entrée M28 : `onFieldSubmitted: (_) => onSubmit` (sans `()`)
+    compile sans avertissement mais la soumission n'est jamais exécutée |
+    dans une fonction fléchée, le callback sans `()` est une tear-off
+    (elle produit la fonction sans l'appeler) ; Dart autorise le retour
+    d'une valeur dans un contexte `void`, donc l'analyseur ne signale
+    rien | pour un callback `ValueChanged<String>`, écrire toujours
+    `(_) => callback()` avec les `()`, jamais la tear-off nue `(_) => callback`

@@ -51,8 +51,9 @@
 - ~~dans l'administration, ajouter un colorpicker lors de l'édition des appréciations~~
 - Résolu : le swatch de couleur du dialog d'appréciation (`admin_choix_edit_dialog.dart`) est cliquable et ouvre un sélecteur (`admin_color_picker_dialog.dart`) : grille des 19 teintes Material (500), tap pour sélectionner, « Valider » pour confirmer. La couleur choisie est resynchronisée dans le champ hexadécimal (`HexColorParser.colorToHexString`, format `#RRGGBB` stocké), qui reste éditable à la main ; `AdminController.saveChoix` continue de normaliser/valider la valeur. Tests : `test/hexadecimal_color_parser_test.dart` (`colorToHexString`) et `test/admin_dialog_repro_test.dart` (flux picker → champ hex → Enregistrer).
 
-## 9 - validation login
-- ajouter une validation de formulaire pour @login_screen, avec la touche entrée
+## 9 [RESOLU] - validation login
+- ~~ajouter une validation de formulaire pour @login_screen, avec la touche entrée~~
+- Résolu : la validation du formulaire (format email, règles du mot de passe, pseudo requis à l'inscription) était déjà en place et déclenchée par `_submit()` ; la touche Entrée sur chaque champ (`onFieldSubmitted` dans `LoginFormFields`) invoque désormais le même `_submit()` que le bouton, donc la même validation avant toute soumission. Tests : `test/login_screen_test.dart` (Entrée → callback de soumission, Entrée avec saisie invalide → erreurs affichées sans soumission).
 
 ## 10 - tuto
 - la premiere fois qu'un utilisateur se connecte, afficher un tutoriel d'explication/utilisation dans un dialog.

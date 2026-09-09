@@ -6,11 +6,16 @@ import '../../config/app_config.dart';
 /// (email, mot de passe, et pseudo en mode inscription).
 /// Le champ d'initiales a été retiré : il est désormais généré
 /// automatiquement à partir du pseudo.
+/// La touche Entrée sur un champ déclenche [onSubmit] (MEMO 9).
 class LoginFormFields extends StatelessWidget {
   final bool isSignUp;
   final TextEditingController emailController;
   final TextEditingController passwordController;
   final TextEditingController nomController;
+
+  /// Action de soumission du formulaire, invoquée quand l'utilisateur
+  /// valide un champ avec la touche Entrée.
+  final VoidCallback onSubmit;
 
   const LoginFormFields({
     super.key,
@@ -18,6 +23,7 @@ class LoginFormFields extends StatelessWidget {
     required this.emailController,
     required this.passwordController,
     required this.nomController,
+    required this.onSubmit,
   });
 
   /// Valide le format de l'adresse email.
@@ -60,6 +66,7 @@ class LoginFormFields extends StatelessWidget {
         TextFormField(
           controller: emailController,
           keyboardType: TextInputType.emailAddress,
+          onFieldSubmitted: (_) => onSubmit(),
           decoration: const InputDecoration(
             labelText: "Adresse email",
             prefixIcon: Icon(Icons.email_outlined),
@@ -73,6 +80,7 @@ class LoginFormFields extends StatelessWidget {
         TextFormField(
           controller: passwordController,
           obscureText: true,
+          onFieldSubmitted: (_) => onSubmit(),
           decoration: InputDecoration(
             labelText: "Mot de passe",
             prefixIcon: const Icon(Icons.lock_outline),
@@ -96,6 +104,7 @@ class LoginFormFields extends StatelessWidget {
           // Champ Nom / Pseudo
           TextFormField(
             controller: nomController,
+            onFieldSubmitted: (_) => onSubmit(),
             decoration: const InputDecoration(
               labelText: "Nom / Pseudo",
               prefixIcon: Icon(Icons.person_outline),

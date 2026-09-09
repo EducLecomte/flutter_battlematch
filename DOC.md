@@ -279,7 +279,8 @@ lib/
                                     # appréciations + toggle admin / delete joueur
                                     # + helpers couleur hex
   screens/widgets/                 # Composants UI atomiques (1 fichier = 1 rôle)
-    login_*                        # brand_header / form_fields / submit_actions
+     login_*                        # brand_header / form_fields (touche Entrée
+                                     # → soumission, M28) / submit_actions
      tournoi_card.dart              # Carte tournoi (suppression confirmée
                                      # interne, actions admin édition/import, taille d'équipe si > 0 (M20))
      tournoi_add_dialog.dart        # Dialog ajout tournoi
