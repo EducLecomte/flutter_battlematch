@@ -12,11 +12,7 @@ class LoginBrandHeader extends StatelessWidget {
     final theme = Theme.of(context);
     return Column(
       children: [
-        const Icon(
-          Icons.query_stats_outlined,
-          size: 64,
-          color: Colors.blueAccent,
-        ),
+        const Icon(Icons.auto_mode, size: 64, color: Colors.blueAccent),
         const SizedBox(height: 16),
         Text(
           "METAWAR",
