@@ -459,9 +459,10 @@ test/
    `pocketbase_client_holder.dart`) → LoginScreen ou `TutorielGate(HomeShell)`.
    Côté authentifié, `TutorielGate` (MEMO 10/M29) lit le drapeau local
    `sharedPreferencesKeyTutorielVu` (SharedPreferences, par navigateur) et, s'il
-   est absent, présente `showTutorielDialog` (dialog bloquant) avant de poser
-   le drapeau — le tutoriel n'est donc affiché qu'à la première connexion sur
-   l'appareil ; re-visionnable depuis les paramètres (MEMO 11, à venir).
+    est absent, présente `showTutorielDialog` (dialog bloquant) avant de poser
+    le drapeau — le tutoriel n'est donc affiché qu'à la première connexion sur
+    l'appareil ; re-visionnable depuis la section « Paramètres » du profil
+    (`ProfileSettingsSection`, MEMO 11/M30, « Revoir le tutoriel »).
 2. **Écrans** : chaque écran = shell StatefulWidget qui instancie son
    `*_controller` dans `initState`, s'abonne à `onStateChanged`
    (`setState` si `mounted`) et délègue toute mutation. Les méthodes de

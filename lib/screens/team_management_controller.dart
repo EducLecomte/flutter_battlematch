@@ -39,6 +39,9 @@ class TeamManagementController {
   // Appariements par équipe adverse
   Map<String, List<Matched>> matchedByOpponentTeamId = {};
 
+  // Estimations par équipe adverse et clé (joueurId + teamMetaId)
+  Map<String, Map<String, Estim>> estimationsByOpponentTeamId = {};
+
   // Les adversaires de l'équipe sélectionnée ont-ils déjà été chargés ?
   bool opponentsLoaded = false;
 
@@ -129,6 +132,7 @@ class TeamManagementController {
       final List<Team> opponentTeamsToDisplay = [];
       final Map<String, List<TeamMeta>> loadedOpponents = {};
       final Map<String, List<Matched>> loadedMatched = {};
+      final Map<String, Map<String, Estim>> loadedEstimations = {};
       for (final Team opponentTeam in allTeams) {
         if (opponentTeam.id == selectedTeam.id) continue;
         final List<TeamMeta> opponents = await _pocketbaseService.getTeamMeta(
@@ -141,6 +145,14 @@ class TeamManagementController {
           selectedTeam.id,
           opponentTeam.id,
         );
+        final List<Estim> estimations = await _pocketbaseService.getEstims(
+          selectedTeam.id,
+          opponentTeam.id,
+        );
+        loadedEstimations[opponentTeam.id] = {
+          for (final estimation in estimations)
+            '${estimation.joueurId}::${estimation.teamMetaId}': estimation,
+        };
       }
       // Ignore le résultat si l'équipe sélectionnée a changé pendant le
       // chargement : les données appartiendraient à l'ancienne sélection.
@@ -148,6 +160,7 @@ class TeamManagementController {
       opponentTeams = opponentTeamsToDisplay;
       opponentsByOpponentTeamId = loadedOpponents;
       matchedByOpponentTeamId = loadedMatched;
+      estimationsByOpponentTeamId = loadedEstimations;
       opponentsLoaded = true;
       return null;
     } catch (opponentsError) {
@@ -163,6 +176,7 @@ class TeamManagementController {
     opponentTeams = [];
     opponentsByOpponentTeamId = {};
     matchedByOpponentTeamId = {};
+    estimationsByOpponentTeamId = {};
     opponentsLoaded = false;
     _opponentsLoadInFlight = null;
   }

@@ -202,6 +202,9 @@ flutter analyze           # analyse statique
    pour tous les membres, et association membre ↔ liste depuis la gestion
    d'équipe
 - Profil : affichage des équipes et tournois de l'utilisateur
+- Paramètres (Profil) : bascule mode clair/sombre (persistée en local, thème
+  sombre dérivé des couleurs de l'application), dialog « À propos » et
+  re-visionnage du tutoriel de bienvenue (MEMO 11)
 - Équipes du tournoi visibles par tous (sélection de l'équipe active
    depuis l'écran Équipes)
 - Import tournoi : texte ou JSON depuis l'écran Équipes, avec création des

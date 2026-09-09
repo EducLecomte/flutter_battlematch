@@ -45,6 +45,20 @@ class PocketbaseDashboardEstimsService {
     }
   }
 
+  /// Récupère les estimations d’un duo d’équipes.
+  Future<List<Estim>> getEstims(
+    String teamId,
+    String adversaireTeamId,
+  ) async {
+    final records = await _holder.clientPocketBase
+        .collection(collectionNameEstims)
+        .getFullList(
+          filter: _filtreParEquipes(teamId, adversaireTeamId),
+          sort: 'created',
+        );
+    return records.map(Estim.fromPocketBaseRecord).toList();
+  }
+
   /// Flux temps réel des estimations d’un duo d’équipes.
   Stream<List<Estim>> streamEstims(
     String teamId,

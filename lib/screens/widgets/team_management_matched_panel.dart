@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../logic/estim_score_calculator.dart';
 import '../../models/models.dart';
 import '../../utils/error_snack_bar_presenter.dart';
 import '../team_management_controller.dart';
@@ -31,8 +32,8 @@ class TeamManagementMatchedPanel extends StatelessWidget {
   // Déclenche le chargement paresseux des adversaires, puis notifie
   // l'écran du changement d'état.
   Future<void> _handleLoadOpponentsTap(BuildContext context) async {
-    final String? errorMessage =
-        await controller.loadOpponentsForSelectedTeam();
+    final String? errorMessage = await controller
+        .loadOpponentsForSelectedTeam();
     if (!context.mounted) return;
     onStateChanged();
     if (errorMessage != null) {
@@ -48,34 +49,57 @@ class TeamManagementMatchedPanel extends StatelessWidget {
   // les paires (joueur de l'équipe, équipe adverse, adversaire apparié),
   // dans l'ordre de l'effectif.
   List<({Joueur joueur, Team team, TeamMeta meta})> _buildPairedEntries() {
-    final List<({Joueur joueur, Team team, TeamMeta meta})> entries = [];
+    final Map<String, ({Joueur joueur, Team team, TeamMeta meta})>
+    uniqueEntries = {};
+    final Joueur? currentPlayer = controller.currentUserProfile;
+
     for (final member in controller.members) {
       final Joueur player = member['joueur'];
+      if (currentPlayer != null && player.id != currentPlayer.id) {
+        continue;
+      }
+
       for (final Team opponentTeam in controller.opponentTeams) {
         final List<Matched> matched =
             controller.matchedByOpponentTeamId[opponentTeam.id] ?? [];
         for (final pairing in matched) {
           if (pairing.joueurId != player.id) continue;
+
           final List<TeamMeta> opponents =
               controller.opponentsByOpponentTeamId[opponentTeam.id] ?? [];
           for (final TeamMeta opponent in opponents) {
-            if (opponent.id == pairing.teamMetaId) {
-              entries.add((joueur: player, team: opponentTeam, meta: opponent));
-            }
+            if (opponent.id != pairing.teamMetaId) continue;
+
+            final key = '${player.id}::${opponentTeam.id}::${opponent.id}';
+            uniqueEntries.putIfAbsent(
+              key,
+              () => (joueur: player, team: opponentTeam, meta: opponent),
+            );
           }
         }
       }
     }
+
+    final entries = uniqueEntries.values.toList();
+    entries.sort((a, b) {
+      final comparePlayer = a.joueur.nom.toLowerCase().compareTo(
+        b.joueur.nom.toLowerCase(),
+      );
+      if (comparePlayer != 0) return comparePlayer;
+      return a.team.nom.toLowerCase().compareTo(b.team.nom.toLowerCase());
+    });
     return entries;
   }
 
   // Libellé de l'adversaire apparié : pseudo, liste d'armée (si renseignée)
   // et équipe adverse.
   String _formatOpponent(Team opponentTeam, TeamMeta opponent) {
-    final String nom =
-        opponent.nomJo.isNotEmpty ? opponent.nomJo : "Adversaire";
-    final String liste =
-        opponent.listeJo.isNotEmpty ? " — ${opponent.listeJo}" : "";
+    final String nom = opponent.nomJo.isNotEmpty
+        ? opponent.nomJo
+        : "Adversaire";
+    final String liste = opponent.listeJo.isNotEmpty
+        ? " — ${opponent.listeJo}"
+        : "";
     return "$nom$liste (${opponentTeam.nom})";
   }
 
@@ -104,6 +128,36 @@ class TeamManagementMatchedPanel extends StatelessWidget {
     );
   }
 
+  String _formatEstimationSummary(
+    Team team,
+    List<({Joueur joueur, Team team, TeamMeta meta})> group,
+  ) {
+    final estimationsByKey =
+        controller.estimationsByOpponentTeamId[team.id] ?? const {};
+    if (estimationsByKey.isEmpty) {
+      return 'Aucune estimation';
+    }
+
+    double totalScore = 0;
+    int scoredCount = 0;
+
+    for (final entry in group) {
+      final key = '${entry.joueur.id}::${entry.meta.id}';
+      final estim = estimationsByKey[key];
+      final midpoint = EstimScoreCalculator.midpointScore(estim);
+      if (midpoint == null) continue;
+      scoredCount++;
+      totalScore += midpoint;
+    }
+
+    if (scoredCount == 0) {
+      return 'Aucune estimation validée';
+    }
+
+    final averageScore = totalScore / scoredCount;
+    return 'Estimation: ${scoredCount}/${group.length} • total ${totalScore.toStringAsFixed(1)} • moyenne ${averageScore.toStringAsFixed(1)}';
+  }
+
   // Une fois les données chargées : liste des joueurs de l'équipe qui sont
   // appariés, avec l'adversaire correspondant (point 6.1 MEMO). Rien n'est
   // affiché s'il n'y a aucun appariement.
@@ -115,23 +169,57 @@ class TeamManagementMatchedPanel extends StatelessWidget {
       return const [];
     }
 
+    final Map<String, List<({Joueur joueur, Team team, TeamMeta meta})>>
+    grouped = {};
+    for (final entry in entries) {
+      final key = '${entry.team.id}::${entry.meta.id}';
+      grouped.putIfAbsent(key, () => []).add(entry);
+    }
+
+    final orderedKeys = grouped.keys.toList()
+      ..sort(
+        (a, b) => grouped[a]!.first.team.nom.toLowerCase().compareTo(
+          grouped[b]!.first.team.nom.toLowerCase(),
+        ),
+      );
+
     return [
       Card(
         child: Column(
           children: [
-            for (final entry in entries)
-              ListTile(
+            for (final adversaireKey in orderedKeys)
+              ExpansionTile(
                 leading: const CircleAvatar(
-                  child: Icon(Icons.person, size: 20),
+                  child: Icon(Icons.shield, size: 20),
                 ),
                 title: Text(
-                  entry.joueur.nom,
+                  grouped[adversaireKey]!.first.team.nom,
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 subtitle: Text(
-                  _formatOpponent(entry.team, entry.meta),
+                  _formatEstimationSummary(
+                    grouped[adversaireKey]!.first.team,
+                    grouped[adversaireKey]!,
+                  ),
                   style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
+                children: [
+                  for (final entry in grouped[adversaireKey]!)
+                    ListTile(
+                      dense: true,
+                      title: Text(
+                        entry.joueur.nom,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      subtitle: Text(
+                        _formatOpponent(entry.team, entry.meta),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                ],
               ),
           ],
         ),
@@ -148,12 +236,15 @@ class TeamManagementMatchedPanel extends StatelessWidget {
       children: [
         Text(
           "Appariements",
-          style: theme.textTheme.titleMedium
-              ?.copyWith(fontWeight: FontWeight.bold),
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 8),
-        if (controller.opponentsLoaded) ..._buildPairedPlayerCards(context)
-        else _buildLoadCard(context),
+        if (controller.opponentsLoaded)
+          ..._buildPairedPlayerCards(context)
+        else
+          _buildLoadCard(context),
       ],
     );
   }

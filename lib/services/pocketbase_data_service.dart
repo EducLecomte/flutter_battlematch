@@ -279,6 +279,11 @@ class PocketbaseDataService {
   Future<void> saveEstim(Estim estim) =>
       _serviceDashboardEstims.saveEstim(estim);
 
+  Future<List<Estim>> getEstims(
+    String teamId,
+    String adversaireTeamId,
+  ) => _serviceDashboardEstims.getEstims(teamId, adversaireTeamId);
+
   Stream<List<Estim>> streamEstims(
     String teamId,
     String adversaireTeamId,
