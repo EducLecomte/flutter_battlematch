@@ -24,20 +24,20 @@ class PocketbaseDashboardEstimsService {
   /// Enregistre ou met à jour une estimation (upsert guidé par l’index unique
   /// équipe + équipe adverse + joueur + méta adverse).
   Future<void> saveEstim(Estim estim) async {
-    final List<RecordModel> existants =
-        await _holder.clientPocketBase.collection(collectionNameEstims).getFullList(
-               filter:
-                   'team_id = "${_holder.echapperFiltrePocketBase(estim.teamId)}" '
-                   '&& adversaire_team_id = "${_holder.echapperFiltrePocketBase(estim.adversaireTeamId)}" '
-                   '&& joueur_id = "${_holder.echapperFiltrePocketBase(estim.joueurId)}" '
-                   '&& team_meta_id = "${_holder.echapperFiltrePocketBase(estim.teamMetaId)}"',
-             );
+    final List<RecordModel> existants = await _holder.clientPocketBase
+        .collection(collectionNameEstims)
+        .getFullList(
+          filter:
+              'team_id = "${_holder.echapperFiltrePocketBase(estim.teamId)}" '
+              '&& adversaire_team_id = "${_holder.echapperFiltrePocketBase(estim.adversaireTeamId)}" '
+              '&& joueur_id = "${_holder.echapperFiltrePocketBase(estim.joueurId)}" '
+              '&& team_meta_id = "${_holder.echapperFiltrePocketBase(estim.teamMetaId)}"',
+        );
 
     if (existants.isNotEmpty) {
-      await _holder.clientPocketBase.collection(collectionNameEstims).update(
-        existants.first.id,
-        body: estim.toJson(),
-      );
+      await _holder.clientPocketBase
+          .collection(collectionNameEstims)
+          .update(existants.first.id, body: estim.toJson());
     } else {
       await _holder.clientPocketBase
           .collection(collectionNameEstims)
@@ -46,10 +46,7 @@ class PocketbaseDashboardEstimsService {
   }
 
   /// Récupère les estimations d’un duo d’équipes.
-  Future<List<Estim>> getEstims(
-    String teamId,
-    String adversaireTeamId,
-  ) async {
+  Future<List<Estim>> getEstims(String teamId, String adversaireTeamId) async {
     final records = await _holder.clientPocketBase
         .collection(collectionNameEstims)
         .getFullList(
@@ -60,10 +57,7 @@ class PocketbaseDashboardEstimsService {
   }
 
   /// Flux temps réel des estimations d’un duo d’équipes.
-  Stream<List<Estim>> streamEstims(
-    String teamId,
-    String adversaireTeamId,
-  ) {
+  Stream<List<Estim>> streamEstims(String teamId, String adversaireTeamId) {
     return _holder
         .streamCollectionRecords(
           nomCollection: collectionNameEstims,

@@ -48,7 +48,8 @@ class PocketbaseDataService {
   PocketbaseDataService._internal();
 
   /// Rôle du capitaine dans team_membres.
-  static const String roleCapitaine = PocketbaseTeamMembresService.roleCapitaine;
+  static const String roleCapitaine =
+      PocketbaseTeamMembresService.roleCapitaine;
 
   /// Rôle d'un joueur dans team_membres.
   static const String roleJoueur = PocketbaseTeamMembresService.roleJoueur;
@@ -121,8 +122,10 @@ class PocketbaseDataService {
     String joueurId,
     String role,
   ) async {
-    final String? roleActuel =
-        await _serviceTeamMembres.getRoleMembre(teamId, joueurId);
+    final String? roleActuel = await _serviceTeamMembres.getRoleMembre(
+      teamId,
+      joueurId,
+    );
     if (roleActuel == null) {
       throw Exception("Aucune appartenance trouvée pour ce joueur.");
     }
@@ -169,8 +172,9 @@ class PocketbaseDataService {
   /// plus grande est retenue. Retourne 0 si aucune équipe ou aucun joueur
   /// n'est importé.
   Future<int> getTailleEquipeTournoi(String tournoiId) async {
-    final List<Team> equipes =
-        await _serviceTeams.getTeamsForTournoi(tournoiId);
+    final List<Team> equipes = await _serviceTeams.getTeamsForTournoi(
+      tournoiId,
+    );
     if (equipes.isEmpty) return 0;
     final List<int> tailles = await Future.wait(
       equipes.map(
@@ -188,11 +192,13 @@ class PocketbaseDataService {
   /// d'équipe (nombre de joueurs importés, team_meta) et lève une exception
   /// sinon. Sans méta importée (taille inconnue), aucune restriction.
   Future<void> _verifierCapaciteAjoutJoueur(String teamId) async {
-    final int tailleEquipe =
-        await _serviceDashboardAdversaires.compterTeamMeta(teamId);
+    final int tailleEquipe = await _serviceDashboardAdversaires.compterTeamMeta(
+      teamId,
+    );
     if (tailleEquipe == 0) return; // taille inconnue : pas de restriction
-    final int joueursActuels =
-        await _serviceTeamMembres.compterJoueursEquipe(teamId);
+    final int joueursActuels = await _serviceTeamMembres.compterJoueursEquipe(
+      teamId,
+    );
     if (joueursActuels >= tailleEquipe) {
       throw Exception(
         "L'équipe est déjà complète ($joueursActuels/$tailleEquipe joueurs).",
@@ -241,13 +247,11 @@ class PocketbaseDataService {
 
   Future<List<Choix>> getChoix() => _serviceReferentiels.getChoix();
 
-  Future<List<TeamMeta>> getTeamMeta(
-    String teamId,
-  ) => _serviceDashboardAdversaires.getTeamMeta(teamId);
+  Future<List<TeamMeta>> getTeamMeta(String teamId) =>
+      _serviceDashboardAdversaires.getTeamMeta(teamId);
 
-  Stream<List<TeamMeta>> streamTeamMeta(
-    String teamId,
-  ) => _serviceDashboardAdversaires.streamTeamMeta(teamId);
+  Stream<List<TeamMeta>> streamTeamMeta(String teamId) =>
+      _serviceDashboardAdversaires.streamTeamMeta(teamId);
 
   Future<TeamMeta> createTeamMeta(
     String teamId,
@@ -279,15 +283,11 @@ class PocketbaseDataService {
   Future<void> saveEstim(Estim estim) =>
       _serviceDashboardEstims.saveEstim(estim);
 
-  Future<List<Estim>> getEstims(
-    String teamId,
-    String adversaireTeamId,
-  ) => _serviceDashboardEstims.getEstims(teamId, adversaireTeamId);
+  Future<List<Estim>> getEstims(String teamId, String adversaireTeamId) =>
+      _serviceDashboardEstims.getEstims(teamId, adversaireTeamId);
 
-  Stream<List<Estim>> streamEstims(
-    String teamId,
-    String adversaireTeamId,
-  ) => _serviceDashboardEstims.streamEstims(teamId, adversaireTeamId);
+  Stream<List<Estim>> streamEstims(String teamId, String adversaireTeamId) =>
+      _serviceDashboardEstims.streamEstims(teamId, adversaireTeamId);
 
   Future<void> toggleMatched(
     String teamId,
@@ -301,15 +301,11 @@ class PocketbaseDataService {
     teamMetaId,
   );
 
-  Future<List<Matched>> getMatched(
-    String teamId,
-    String adversaireTeamId,
-  ) => _serviceDashboardMatched.getMatched(teamId, adversaireTeamId);
+  Future<List<Matched>> getMatched(String teamId, String adversaireTeamId) =>
+      _serviceDashboardMatched.getMatched(teamId, adversaireTeamId);
 
-  Stream<List<Matched>> streamMatched(
-    String teamId,
-    String adversaireTeamId,
-  ) => _serviceDashboardMatched.streamMatched(teamId, adversaireTeamId);
+  Stream<List<Matched>> streamMatched(String teamId, String adversaireTeamId) =>
+      _serviceDashboardMatched.streamMatched(teamId, adversaireTeamId);
 
   // -------------------------------------------------------------------
   // Administration (comptes marqués `admin`)

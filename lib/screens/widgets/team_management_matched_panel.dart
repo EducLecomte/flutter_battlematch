@@ -155,7 +155,7 @@ class TeamManagementMatchedPanel extends StatelessWidget {
     }
 
     final averageScore = totalScore / scoredCount;
-    return 'Estimation: ${scoredCount}/${group.length} • total ${totalScore.toStringAsFixed(1)} • moyenne ${averageScore.toStringAsFixed(1)}';
+    return 'Estimation: $scoredCount/${group.length} • total ${totalScore.toStringAsFixed(1)} • moyenne ${averageScore.toStringAsFixed(1)}';
   }
 
   // Une fois les données chargées : liste des joueurs de l'équipe qui sont
