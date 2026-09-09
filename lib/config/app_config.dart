@@ -8,6 +8,17 @@
 const String pocketBaseServerUrl = 'https://metabase.pedagogeek.fr';
 
 // ---------------------------------------------------------------------------
+// Identité de l'application
+// ---------------------------------------------------------------------------
+
+/// Nom de l'application (utilisé notamment par le dialog « À propos », MEMO 11).
+const String applicationName = 'MetaWar';
+
+/// Version de l'application affichée dans le dialog « À propos » (MEMO 11).
+/// À garder alignée avec le champ `version` de pubspec.yaml.
+const String appVersion = '1.0.0';
+
+// ---------------------------------------------------------------------------
 // Noms des collections PocketBase
 // ---------------------------------------------------------------------------
 
@@ -53,6 +64,11 @@ const String sharedPreferencesKeyAuthSession = 'metawar_pocketbase_auth_session'
 /// Stockage local (par navigateur) : le tutoriel s'affiche à la première
 /// connexion sur un appareil donné, sans migration de schéma PocketBase.
 const String sharedPreferencesKeyTutorielVu = 'metawar_tutoriel_vu';
+
+/// Clé SharedPreferences du mode d'affichage clair/sombre (MEMO 11).
+/// Valeur stockée : `'light'` ou `'dark'`. Absence de valeur = thème clair
+/// (comportement initial de l'application).
+const String sharedPreferencesKeyThemeMode = 'metawar_theme_mode';
 
 // ---------------------------------------------------------------------------
 // Paramètres du tableau de bord d'équipe et des estimations

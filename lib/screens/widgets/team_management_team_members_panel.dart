@@ -30,7 +30,9 @@ class TeamManagementTeamMembersPanel extends StatelessWidget {
       children: [
         Text(
           "Membres de l'équipe",
-          style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 8),
         // shrinkWrap (point 7 MEMO) : la liste prend sa hauteur naturelle,
@@ -39,62 +41,100 @@ class TeamManagementTeamMembersPanel extends StatelessWidget {
           shrinkWrap: true,
           itemCount: members.length,
           itemBuilder: (context, index) {
-              final member = members[index];
-              final Joueur player = member['joueur'];
-              final String role = member['role'];
-              final String status = member['statut'];
-              final isPending = status == 'pending';
-              final isCaptain = player.id == captainId;
-              final isCoach = role == PocketbaseDataService.roleCoach;
+            final member = members[index];
+            final Joueur player = member['joueur'];
+            final String role = member['role'];
+            final String status = member['statut'];
+            final isPending = status == 'pending';
+            final isCaptain = player.id == captainId;
+            final isCoach = role == PocketbaseDataService.roleCoach;
 
-              return Card(
-                margin: const EdgeInsets.only(bottom: 8),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    child: Icon(
-                      isCaptain
-                          ? Icons.workspace_premium
-                          : (isCoach
-                              ? Icons.sports_score
-                              : Icons.person),
-                      size: 20,
-                    ),
-                  ),
-                  title: Text(player.nom),
-                  subtitle: Text(_libelleRole(isCaptain, isCoach)),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (canChangeRole && !isPending)
-                        _buildRoleSelector(role, isCaptain, (newRole) => onRoleChanged(player, newRole)),
-                      if (isPending)
-                        Chip(
-                          label: const Text("En attente"),
-                          backgroundColor: Colors.amber.shade200,
-                        )
-                      else
-                        const Icon(
-                          Icons.check_circle_outline,
-                          color: Colors.green,
-                        ),
-                      if (canRemoveMember(member))
-                        IconButton(
-                          icon: const Icon(
-                            Icons.person_remove_alt_1,
-                            color: Colors.redAccent,
-                          ),
-                          tooltip: "Retirer de l'équipe",
-                          onPressed: () => onRemoveMember(player),
-                        ),
-                    ],
-                  ),
+            return Card(
+              margin: const EdgeInsets.only(bottom: 8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
                 ),
-               );
-             },
-           ),
-       ],
-     );
-   }
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      child: Icon(
+                        isCaptain
+                            ? Icons.workspace_premium
+                            : (isCoach ? Icons.sports_score : Icons.person),
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            player.nom,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _libelleRole(isCaptain, isCoach),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Wrap(
+                      alignment: WrapAlignment.end,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 8,
+                      runSpacing: 4,
+                      children: [
+                        if (canChangeRole && !isPending)
+                          _buildRoleSelector(
+                            role,
+                            isCaptain,
+                            (newRole) => onRoleChanged(player, newRole),
+                          ),
+                        if (isPending)
+                          Chip(
+                            label: const Text("En attente"),
+                            backgroundColor: Colors.amber.shade200,
+                          )
+                        else
+                          const Icon(
+                            Icons.check_circle_outline,
+                            color: Colors.green,
+                          ),
+                        if (canRemoveMember(member))
+                          IconButton(
+                            icon: const Icon(
+                              Icons.person_remove_alt_1,
+                              color: Colors.redAccent,
+                            ),
+                            tooltip: "Retirer de l'équipe",
+                            onPressed: () => onRemoveMember(player),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
 
   /// Sélecteur de rôle : capitaine (joueur / coach) ou membre (joueur / coach).
   Widget _buildRoleSelector(
@@ -104,8 +144,8 @@ class TeamManagementTeamMembersPanel extends StatelessWidget {
   ) {
     // Un capitaine joue sous le rôle 'captain' ; on normalise 'player' pour
     // garantir que la valeur sélectionnée existe dans la liste d'options.
-    final String effectiveValue = isCaptain &&
-            currentRole == PocketbaseDataService.roleJoueur
+    final String effectiveValue =
+        isCaptain && currentRole == PocketbaseDataService.roleJoueur
         ? PocketbaseDataService.roleCapitaine
         : currentRole;
 

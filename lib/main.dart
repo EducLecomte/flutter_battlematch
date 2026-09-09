@@ -13,9 +13,11 @@ import 'screens/team_management_screen.dart';
 import 'screens/tournois_screen.dart';
 import 'screens/widgets/tutoriel_gate.dart';
 import 'services/pocketbase_data_service.dart';
+import 'services/theme_controller.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await ThemeController.instance.init();
   await PocketbaseDataService.instance.ensureInitialized();
   runApp(const MetawarApp());
 }
@@ -25,13 +27,28 @@ class MetawarApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'MetaWar',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const AuthGate(),
-      debugShowCheckedModeBanner: false,
+    // Le mode clair/sombre (MEMO 11) est un état global modifié depuis le
+    // profil : on réécoute le contrôleur pour re-générer le MaterialApp avec
+    // le [ThemeMode] courant.
+    return ListenableBuilder(
+      listenable: ThemeController.instance,
+      builder: (BuildContext context, Widget? child) {
+        return MaterialApp(
+          title: 'MetaWar',
+          themeMode: ThemeController.instance.themeMode,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          ),
+          darkTheme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.deepPurple,
+              brightness: Brightness.dark,
+            ),
+          ),
+          home: const AuthGate(),
+          debugShowCheckedModeBanner: false,
+        );
+      },
     );
   }
 }

@@ -554,6 +554,15 @@ team_meta, estims, matched.
 - [x] M29.7 Erreurs Flutter détectées/corrigées : (a) overflow `RenderFlex` du titre `Row` sous la police Ahem des tests → `Text` enveloppé dans `Expanded` ; (b) bouton hors écran / scroll non borné → `ConstrainedBox` + `Flexible(FlexFit.loose)` + pied fixe (cf. journal) ; (c) `BoxFit.loose` (inexistant) remplacé par `FlexFit.loose`
 - [x] M29.8 Validation : `flutter analyze` sans problème, `flutter test` 56/56, `flutter build web` OK ; point 10 RESOLU dans MEMO.md, `DOC.md` à jour
 
+### M30 — Point 11 MEMO (2026-09-09) : section « Paramètres » du profil (thème, à-propos, tutoriel)
+- [x] M30.1 `app_config.dart` : identité applicative (`applicationName`, `appVersion` — à aligner sur le champ `version` de pubspec.yaml) et clé de persistance `sharedPreferencesKeyThemeMode` (`'metawar_theme_mode'`)
+- [x] M30.2 `lib/services/theme_controller.dart` : `ThemeController` (singleton `ChangeNotifier`) — 2 états `ThemeMode.light`/`ThemeMode.dark`, `init()` (lit la valeur persistée, défaut = clair, valeur inattendue → clair) et `setThemeMode()` (notifie les abonnés puis persiste `'light'`/`'dark'`)
+- [x] M30.3 `main.dart` : `main()` appelle `await ThemeController.instance.init()` avant `runApp` ; `MetawarApp.build` enveloppe le `MaterialApp` dans un `ListenableBuilder` (réécoute du contrôleur) avec `themeMode`, `theme` (clair, `ColorScheme.fromSeed seedColor: Colors.deepPurple`) et `darkTheme` (`fromSeed …, brightness: Brightness.dark`)
+- [x] M30.4 `profile_settings_section.dart` : section « Paramètres » (titre `titleMedium` bold + `Card`) — `SwitchListTile` « Mode sombre » (réécoute le contrôleur, `onChanged` → `setThemeMode`), `ListTile` « À propos de MetaWar » (`showAboutDialog`, nom/version depuis `app_config.dart`), `ListTile` « Revoir le tutoriel » (`showTutorielDialog`)
+- [x] M30.5 `profile_screen.dart` : `ProfileSettingsSection` ajoutée en bas de la colonne (après la section invitations)
+- [x] M30.6 Tests : `test/theme_controller_test.dart` (5 : défaut clair, sombre persisté rétabli, valeur inattendue → clair, `setThemeMode` sombre → état+persistance, `setThemeMode` clair → état+persistance) ; `test/profile_settings_section_test.dart` (4 : présence des 3 entrées + switch désactivé, bascule → mode sombre, re-visionnage tutoriel, à-propos via la version `1.0.0`)
+- [x] M30.7 Validation : `flutter analyze` sans problème, `flutter test` 65/65, `flutter build web` OK ; point 11 RESOLU dans MEMO.md, `DOC.md` à jour
+
     ## Journal erreurs/découvertes
 [Date | Problème | Cause racine | Règle préventive]
 - 2026-08-21 | Code jamais compilé | pubspec sans supabase_flutter |

@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 
 import '../config/app_config.dart';
+import '../models/models.dart';
 import '../utils/error_snack_bar_presenter.dart';
 import 'refreshable_screen.dart';
 import 'team_management_controller.dart';
@@ -102,77 +103,175 @@ class _TeamManagementScreenState
           ),
         ],
       ),
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TeamManagementTeamListSidebar(
-            teams: _controller.teams,
-            selectedTeamId: _controller.selectedTeam?.id,
-            tournoiNameById: _controller.tournoiNameById,
-            onTeamSelected: (team) async {
-              final bool selectionChangee =
-                  _controller.selectedTeam?.id != team.id;
-              _controller.selectedTeam = team;
-              if (selectionChangee) _controller.resetOpponents();
-              _refreshUserInterface();
-              await _controller.loadMembersForSelectedTeam();
-              _refreshUserInterface();
-            },
-          ),
-          Expanded(
-            child: _controller.selectedTeam == null
-                ? const Center(
-                    child: Text(
-                      "Sélectionnez une équipe pour commencer.",
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isCompact = constraints.maxWidth < 760;
+
+          if (isCompact) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  child: DropdownButtonFormField<Team>(
+                    initialValue: _controller.selectedTeam,
+                    isExpanded: true,
+                    decoration: const InputDecoration(
+                      labelText: 'Équipe',
+                      border: OutlineInputBorder(),
                     ),
-                  )
-                : TeamManagementTeamDetailPanel(
-                    controller: _controller,
-                    searchController: _searchController,
-                    onStateChanged: _refreshUserInterface,
-                    onSearchTextChanged: (query) async {
-                      await _controller.searchPlayers(query);
-                      if (mounted) setState(() {});
+                    items: _controller.teams.map((team) {
+                      final tournoiName =
+                          _controller.tournoiNameById[team.tournoiId] ??
+                          'Tournoi inconnu';
+                      return DropdownMenuItem<Team>(
+                        value: team,
+                        child: Text('${team.nom} ($tournoiName)'),
+                      );
+                    }).toList(),
+                    onChanged: (team) async {
+                      if (team == null) return;
+
+                      final bool selectionChangee =
+                          _controller.selectedTeam?.id != team.id;
+                      _controller.selectedTeam = team;
+                      if (selectionChangee) _controller.resetOpponents();
+                      _refreshUserInterface();
+                      await _controller.loadMembersForSelectedTeam();
+                      _refreshUserInterface();
                     },
-                    onSendInvite: _sendInvite,
-                    onRemoveMember: (player) => _teamActions.removeMember(
-                      context,
-                      _controller,
-                      player,
-                      _refreshUserInterface,
-                    ),
-                    onDeleteTeam: (team) => _teamActions.deleteTeam(
-                      context,
-                      _controller,
-                      team,
-                      _refreshUserInterface,
-                    ),
-                    onUpdateMotDePasse: (motDePasse) =>
-                        _teamActions.updateTeamMotDePasse(
-                          context,
-                          _controller,
-                          motDePasse,
-                          _refreshUserInterface,
+                  ),
+                ),
+                Expanded(
+                  child: _controller.selectedTeam == null
+                      ? const Center(
+                          child: Text(
+                            "Sélectionnez une équipe pour commencer.",
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                          ),
+                        )
+                      : TeamManagementTeamDetailPanel(
+                          controller: _controller,
+                          searchController: _searchController,
+                          onStateChanged: _refreshUserInterface,
+                          onSearchTextChanged: (query) async {
+                            await _controller.searchPlayers(query);
+                            if (mounted) setState(() {});
+                          },
+                          onSendInvite: _sendInvite,
+                          onRemoveMember: (player) => _teamActions.removeMember(
+                            context,
+                            _controller,
+                            player,
+                            _refreshUserInterface,
+                          ),
+                          onDeleteTeam: (team) => _teamActions.deleteTeam(
+                            context,
+                            _controller,
+                            team,
+                            _refreshUserInterface,
+                          ),
+                          onUpdateMotDePasse: (motDePasse) =>
+                              _teamActions.updateTeamMotDePasse(
+                                context,
+                                _controller,
+                                motDePasse,
+                                _refreshUserInterface,
+                              ),
+                          onNominateCaptain: (candidate) =>
+                              _teamActions.nominateNewCaptain(
+                                context,
+                                _controller,
+                                candidate,
+                                _refreshUserInterface,
+                              ),
+                          onMemberRoleChanged: (player, role) =>
+                              _teamActions.changeMemberRole(
+                                context,
+                                _controller,
+                                player,
+                                role,
+                                _refreshUserInterface,
+                              ),
                         ),
-                    onNominateCaptain: (candidate) =>
-                        _teamActions.nominateNewCaptain(
-                          context,
-                          _controller,
-                          candidate,
-                          _refreshUserInterface,
+                ),
+              ],
+            );
+          }
+
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TeamManagementTeamListSidebar(
+                teams: _controller.teams,
+                selectedTeamId: _controller.selectedTeam?.id,
+                tournoiNameById: _controller.tournoiNameById,
+                onTeamSelected: (team) async {
+                  final bool selectionChangee =
+                      _controller.selectedTeam?.id != team.id;
+                  _controller.selectedTeam = team;
+                  if (selectionChangee) _controller.resetOpponents();
+                  _refreshUserInterface();
+                  await _controller.loadMembersForSelectedTeam();
+                  _refreshUserInterface();
+                },
+              ),
+              Expanded(
+                child: _controller.selectedTeam == null
+                    ? const Center(
+                        child: Text(
+                          "Sélectionnez une équipe pour commencer.",
+                          style: TextStyle(fontSize: 16, color: Colors.grey),
                         ),
-                    onMemberRoleChanged: (player, role) =>
-                        _teamActions.changeMemberRole(
+                      )
+                    : TeamManagementTeamDetailPanel(
+                        controller: _controller,
+                        searchController: _searchController,
+                        onStateChanged: _refreshUserInterface,
+                        onSearchTextChanged: (query) async {
+                          await _controller.searchPlayers(query);
+                          if (mounted) setState(() {});
+                        },
+                        onSendInvite: _sendInvite,
+                        onRemoveMember: (player) => _teamActions.removeMember(
                           context,
                           _controller,
                           player,
-                          role,
                           _refreshUserInterface,
                         ),
-                  ),
-          ),
-        ],
+                        onDeleteTeam: (team) => _teamActions.deleteTeam(
+                          context,
+                          _controller,
+                          team,
+                          _refreshUserInterface,
+                        ),
+                        onUpdateMotDePasse: (motDePasse) =>
+                            _teamActions.updateTeamMotDePasse(
+                              context,
+                              _controller,
+                              motDePasse,
+                              _refreshUserInterface,
+                            ),
+                        onNominateCaptain: (candidate) =>
+                            _teamActions.nominateNewCaptain(
+                              context,
+                              _controller,
+                              candidate,
+                              _refreshUserInterface,
+                            ),
+                        onMemberRoleChanged: (player, role) =>
+                            _teamActions.changeMemberRole(
+                              context,
+                              _controller,
+                              player,
+                              role,
+                              _refreshUserInterface,
+                            ),
+                      ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

@@ -1,5 +1,24 @@
 # DOC.md — Cartographie technique MetaWar
 
+*[2026-09-09] M30 — Point 11 MEMO : section « Paramètres » du profil (thème
+clair/sombre, à-propos, re-visionnage tutoriel) (RESOLU). Nouvelle section
+« Paramètres » (`profile_settings_section.dart`) intégrée en bas de
+`ProfileScreen`, regroupant : (1) une bascule « Mode sombre » (`SwitchListTile`)
+pilotant le thème de toute l'application via `ThemeController`
+(`lib/services/theme_controller.dart`, singleton `ChangeNotifier`, 2 états
+`ThemeMode.light`/`dark`) — persistée en LOCAL dans `SharedPreferences`
+(`sharedPreferencesKeyThemeMode`, par navigateur, défaut = clair) ; le thème
+sombre est dérivé de `ColorScheme.fromSeed(seedColor: Colors.deepPurple,
+brightness: Brightness.dark)` (identité visuelle des couleurs existantes
+conservée). (2) « À propos de MetaWar » via `showAboutDialog` (nom/version
+issus de `applicationName`/`appVersion` dans `app_config.dart`). (3) « Revoir
+le tutoriel » réutilisant `showTutorielDialog` (MEMO 10). `main.dart` :
+`main()` appelle `await ThemeController.instance.init()` avant `runApp` ;
+`MetawarApp.build` enveloppe le `MaterialApp` dans un `ListenableBuilder`
+(réécoute du contrôleur) avec `themeMode` + `theme` + `darkTheme`. Tests :
+`test/theme_controller_test.dart` (5) + `test/profile_settings_section_test.dart`
+(4). Validation : `flutter analyze` sans problème, `flutter test` 65/65,
+`flutter build web` OK. Précédent :
 *[2026-09-09] M29 — Point 10 MEMO : tutoriel de bienvenue à la première
 connexion (RESOLU). À la première connexion sur l'appareil, `TutorielGate`
 (`tutoriel_gate.dart`, StatefulWidget) enveloppe `HomeShell` (côté authentifié
@@ -338,6 +357,9 @@ lib/
     profile_{info_card,invitations_section,teams_section}.dart
     profile_account_management_section.dart # Administration + suppression
                                             # de compte (cartes profil)
+    profile_settings_section.dart           # Section « Paramètres » (M30) : bascule
+                                            # clair/sombre (ThemeController),
+                                            # à-propos, re-visionnage tutoriel
     profile_delete_account_dialog.dart      # Confirmation AlertDialog
                                             # avant suppression de compte
      admin_{armeees,choix,joueurs}_tab.dart   # Onglets admin : list + actions
@@ -355,8 +377,11 @@ lib/
      tutoriel_gate.dart                 # TutorielGate (MEMO 10/M29) : affiche le
                                        # tutoriel à la 1re connexion (drapeau local
                                        # SharedPreferences), sinon laisse passer child
-   services/
-      pocketbase_data_service.dart   # Façade singleton : surface API historique
+    services/
+      theme_controller.dart             # M30 : singleton ChangeNotifier du thème
+                                        # clair/sombre (init + setThemeMode,
+                                        # persisté SharedPreferences)
+       pocketbase_data_service.dart   # Façade singleton : surface API historique
                                      # (ex-SupabaseService) → délégation totale
                                        # aux sous-services ci-dessous (~242 lg) ; garde capacité équipe (M20)
     pocketbase/

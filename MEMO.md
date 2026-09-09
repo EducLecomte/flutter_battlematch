@@ -59,9 +59,10 @@
 - ~~la premiere fois qu'un utilisateur se connecte, afficher un tutoriel d'explication/utilisation dans un dialog.~~
 - Résolu : `TutorielGate` (enveloppe de `HomeShell` dans `AuthGate`, `main.dart`) affiche le tutoriel (`tutoriel_dialog.dart`, `showTutorielDialog`) à la première connexion sur l'appareil. Le drapeau « vu » est stocké en local dans `SharedPreferences` (`sharedPreferencesKeyTutorielVu`, par navigateur) : pas de migration de schéma PocketBase. Le dialog est bloquant (barrière non dismissible), son contenu défile si trop long et le bouton de validation est en pied fixe (toujours visible). Tests : `test/tutorial_gate_test.dart` (affiché 1re fois puis plus jamais ; non affiché si drapeau posé). La re-visualisation est prévue au point 11.
 
-## 11 - Ajout de setting
-- ajouter dans le profil, une catégorie "parametres"
-- On y retrouvera un mode jour/nuit (faire attention au couleur deja utilisé, afin de garder de la visibilité)
-- on y retrouvera un showaboutdialog
-- on y retrouvera un bouton pour revoir le dialog d'explication/tutoriel
+## 11 [RESOLU] - Ajout de setting
+- ~~ajouter dans le profil, une catégorie "parametres"~~
+- ~~On y retrouvera un mode jour/nuit (faire attention au couleur deja utilisé, afin de garder de la visibilité)~~
+- ~~on y retrouvera un showaboutdialog~~
+- ~~on y retrouvera un bouton pour revoir le dialog d'explication/tutoriel~~
+- Résolu : nouvelle section « Paramètres » dans le profil (`profile_settings_section.dart`, intégrée en bas de `ProfileScreen`) regroupant : (1) une bascule « Mode sombre » (`SwitchListTile`) pilotant le thème clair/sombre de toute l'application via `ThemeController` (singleton `ChangeNotifier`, `lib/services/theme_controller.dart`), persistée en local dans `SharedPreferences` (`sharedPreferencesKeyThemeMode`, par navigateur, défaut = clair) — le thème sombre est dérivé de `ColorScheme.fromSeed(seedColor: Colors.deepPurple, brightness: Brightness.dark)` pour conserver l'identité visuelle existante (couleurs déjà utilisées) ; (2) « À propos de MetaWar » via `showAboutDialog` (nom/version issus de `applicationName`/`appVersion` dans `app_config.dart`) ; (3) « Revoir le tutoriel » réutilisant `showTutorielDialog` (MEMO 10). Le `MaterialApp` (`main.dart`) réécoute le contrôleur via `ListenableBuilder` (`themeMode` + `theme` + `darkTheme`), le toggle étant modifiable depuis le profil. Tests : `test/theme_controller_test.dart` (persistance des 2 états, valeur inattendue → clair) et `test/profile_settings_section_test.dart` (bascule, à-propos, tutoriel).
 

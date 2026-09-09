@@ -15,6 +15,7 @@ import 'widgets/profile_account_management_section.dart';
 import 'widgets/profile_delete_account_dialog.dart';
 import 'widgets/profile_info_card.dart';
 import 'widgets/profile_invitations_section.dart';
+import 'widgets/profile_settings_section.dart';
 import 'widgets/profile_teams_section.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -132,9 +133,7 @@ class _ProfileScreenState extends RefreshableScreenState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     if (_controller.isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
@@ -159,26 +158,42 @@ class _ProfileScreenState extends RefreshableScreenState<ProfileScreen> {
               isSaving: _controller.isSaving,
               onSave: _saveProfile,
             ),
+
+            const SizedBox(height: 24),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: ProfileTeamsSection(
+                    userTeams: _controller.userTeams,
+                    userTournois: _controller.userTournois,
+                    currentUserId: _controller.joueur?.id,
+                  ),
+                ),
+                const SizedBox(width: 24),
+                Expanded(
+                  child: ProfileInvitationsSection(
+                    invitations: _controller.invitations,
+                    onRespondToInvite: _respondToInvite,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 24),
+            const ProfileSettingsSection(),
+            const SizedBox(height: 24),
+
             ProfileAccountManagementSection(
               isAdmin: _controller.joueur?.admin ?? false,
               onOpenAdmin: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (dialogContext) => const AdminScreen()),
+                    builder: (dialogContext) => const AdminScreen(),
+                  ),
                 );
               },
               onRequestAccountDeletion: _handleDeleteAccount,
-            ),
-            const SizedBox(height: 24),
-            ProfileTeamsSection(
-              userTeams: _controller.userTeams,
-              userTournois: _controller.userTournois,
-              currentUserId: _controller.joueur?.id,
-            ),
-            const SizedBox(height: 24),
-            ProfileInvitationsSection(
-              invitations: _controller.invitations,
-              onRespondToInvite: _respondToInvite,
             ),
           ],
         ),
