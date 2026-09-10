@@ -14,12 +14,13 @@ import '../team_management_controller.dart';
 /// adverse), l'écran ne déclenche ces requêtes que quand l'utilisateur
 /// affiche la section.
 ///
-/// Affichage (point 6.1 MEMO) : le panneau liste les joueurs de l'équipe
-/// qui sont appariés, avec l'adversaire avec lequel ils le sont (pseudo et
-/// liste d'armée). Un joueur sans appariement n'apparaît pas ; s'il n'y a
-/// aucun appariement, rien n'est affiché. Le panneau est en lecture seule :
-/// l'appariement et l'annulation se font depuis la matrice du tableau de
-/// bord (tap sur une cellule, `toggleMatched`).
+/// Affichage (point 6.1 MEMO) : le panneau n'affiche que les appariements de
+/// l'utilisateur courant. Chaque appariement est présenté sous forme de tuile
+/// dépliable nommée d'après l'équipe adverse, listant l'adversaire apparié
+/// (pseudo et liste d'armée) ainsi que le score d'estimation correspondant.
+/// S'il n'y a aucun appariement, rien n'est affiché. Le panneau est en lecture
+/// seule : l'appariement et l'annulation se font depuis la matrice du tableau
+/// de bord (tap sur une cellule, `toggleMatched`).
 class TeamManagementMatchedPanel extends StatelessWidget {
   final TeamManagementController controller;
   final VoidCallback onStateChanged;
@@ -217,9 +218,9 @@ class TeamManagementMatchedPanel extends StatelessWidget {
     return Icons.help_outline;
   }
 
-  // Une fois les données chargées : liste des joueurs de l'équipe qui sont
-  // appariés, avec l'adversaire correspondant (point 6.1 MEMO). Rien n'est
-  // affiché s'il n'y a aucun appariement.
+  // Une fois les données chargées : liste des appariements de l'utilisateur
+  // courant, regroupés par équipe adverse, avec l'adversaire correspondant
+  // (point 6.1 MEMO). Rien n'est affiché s'il n'y a aucun appariement.
   List<Widget> _buildPairedPlayerCards(BuildContext context) {
     final List<({Joueur joueur, Team team, TeamMeta meta})> entries =
         _buildPairedEntries();

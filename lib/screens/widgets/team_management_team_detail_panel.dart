@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../models/models.dart';
 import '../team_management_controller.dart';
 import 'team_management_matched_panel.dart';
@@ -47,73 +48,90 @@ class TeamManagementTeamDetailPanel extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: Text(
-                  selectedTeam.nom,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Text(
+                    selectedTeam.nom,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
+                if (controller.isCaptain())
+                  IconButton(
+                    icon: const Icon(
+                      Icons.delete_outline,
+                      color: Colors.redAccent,
+                    ),
+                    onPressed: () => onDeleteTeam(selectedTeam),
+                  ),
+              ],
+            ),
+            const Divider(),
+            const SizedBox(height: 16),
+            if (controller.isCaptain()) ...[
+              TeamManagementTeamSettingsPanel(
+                key: ValueKey(selectedTeam.id),
+                controller: controller,
+                onUpdateMotDePasse: onUpdateMotDePasse,
+                onNominateCaptain: onNominateCaptain,
               ),
-              if (controller.isCaptain())
-                IconButton(
-                  icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                  onPressed: () => onDeleteTeam(selectedTeam),
-                ),
+              const SizedBox(height: 16),
             ],
-          ),
-          const Divider(),
-          const SizedBox(height: 16),
-          if (controller.isCaptain()) ...[
-            TeamManagementTeamSettingsPanel(
-              key: ValueKey(selectedTeam.id),
+            // Panneau léger : les adversaires ne sont chargés qu'à la demande.
+            TeamManagementMatchedPanel(
               controller: controller,
-              onUpdateMotDePasse: onUpdateMotDePasse,
-              onNominateCaptain: onNominateCaptain,
+              onStateChanged: onStateChanged,
             ),
             const SizedBox(height: 16),
-          ],
-          // Panneau léger : les adversaires ne sont chargés qu'à la demande.
-          TeamManagementMatchedPanel(
-            controller: controller,
-            onStateChanged: onStateChanged,
-          ),
-          const SizedBox(height: 16),
-          // Les deux colonnes prennent leur hauteur naturelle (lists
-          // shrinkWrap) ; la page gère le défilement.
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 3,
-                child: TeamManagementTeamMembersPanel(
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final membersPanel = TeamManagementTeamMembersPanel(
                   members: controller.members,
                   captainId: selectedTeam.capitaineId,
                   canChangeRole: controller.isCaptain(),
                   canRemoveMember: controller.canRemoveMember,
                   onRemoveMember: onRemoveMember,
                   onRoleChanged: onMemberRoleChanged,
-                ),
-              ),
-              const SizedBox(width: 16),
-              if (controller.isCaptain())
-                Expanded(
-                  flex: 2,
-                  child: TeamManagementTeamInvitePanel(
-                    searchController: searchController,
-                    searchResults: controller.searchResults,
-                    isSearching: controller.isSearching,
-                    onSearchTextChanged: onSearchTextChanged,
-                    onSendInvite: onSendInvite,
-                  ),
-                ),
-            ],
-          ),
-        ],
+                );
+                final invitePanel = TeamManagementTeamInvitePanel(
+                  searchController: searchController,
+                  searchResults: controller.searchResults,
+                  isSearching: controller.isSearching,
+                  onSearchTextChanged: onSearchTextChanged,
+                  onSendInvite: onSendInvite,
+                );
+
+                if (constraints.maxWidth < 760) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      membersPanel,
+                      if (controller.isCaptain()) ...[
+                        const SizedBox(height: 16),
+                        invitePanel,
+                      ],
+                    ],
+                  );
+                }
+
+                // Les deux colonnes prennent leur hauteur naturelle (lists
+                // shrinkWrap) ; la page gère le défilement.
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(flex: 3, child: membersPanel),
+                    const SizedBox(width: 16),
+                    if (controller.isCaptain())
+                      Expanded(flex: 2, child: invitePanel),
+                  ],
+                );
+              },
+            ),
+          ],
         ),
       ),
     );

@@ -43,8 +43,7 @@ class _TeamManagementTeamSettingsPanelState
     super.dispose();
   }
 
-  List<Joueur> get _captainCandidates =>
-      widget.controller.captainCandidates;
+  List<Joueur> get _captainCandidates => widget.controller.captainCandidates;
 
   @override
   Widget build(BuildContext context) {
@@ -60,26 +59,44 @@ class _TeamManagementTeamSettingsPanelState
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                      labelText: "Mot de passe d'accès",
-                      border: OutlineInputBorder(),
-                      helperText:
-                          "Laissez vide pour désactiver le join par mot de passe.",
-                    ),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final passwordField = TextField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(
+                    labelText: "Mot de passe d'accès",
+                    border: OutlineInputBorder(),
+                    helperText: "Laissez vide pour désactiver le join par mot de passe.",
                   ),
-                ),
-                const SizedBox(width: 12),
-                FilledButton(
-                  child: const Text("Enregistrer"),
+                );
+                final saveButton = FilledButton(
                   onPressed: () =>
                       widget.onUpdateMotDePasse(_passwordController.text),
-                ),
-              ],
+                  child: const Text("Enregistrer"),
+                );
+
+                if (constraints.maxWidth < 600) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      passwordField,
+                      const SizedBox(height: 12),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: saveButton,
+                      ),
+                    ],
+                  );
+                }
+
+                return Row(
+                  children: [
+                    Expanded(child: passwordField),
+                    const SizedBox(width: 12),
+                    saveButton,
+                  ],
+                );
+              },
             ),
             if (_captainCandidates.isNotEmpty) ...[
               const SizedBox(height: 16),

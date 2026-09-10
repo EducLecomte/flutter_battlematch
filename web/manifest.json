@@ -1,11 +1,11 @@
 {
-    "name": "flutter_metawar",
-    "short_name": "flutter_metawar",
+    "name": "Match Maker",
+    "short_name": "Match Maker",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Le Tinder du champ de bataille",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

@@ -85,10 +85,7 @@ class _TournoisScreenState extends RefreshableScreenState<TournoisScreen> {
     if (editResult == null) return;
 
     await _runTournoiOperation(
-      () => _controller.updateTournoi(
-        tournoi.id,
-        editResult.nom,
-      ),
+      () => _controller.updateTournoi(tournoi.id, editResult.nom),
       "Tournoi enregistré.",
     );
   }
@@ -139,7 +136,7 @@ class _TournoisScreenState extends RefreshableScreenState<TournoisScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("MetaWar Tournois"),
+        title: Text('$applicationName - Tournois'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),

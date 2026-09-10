@@ -94,25 +94,28 @@ class _TeamsScreenTeamAccessPanelState
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  "Choisissez votre équipe",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                const Flexible(
+                  child: Text(
+                    "Choisissez votre équipe",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                 ),
                 if (widget.equipesTournoi.isNotEmpty)
-                  Text(
-                    "${widget.equipesTournoi.length} équipe(s)",
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.outline,
-                      fontSize: 13,
+                  Flexible(
+                    child: Text(
+                      "${widget.equipesTournoi.length} équipe(s)",
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.outline,
+                        fontSize: 13,
+                      ),
                     ),
                   ),
               ],
             ),
             const SizedBox(height: 12),
             if (widget.isLoading)
-              const Expanded(
-                child: Center(child: CircularProgressIndicator()),
-              )
+              const Expanded(child: Center(child: CircularProgressIndicator()))
             else if (widget.equipesTournoi.isEmpty)
               const Expanded(
                 child: Center(
@@ -170,64 +173,142 @@ class _TeamsScreenTeamAccessPanelState
                           final bool rejointParMotDePasse =
                               !sansCapitaine && team.motDePasse.isNotEmpty;
 
-                          return Card(
-                            elevation: 1,
-                            child: ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: sansCapitaine
-                                    ? Colors.amber.shade100
-                                    : Colors.blue.shade100,
-                                child: Icon(
-                                  sansCapitaine
-                                      ? Icons.shield_outlined
-                                      : Icons.shield,
-                                  color: sansCapitaine
-                                      ? Colors.amber.shade800
-                                      : Colors.blueAccent,
-                                  size: 20,
-                                ),
-                              ),
-                              title: Text(
-                                team.nom,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              subtitle: Text(
-                                sansCapitaine
-                                    ? "Sans capitaine — disponible"
-                                    : rejointParMotDePasse
-                                        ? "Rejoignable avec mot de passe"
-                                        : "Invitation requise",
-                                style: TextStyle(
-                                  color: sansCapitaine
-                                      ? Colors.amber.shade900
-                                      : null,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              trailing: sansCapitaine
+                          return LayoutBuilder(
+                            builder: (context, constraints) {
+                              final bool wideLayout =
+                                  constraints.hasBoundedWidth &&
+                                  constraints.maxWidth >= 480;
+                              final Widget action = sansCapitaine
                                   ? FilledButton.icon(
                                       icon: const Icon(Icons.flag, size: 16),
                                       label: const Text("Devenir capitaine"),
-                                      onPressed: () =>
-                                          widget.onClaimTeam(team),
+                                      onPressed: () => widget.onClaimTeam(team),
                                     )
                                   : rejointParMotDePasse
-                                      ? OutlinedButton.icon(
-                                          icon: const Icon(Icons.key, size: 16),
-                                          label: const Text("Rejoindre"),
-                                          onPressed: () =>
-                                              _showJoinDialog(team),
-                                        )
-                                      : const Chip(
-                                          label: Text(
-                                            "Sur invitation",
-                                            style: TextStyle(fontSize: 11),
-                                          ),
-                                          visualDensity: VisualDensity.compact,
+                                  ? OutlinedButton.icon(
+                                      icon: const Icon(Icons.key, size: 16),
+                                      label: const Text("Rejoindre"),
+                                      onPressed: () => _showJoinDialog(team),
+                                    )
+                                  : const Chip(
+                                      label: Text(
+                                        "Sur invitation",
+                                        style: TextStyle(fontSize: 11),
+                                      ),
+                                      visualDensity: VisualDensity.compact,
+                                    );
+                              final Widget teamDetails = ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: CircleAvatar(
+                                  backgroundColor: sansCapitaine
+                                      ? Colors.amber.shade100
+                                      : Colors.blue.shade100,
+                                  child: Icon(
+                                    sansCapitaine
+                                        ? Icons.shield_outlined
+                                        : Icons.shield,
+                                    color: sansCapitaine
+                                        ? Colors.amber.shade800
+                                        : Colors.blueAccent,
+                                    size: 20,
+                                  ),
+                                ),
+                                title: Text(
+                                  team.nom,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  sansCapitaine
+                                      ? "Sans capitaine — disponible"
+                                      : rejointParMotDePasse
+                                      ? "Rejoignable avec mot de passe"
+                                      : "Invitation requise",
+                                  style: TextStyle(
+                                    color: sansCapitaine
+                                        ? Colors.amber.shade900
+                                        : null,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                trailing: wideLayout ? action : null,
+                              );
+
+                              return Card(
+                                elevation: 1,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 4,
+                                  ),
+                                  child: wideLayout
+                                      ? teamDetails
+                                      : Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                          children: [
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                CircleAvatar(
+                                                  backgroundColor: sansCapitaine
+                                                      ? Colors.amber.shade100
+                                                      : Colors.blue.shade100,
+                                                  child: Icon(
+                                                    sansCapitaine
+                                                        ? Icons.shield_outlined
+                                                        : Icons.shield,
+                                                    color: sansCapitaine
+                                                        ? Colors.amber.shade800
+                                                        : Colors.blueAccent,
+                                                    size: 20,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 12),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        team.nom,
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        sansCapitaine
+                                                            ? "Sans capitaine — disponible"
+                                                            : rejointParMotDePasse
+                                                            ? "Rejoignable avec mot de passe"
+                                                            : "Invitation requise",
+                                                        style: TextStyle(
+                                                          color: sansCapitaine
+                                                              ? Colors
+                                                                    .amber
+                                                                    .shade900
+                                                              : null,
+                                                          fontSize: 12,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Align(
+                                              alignment: Alignment.centerRight,
+                                              child: action,
+                                            ),
+                                          ],
                                         ),
-                            ),
+                                ),
+                              );
+                            },
                           );
                         },
                       ),

@@ -160,24 +160,38 @@ class _ProfileScreenState extends RefreshableScreenState<ProfileScreen> {
             ),
 
             const SizedBox(height: 24),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: ProfileTeamsSection(
-                    userTeams: _controller.userTeams,
-                    userTournois: _controller.userTournois,
-                    currentUserId: _controller.joueur?.id,
-                  ),
-                ),
-                const SizedBox(width: 24),
-                Expanded(
-                  child: ProfileInvitationsSection(
-                    invitations: _controller.invitations,
-                    onRespondToInvite: _respondToInvite,
-                  ),
-                ),
-              ],
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final teamsSection = ProfileTeamsSection(
+                  userTeams: _controller.userTeams,
+                  userTournois: _controller.userTournois,
+                  currentUserId: _controller.joueur?.id,
+                );
+                final invitationsSection = ProfileInvitationsSection(
+                  invitations: _controller.invitations,
+                  onRespondToInvite: _respondToInvite,
+                );
+
+                if (constraints.maxWidth < 760) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      teamsSection,
+                      const SizedBox(height: 24),
+                      invitationsSection,
+                    ],
+                  );
+                }
+
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(child: teamsSection),
+                    const SizedBox(width: 24),
+                    Expanded(child: invitationsSection),
+                  ],
+                );
+              },
             ),
 
             const SizedBox(height: 24),

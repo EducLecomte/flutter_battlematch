@@ -5,14 +5,17 @@
 // ===========================================================================
 
 /// URL racine de l'instance PocketBase hébergeant les données MetaWar.
-const String pocketBaseServerUrl = 'https://metabase.pedagogeek.fr';
+const String pocketBaseServerUrl = 'https://matchmaker.pedagogeek.fr';
 
 // ---------------------------------------------------------------------------
 // Identité de l'application
 // ---------------------------------------------------------------------------
 
 /// Nom de l'application (utilisé notamment par le dialog « À propos », MEMO 11).
-const String applicationName = 'MetaWar';
+const String applicationName = 'Match Maker';
+
+/// Sous-titre de marque affiché sous le nom de l'application.
+const String appTagline = 'le Tinder du champ de bataille';
 
 /// Version de l'application affichée dans le dialog « À propos » (MEMO 11).
 /// À garder alignée avec le champ `version` de pubspec.yaml.
@@ -58,7 +61,8 @@ const String collectionNameMatched = 'matched';
 // ---------------------------------------------------------------------------
 
 /// Clé SharedPreferences stockant la session PocketBase sérialisée.
-const String sharedPreferencesKeyAuthSession = 'metawar_pocketbase_auth_session';
+const String sharedPreferencesKeyAuthSession =
+    'metawar_pocketbase_auth_session';
 
 /// Clé SharedPreferences du drapeau « tutoriel de bienvenue déjà affiché ».
 /// Stockage local (par navigateur) : le tutoriel s'affiche à la première

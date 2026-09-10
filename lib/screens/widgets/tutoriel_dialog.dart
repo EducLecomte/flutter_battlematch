@@ -6,6 +6,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../../config/app_config.dart';
+
 /// Affiche le tutoriel de bienvenue. Bloquant (barrière non dismissible) :
 /// l'utilisateur doit le valider pour continuer.
 Future<void> showTutorielDialog(BuildContext context) {
@@ -60,9 +62,9 @@ class TutorielDialog extends StatelessWidget {
                           color: Colors.deepPurple,
                         ),
                         const SizedBox(width: 12),
-                        const Expanded(
+                        Expanded(
                           child: Text(
-                            'Bienvenue sur MetaWar !',
+                            'Bienvenue sur $applicationName !',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,

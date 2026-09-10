@@ -18,35 +18,38 @@ void main() {
       await ThemeController.instance.init();
 
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(body: ProfileSettingsSection()),
-        ),
+        const MaterialApp(home: Scaffold(body: ProfileSettingsSection())),
       );
       await tester.pumpAndSettle();
     }
 
-    testWidgets('présente la bascule thème, l\'à-propos et le tutoriel',
-        (tester) async {
+    testWidgets('présente la bascule thème, l\'à-propos et le tutoriel', (
+      tester,
+    ) async {
       await pomperSection(tester);
 
       // Bascule « Mode sombre » présente, désactivée (mode clair par défaut).
-      final SwitchListTile bascule =
-          tester.widget<SwitchListTile>(find.byType(SwitchListTile));
+      final SwitchListTile bascule = tester.widget<SwitchListTile>(
+        find.byType(SwitchListTile),
+      );
       expect(bascule.value, isFalse);
 
-      expect(find.text('À propos de MetaWar'), findsOneWidget);
+      expect(find.text('À propos de Match Maker'), findsOneWidget);
       expect(find.text('Revoir le tutoriel'), findsOneWidget);
     });
 
-    testWidgets('la bascule passe l\'application en mode sombre', (tester) async {
+    testWidgets('la bascule passe l\'application en mode sombre', (
+      tester,
+    ) async {
       await pomperSection(tester);
 
       await tester.tap(find.byType(SwitchListTile));
       await tester.pumpAndSettle();
 
       expect(ThemeController.instance.themeMode, ThemeMode.dark);
-      final SwitchListTile bascule =
-          tester.widget<SwitchListTile>(find.byType(SwitchListTile));
+      final SwitchListTile bascule = tester.widget<SwitchListTile>(
+        find.byType(SwitchListTile),
+      );
       expect(bascule.value, isTrue);
     });
 
@@ -56,13 +59,13 @@ void main() {
       await tester.tap(find.text('Revoir le tutoriel'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Bienvenue sur MetaWar !'), findsOneWidget);
+      expect(find.text('Bienvenue sur Match Maker !'), findsOneWidget);
     });
 
     testWidgets('ouvre le dialog « À propos »', (tester) async {
       await pomperSection(tester);
 
-      await tester.tap(find.text('À propos de MetaWar'));
+      await tester.tap(find.text('À propos de Match Maker'));
       await tester.pumpAndSettle();
 
       // La version de l'application est propre au dialog « À propos ».

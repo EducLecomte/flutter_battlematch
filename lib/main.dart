@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 
+import 'config/app_config.dart';
 import 'screens/login_screen.dart';
 import 'screens/profile_screen.dart';
 import 'screens/refreshable_screen.dart';
@@ -34,7 +35,7 @@ class MetawarApp extends StatelessWidget {
       listenable: ThemeController.instance,
       builder: (BuildContext context, Widget? child) {
         return MaterialApp(
-          title: 'MetaWar',
+          title: applicationName,
           themeMode: ThemeController.instance.themeMode,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
