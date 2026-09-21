@@ -1,11 +1,11 @@
 {
-    "name": "Match Maker",
-    "short_name": "Match Maker",
+    "name": "Battle match",
+    "short_name": "Battle match",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Le Tinder du champ de bataille",
+    "description": "Battle match",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

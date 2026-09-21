@@ -34,7 +34,7 @@ void main() {
       );
       expect(bascule.value, isFalse);
 
-      expect(find.text('À propos de Match Maker'), findsOneWidget);
+      expect(find.text('À propos de Battle match'), findsOneWidget);
       expect(find.text('Revoir le tutoriel'), findsOneWidget);
     });
 
@@ -59,13 +59,13 @@ void main() {
       await tester.tap(find.text('Revoir le tutoriel'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Bienvenue sur Match Maker !'), findsOneWidget);
+      expect(find.text('Bienvenue sur Battle match !'), findsOneWidget);
     });
 
     testWidgets('ouvre le dialog « À propos »', (tester) async {
       await pomperSection(tester);
 
-      await tester.tap(find.text('À propos de Match Maker'));
+      await tester.tap(find.text('À propos de Battle match'));
       await tester.pumpAndSettle();
 
       // La version de l'application est propre au dialog « À propos ».

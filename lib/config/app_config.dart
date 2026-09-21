@@ -5,17 +5,14 @@
 // ===========================================================================
 
 /// URL racine de l'instance PocketBase hébergeant les données MetaWar.
-const String pocketBaseServerUrl = 'https://matchmaker.pedagogeek.fr';
+const String pocketBaseServerUrl = 'https://battlematch.pedagogeek.fr';
 
 // ---------------------------------------------------------------------------
 // Identité de l'application
 // ---------------------------------------------------------------------------
 
 /// Nom de l'application (utilisé notamment par le dialog « À propos », MEMO 11).
-const String applicationName = 'Match Maker';
-
-/// Sous-titre de marque affiché sous le nom de l'application.
-const String appTagline = 'le Tinder du champ de bataille';
+const String applicationName = 'Battle match';
 
 /// Version de l'application affichée dans le dialog « À propos » (MEMO 11).
 /// À garder alignée avec le champ `version` de pubspec.yaml.

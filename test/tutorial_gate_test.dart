@@ -24,14 +24,14 @@ void main() {
       await tester.pumpAndSettle();
 
       // Le tutoriel est visible.
-      expect(find.text('Bienvenue sur Match Maker !'), findsOneWidget);
+      expect(find.text('Bienvenue sur Battle match !'), findsOneWidget);
 
       // La fermer (bouton) pose le drapeau local.
       await tester.tap(find.byType(ElevatedButton));
       await tester.pumpAndSettle();
       await tester.pump();
 
-      expect(find.text('Bienvenue sur Match Maker !'), findsNothing);
+      expect(find.text('Bienvenue sur Battle match !'), findsNothing);
       final preferences = await SharedPreferences.getInstance();
       expect(preferences.getBool(sharedPreferencesKeyTutorielVu), isTrue);
     });
@@ -47,7 +47,7 @@ void main() {
       await tester.pump();
       await tester.pumpAndSettle();
 
-      expect(find.text('Bienvenue sur Match Maker !'), findsNothing);
+      expect(find.text('Bienvenue sur Battle match !'), findsNothing);
       expect(tester.takeException(), isNull);
     });
   });
