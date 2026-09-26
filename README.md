@@ -1,10 +1,10 @@
-# MetaWar — Flutter Web + PocketBase
+# BattleMatch — Flutter Web + PocketBase
 
 Portage de l'application PHP MetaWar (gestion de tournois The Ninth Age :
 estimations d'équipe, matrice d'appariement) en application Flutter Web
 adossée à une instance PocketBase.
 
-- **Backend** : https://metabase.pedagogeek.fr (admin : `/_/`)
+- **Backend** : https://battlematch.pedagogeek.fr (admin : `/_/`)
 - **Legacy PHP** : dossier `php/` (référence historique uniquement)
 
 ## Architecture

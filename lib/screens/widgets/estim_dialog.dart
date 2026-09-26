@@ -83,8 +83,8 @@ class _EstimDialogState extends State<EstimDialog> {
         builder: (context, child) {
           final validationMessage = controller.validationMessage;
           return SingleChildScrollView(
-            child: SizedBox(
-              width: 400,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 400),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,

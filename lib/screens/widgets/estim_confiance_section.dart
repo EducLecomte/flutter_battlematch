@@ -26,28 +26,32 @@ class EstimConfianceSection extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        SegmentedButton<String>(
-          segments: const [
-            ButtonSegment<String>(
-              value: 'faible',
-              label: Text("Faible"),
-              icon: Icon(Icons.star_border),
-            ),
-            ButtonSegment<String>(
-              value: 'moyen',
-              label: Text("Moyen"),
-              icon: Icon(Icons.star_half),
-            ),
-            ButtonSegment<String>(
-              value: 'eleve',
-              label: Text("Élevé"),
-              icon: Icon(Icons.star),
-            ),
-          ],
-          selected: {confiance},
-          onSelectionChanged: (newSelection) {
-            onConfianceChanged(newSelection.first);
-          },
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: SegmentedButton<String>(
+            segments: const [
+              ButtonSegment<String>(
+                value: 'faible',
+                label: Text("Faible"),
+                icon: Icon(Icons.star_border),
+              ),
+              ButtonSegment<String>(
+                value: 'moyen',
+                label: Text("Moyen"),
+                icon: Icon(Icons.star_half),
+              ),
+              ButtonSegment<String>(
+                value: 'eleve',
+                label: Text("Élevé"),
+                icon: Icon(Icons.star),
+              ),
+            ],
+            selected: {confiance},
+            onSelectionChanged: (newSelection) {
+              onConfianceChanged(newSelection.first);
+            },
+          ),
         ),
       ],
     );

@@ -33,13 +33,17 @@ class EstimScoreSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              "Minimum: $scoreMin",
-              style: const TextStyle(fontSize: 14),
+            Flexible(
+              child: Text(
+                "Minimum: $scoreMin",
+                style: const TextStyle(fontSize: 14),
+              ),
             ),
-            Text(
-              "Maximum: $scoreMax",
-              style: const TextStyle(fontSize: 14),
+            Flexible(
+              child: Text(
+                "Maximum: $scoreMax",
+                style: const TextStyle(fontSize: 14),
+              ),
             ),
           ],
         ),
