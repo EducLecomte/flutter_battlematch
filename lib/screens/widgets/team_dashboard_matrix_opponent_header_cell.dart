@@ -9,6 +9,10 @@ import 'package:flutter/material.dart';
 import '../../models/models.dart';
 
 class MatrixOpponentHeaderCell extends StatelessWidget {
+  /// Hauteur de la ligne d'en-tête, partagée avec la colonne de synthèse
+  /// détachée pour garantir l'alignement des deux blocs.
+  static const double headerRowHeight = 56;
+
   final TeamMeta opponent;
   final Armee army;
   final void Function(TeamMeta opponent) onOpponentTap;
@@ -28,32 +32,35 @@ class MatrixOpponentHeaderCell extends StatelessWidget {
       verticalAlignment: TableCellVerticalAlignment.middle,
       child: InkWell(
         onTap: () => onOpponentTap(opponent),
-        child: Padding(
-          padding:
-              const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                opponent.nomJo,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
+        child: SizedBox(
+          height: headerRowHeight,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  opponent.nomJo,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              Text(
-                army.short,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.primary,
-                  fontSize: 11,
+                Text(
+                  army.short,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.primary,
+                    fontSize: 11,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

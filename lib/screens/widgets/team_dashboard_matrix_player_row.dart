@@ -44,18 +44,13 @@ class MatrixPlayerRow {
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: Container(
             color: playerColumnColor,
-            padding: const EdgeInsets.symmetric(
-              vertical: 12,
-              horizontal: 8,
-            ),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
             child: Text(
               player.nom,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: isPlayerMatched ? Colors.grey : null,
-                decoration: isPlayerMatched
-                    ? TextDecoration.lineThrough
-                    : null,
+                decoration: isPlayerMatched ? TextDecoration.lineThrough : null,
               ),
               textAlign: TextAlign.center,
             ),
@@ -75,24 +70,27 @@ class MatrixPlayerRow {
     TeamMeta opponent,
   ) {
     // Estimation réelle de ce joueur sur cet adversaire (null si vide)
-    final existingEstim = estimParJoueurEtAdversaire[
-      '${player.id}$dashboardEstimKeySeparator${opponent.id}'
-    ];
+    final existingEstim =
+        estimParJoueurEtAdversaire['${player.id}$dashboardEstimKeySeparator${opponent.id}'];
 
     return MatrixMatchupCell(
       existingEstim: existingEstim,
-      selectedChoice:
-          existingEstim == null ? null : choixParId[existingEstim.choixId],
+      selectedChoice: existingEstim == null
+          ? null
+          : choixParId[existingEstim.choixId],
       isThisMatched: pairesJoueurAdversaireAppariees.contains(
         '${player.id}$dashboardEstimKeySeparator${opponent.id}',
       ),
       isPlayerMatchedElsewhere: joueurIdsApparies.contains(player.id),
-      isOpponentMatchedElsewhere:
-          adversaireIdsApparies.contains(opponent.id),
+      isOpponentMatchedElsewhere: adversaireIdsApparies.contains(opponent.id),
       onCellTap: (currentEstim) =>
           estimActions.handleCellTap(context, player, opponent, currentEstim),
       onCellLongPress: (existingEstim) => estimActions.handleCellLongPress(
-          context, player, opponent, existingEstim),
+        context,
+        player,
+        opponent,
+        existingEstim,
+      ),
     );
   }
 }

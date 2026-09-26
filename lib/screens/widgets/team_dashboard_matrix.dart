@@ -7,18 +7,27 @@
 import 'package:flutter/material.dart';
 
 import '../../config/app_config.dart';
+import '../../logic/matrix_score_summary.dart';
 import '../../models/models.dart';
 import '../team_dashboard_controller.dart';
 import '../team_dashboard_estim_actions.dart';
 import 'team_dashboard_matrix_opponent_header_cell.dart';
 import 'team_dashboard_matrix_player_row.dart';
+import 'team_dashboard_matrix_summary_cell.dart';
 
 class TeamDashboardMatrix extends StatelessWidget {
+  /// Écart entre la grille joueurs×adversaires et les blocs de synthèse
+  /// détachés (colonne et ligne « Moy. / Δ »).
+  static const double _summaryGap = 14;
+  static const double _playerColumnWidth = 140;
+  static const double _opponentColumnWidth = 100;
+
   final TeamDashboardController controller;
   final TeamDashboardEstimActions estimActions;
   final List<TeamMeta> opponents;
   final List<Estim> estims;
   final List<Matched> matches;
+  final bool showSummary;
   final void Function(TeamMeta opponent) onOpponentHeaderTap;
 
   const TeamDashboardMatrix({
@@ -28,6 +37,7 @@ class TeamDashboardMatrix extends StatelessWidget {
     required this.opponents,
     required this.estims,
     required this.matches,
+    required this.showSummary,
     required this.onOpponentHeaderTap,
   });
 
@@ -66,65 +76,185 @@ class TeamDashboardMatrix extends StatelessWidget {
       for (final choix in controller.choiceList) choix.id: choix,
     };
 
+    // Calculs de synthèse (moyenne et delta max - min), réservés au capitaine
+    final Map<String, MatrixScoreSummary> playerSummaries = !showSummary
+        ? const {}
+        : {
+            for (final player in controller.teamMembers)
+              player.id: MatrixScoreSummaryCalculator.summarize([
+                for (final opponent in opponents)
+                  estimParJoueurEtAdversaire['${player.id}$dashboardEstimKeySeparator${opponent.id}'],
+              ]),
+          };
+    final Map<String, MatrixScoreSummary> opponentSummaries = !showSummary
+        ? const {}
+        : {
+            for (final opponent in opponents)
+              opponent.id: MatrixScoreSummaryCalculator.summarize([
+                for (final player in controller.teamMembers)
+                  estimParJoueurEtAdversaire['${player.id}$dashboardEstimKeySeparator${opponent.id}'],
+              ]),
+          };
+    final MatrixScoreSummary? totalSummary = !showSummary
+        ? null
+        : MatrixScoreSummaryCalculator.summarize([
+            for (final player in controller.teamMembers)
+              for (final opponent in opponents)
+                estimParJoueurEtAdversaire['${player.id}$dashboardEstimKeySeparator${opponent.id}'],
+          ]);
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
-        child: Table(
-          // Largeur des colonnes (première colonne Joueurs fixe,
-          // les autres identiques)
-          defaultColumnWidth: const FixedColumnWidth(100),
-          columnWidths: const {
-            0: FixedColumnWidth(140), // Colonne pour nos joueurs
-          },
-          border: TableBorder.all(color: theme.dividerColor),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. Ligne d'en-tête (Adversaires / Armées)
-            TableRow(
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerHighest
-                    .withValues(alpha: 0.5),
-              ),
+            // 1. Grille joueurs×adversaires + colonne de synthèse détachée
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Cellule d'angle
-                const TableCell(
-                  verticalAlignment: TableCellVerticalAlignment.middle,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 8,
-                    ),
-                    child: Text(
-                      "Joueurs",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
+                Table(
+                  // Largeur des colonnes (première colonne Joueurs fixe,
+                  // les autres identiques)
+                  defaultColumnWidth: const FixedColumnWidth(
+                    _opponentColumnWidth,
                   ),
+                  columnWidths: const {0: FixedColumnWidth(_playerColumnWidth)},
+                  border: TableBorder.all(color: theme.dividerColor),
+                  children: [
+                    // En-tête (Adversaires / Armées)
+                    TableRow(
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surfaceContainerHighest
+                            .withValues(alpha: 0.5),
+                      ),
+                      children: [
+                        // Cellule d'angle
+                        TableCell(
+                          verticalAlignment: TableCellVerticalAlignment.middle,
+                          child: SizedBox(
+                            height: MatrixOpponentHeaderCell.headerRowHeight,
+                            child: const Center(
+                              child: Text(
+                                "Joueurs",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                        // Les en-têtes adverses
+                        for (final opponent in opponents)
+                          MatrixOpponentHeaderCell(
+                            opponent: opponent,
+                            army: controller.armyForOpponent(
+                              opponent,
+                              fallbackName: '?',
+                            ),
+                            onOpponentTap: onOpponentHeaderTap,
+                          ),
+                      ],
+                    ),
+
+                    // Les lignes de nos joueurs
+                    for (final player in controller.teamMembers)
+                      MatrixPlayerRow(
+                        player: player,
+                        opponents: opponents,
+                        estimActions: estimActions,
+                        estimParJoueurEtAdversaire: estimParJoueurEtAdversaire,
+                        choixParId: choixParId,
+                        joueurIdsApparies: joueurIdsApparies,
+                        adversaireIdsApparies: adversaireIdsApparies,
+                        pairesJoueurAdversaireAppariees:
+                            pairesJoueurAdversaireAppariees,
+                        playerColumnColor: theme.cardColor,
+                      ).build(context),
+                  ],
                 ),
-                // Les en-têtes adverses
-                for (final opponent in opponents)
-                  MatrixOpponentHeaderCell(
-                    opponent: opponent,
-                    army:
-                        controller.armyForOpponent(opponent, fallbackName: '?'),
-                    onOpponentTap: onOpponentHeaderTap,
+                if (showSummary) ...[
+                  const SizedBox(width: _summaryGap),
+                  // Colonne de synthèse détachée (moyenne / delta par joueur)
+                  Column(
+                    children: [
+                      const SizedBox(
+                        width: _opponentColumnWidth,
+                        height: MatrixOpponentHeaderCell.headerRowHeight,
+                        child: Center(
+                          child: Text(
+                            "Moy. / Δ",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      for (final player in controller.teamMembers)
+                        SizedBox(
+                          width: _opponentColumnWidth,
+                          height: MatrixSummaryCell.cellHeight,
+                          child: MatrixSummaryCell(
+                            summary:
+                                playerSummaries[player.id] ??
+                                const MatrixScoreSummary(
+                                  count: 0,
+                                  average: null,
+                                  delta: null,
+                                ),
+                          ),
+                        ),
+                    ],
                   ),
+                ],
               ],
             ),
 
-            // 2. Les lignes de nos joueurs
-            for (final player in controller.teamMembers)
-              MatrixPlayerRow(
-                player: player,
-                opponents: opponents,
-                estimActions: estimActions,
-                estimParJoueurEtAdversaire: estimParJoueurEtAdversaire,
-                choixParId: choixParId,
-                joueurIdsApparies: joueurIdsApparies,
-                adversaireIdsApparies: adversaireIdsApparies,
-                pairesJoueurAdversaireAppariees: pairesJoueurAdversaireAppariees,
-                playerColumnColor: theme.cardColor,
-              ).build(context),
+            if (showSummary) ...[
+              SizedBox(height: _summaryGap),
+
+              // 2. Ligne de synthèse détachée (moyenne / delta par adversaire)
+              Row(
+                children: [
+                  const SizedBox(
+                    width: _playerColumnWidth,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Text(
+                        "Moy. / Δ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  for (final opponent in opponents)
+                    SizedBox(
+                      width: _opponentColumnWidth,
+                      height: MatrixSummaryCell.cellHeight,
+                      child: MatrixSummaryCell(
+                        summary:
+                            opponentSummaries[opponent.id] ??
+                            const MatrixScoreSummary(
+                              count: 0,
+                              average: null,
+                              delta: null,
+                            ),
+                      ),
+                    ),
+                  SizedBox(width: _summaryGap),
+                  // Synthèse globale, alignée sous la colonne détachée
+                  SizedBox(
+                    width: _opponentColumnWidth,
+                    height: MatrixSummaryCell.cellHeight,
+                    child: MatrixSummaryCell(
+                      summary: totalSummary!,
+                      backgroundColor: theme.colorScheme.primaryContainer
+                          .withValues(alpha: 0.5),
+                      emphasized: true,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),

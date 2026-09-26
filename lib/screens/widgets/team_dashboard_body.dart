@@ -57,11 +57,12 @@ class TeamDashboardBody extends StatelessWidget {
                     '${estim.joueurId}$dashboardEstimKeySeparator${estim.teamMetaId}':
                         estim,
                 };
-                final matchedScoreSummary = MatchedScoreSummaryCalculator.summarize(
-                  matches,
-                  estimsByKey,
-                  dashboardEstimKeySeparator,
-                );
+                final matchedScoreSummary =
+                    MatchedScoreSummaryCalculator.summarize(
+                      matches,
+                      estimsByKey,
+                      dashboardEstimKeySeparator,
+                    );
 
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -80,14 +81,15 @@ class TeamDashboardBody extends StatelessWidget {
                           opponents: opponents,
                           estims: estims,
                           matches: matches,
+                          showSummary: isCaptain,
                           onOpponentHeaderTap: (opponent) =>
                               showOpponentDetailsDialog(
-                            context,
-                            opponent: opponent,
-                            army: controller.armyForOpponent(opponent),
-                            canDelete: isCaptain,
-                            onDelete: () => onOpponentDeleted(opponent),
-                          ),
+                                context,
+                                opponent: opponent,
+                                army: controller.armyForOpponent(opponent),
+                                canDelete: isCaptain,
+                                onDelete: () => onOpponentDeleted(opponent),
+                              ),
                         ),
                       ),
                     ],
