@@ -1,72 +1,75 @@
-# DIRECTIVES AGENT (AGENTS.md)
+# DIRECTIVES AGENT (AGENTS.md) - FLUTTER & OPENCODE
 
 ## 1. ENVIRONNEMENT & SÉCURITÉ
+
 - **OS & Shell :** Debian Linux avec Bash (`/bin/bash`).
-- **Commandes :** Utiliser la syntaxe Bash standard et les outils usuel (`grep`, `find`, `ls`, `rg`, `fd`).
+- **Commandes :** Utiliser la syntaxe Bash standard et les outils usuels (`grep`, `find`, `ls`, `rg`, `fd`).
+- **Outils Flutter :** Utiliser `flutter analyze`, `flutter test`, et `dart format`.
 - **Sécurité :** Interdiction stricte d'exécuter `sudo` sans confirmation explicite de l'utilisateur.
 
 ## 2. RAISONNEMENT ET CONVERGENCE
-Tu es un agent de développement logiciel travaillant sur des projets complexes.
+
+Tu es un agent de développement logiciel expert en **Flutter et Dart**, travaillant sur des projets complexes.
 La correction, la compréhension de l'architecture et la vérification sont prioritaires sur la rapidité.
 
 ### Raisonnement
-- Pour les tâches complexes, prends le temps nécessaire pour comprendre la cause racine avant de modifier le code.
-- Ne limite pas artificiellement ton analyse à quelques phrases.
+
+- Pour les tâches complexes, prends le temps nécessaire pour comprendre la cause racine avant de modifier le code (ex: cycle de vie des widgets, fuites de mémoire, re-renders inutiles).
 - **Évite les boucles de raisonnement improductives :**
   - Ne répète pas une hypothèse sans nouvelle information.
   - Ne réexamine pas une décision déjà validée sans raison valable.
-  - N'explore pas de scénarios hypothétiques sans indice concret dans le code.
-- **Privilégie une progression claire :** Comprendre → Vérifier → Agir → Tester → Corriger → Terminer.
+- **Privilégie une progression claire :** Comprendre → Vérifier → Agir → Tester (`flutter test`) → Corriger → Terminer.
 
 ### Échecs et répétitions
-- Après un échec, analyse la cause avant de réessayer. Ne répète jamais mécaniquement une commande identique.
-- Une seconde tentative est acceptable si une modification ou une nouvelle information la justifie.
+
+- Après un échec (ex: erreur de compilation Dart, échec de test), analyse la cause avant de réessayer. Ne répète jamais mécaniquement une commande identique (`flutter run`, etc.).
 - Après deux échecs similaires sans progrès significatif, change d'approche ou formule une nouvelle hypothèse.
 
 ### Arrêt et convergence
-- Une tâche est terminée lorsque la modification demandée est réalisée, testée/vérifiée et qu'aucune erreur bloquante ne subsiste.
-- Une fois la condition d'arrêt atteinte, termine l'intervention. Ne cherche pas d'amélioration supplémentaire non demandée.
 
-## 3. ARCHITECTURE & CODE
-- **Respect du style existant :** Conforme-toi aux conventions, motifs et structures de la codebase actuelle.
+- Une tâche est terminée lorsque la modification demandée est réalisée, testée (`flutter test` / `flutter analyze`) et qu'aucune erreur ou avertissement bloquant ne subsiste.
+
+## 3. ARCHITECTURE & CODE (FLUTTER / DART)
+
+- **Respect du style existant :** Conforme-toi aux conventions Dart (Effective Dart), l'utilisation des linters configurés (`analysis_options.yaml`) et aux motifs de la codebase (Provider, Riverpod, Bloc/Cubit, GetX, etc.).
+- **Bonnes pratiques UI & Widgets :**
+  - **Immuabilité :** Utiliser `const` pour les constructeurs de widgets chaque fois que c'est possible afin d'optimiser les performances de rendu.
+  - **Découpage :** Éviter les méthodes de construction trop longues (`build` géants) ; extraire les sous-parties en de petits `StatelessWidget` ou `StatefulWidget` dédiés.
+  - **Gestion d'état :** Respecter strictement la brique de gestion d'état choisie dans le projet (pas de manipulation hasardeuse de `setState` s'il y a un gestionnaire d'état global/local en place).
 - **Modifications chirurgicales :** Inspecte le contexte et diagnostique la cause racine avant d'éditer. Modifie uniquement le code nécessaire.
-- **Portée des refactorings :**
-  - Ne découpe ou refactore un fichier existant que si la tâche le demande explicitement ou si cela bloque directement la résolution.
-  - Ne transforme pas une correction ciblée en refactorisation générale du projet.
 - **Qualité du code :**
-  - Pour du nouveau code : cherche la modularité, la clarté et un nommage explicite.
-  - Évite les valeurs magiques lorsqu'elles représentent une règle métier ou une configuration non évidente (sans pour autant extraire inutilement les valeurs triviales comme `0` ou `[]`).
-  - Aucun bloc d'erreur vide (`catch` masqué interdit).
+  - Aucun bloc d'erreur vide (`catch` masqué ou `catch (_) {}` sans journalisation ou traitement interdit).
+  - Gestion rigoureuse des types nuls (`null safety` stricte).
 
 ## 4. GESTION DU CONTEXTE
+
 - Priorise la lecture ciblée (plages de lignes `start_line`-`end_line`) plutôt que d'ouvrir de volumineux fichiers entiers sans nécessité.
-- Évite de relire des fichiers ou de réexécuter des commandes dont le résultat est déjà présent dans l'historique récent.
-- Si la tâche s'allonge, conserve uniquement les faits établis et les conclusions utiles pour faire avancer le problème.
+- Évite de relire des fichiers ou de réexécuter des commandes (`flutter pub get`, etc.) dont le résultat est déjà présent dans l'historique récent.
 
 ## 5. SUIVI ET SUIVI D'AVANCEMENT
+
 - **Fichier `TASKS.md` :**
   - À créer et maintenir à la racine **uniquement** si une tâche complexe comporte plusieurs étapes indépendantes (`- [ ]` / `- [x]`).
-  - Ne pas créer de `TASKS.md` pour un correctif simple ou une action triviale.
-  - Marquer une étape comme terminée uniquement après sa réalisation ET sa vérification.
 - **Mémoire projet (MCP RAG) :**
-  - Enregistrer dans le RAG uniquement les informations d'une valeur durable pour les sessions futures (décisions architecturales majeures, contraintes métier clés, problèmes complexes résolus).
-  - Ne pas surcharger la mémoire avec des détails de bugs temporaires ou triviaux.
+  - Enregistrer dans le RAG les choix architecturaux majeurs (ex: choix du state management, design system, gestion des routes/navigation).
 
 ## 6. DOCUMENTATION PROJET
-- **`DOC.md` :** À mettre à jour uniquement si la structure globale, l'architecture ou les flux de données du projet ont réellement changé.
-- **`README.md` :** À mettre à jour uniquement si les changements affectent les fonctionnalités publiques, l'installation, ou les commandes d'utilisation.
+
+- **`DOC.md` :** À mettre à jour si l'architecture globale ou les flux de données changent.
+- **`README.md` :** À mettre à jour si les commandes d'installation, de build (ex: `flutter build`, `build_runner`) ou les dépendances majeures évoluent.
 
 ## 7. REGISTRE DES ERREURS
+
 - Consulter le registre ci-dessous avant d'exécuter des correctifs sur des modules complexes.
-- Après la résolution d'un bug vicieux ou récurrent, ajouter une entrée synthétique avec une règle préventive réutilisable (sans consigner les simples erreurs de frappe ou de syntaxe).
 
 ### Active Knowledge & Error Log
+
 *Format d'entrée : Date/Contexte | Problème rencontré | Cause racine | Règle préventive*
-- 2026-09-08 / Colorpicker admin (M27) | Assertion « RenderShrinkWrappingViewport does not support returning intrinsic dimensions » dans le contenu d'un dialog d'appréciation | `AlertDialog` calcule la largeur intrinsèque de son contenu pour se dimensionner ; un viewport `shrinkWrap` (`GridView`/`ListView`) ne supporte pas les dimensions intrinsèques | Ne jamais placer un viewport shrink-wrap comme contenu direct d'un `AlertDialog` : utiliser `Wrap`, `Column`/`Row` ou un layout de hauteur fixe (borné via `ConstrainedBox` si besoin)
-- 2026-09-09 / Touche Entrée login (M28) | `onFieldSubmitted: (_) => onSubmit` (sans `()`) compile sans avertissement mais la soumission n'est jamais exécutée | Dans une fonction fléchée, le callback sans `()` est une tear-off (produit la fonction sans l'appeler) ; Dart autorise le retour d'une valeur dans un contexte `void`, donc l'analyseur ne signale rien | Pour un callback `ValueChanged<String>`, écrire toujours `(_) => callback()` avec les `()`, jamais la tear-off nue `(_) => callback`
-- 2026-09-09 / Tutoriel de bienvenue (M29) | Bouton de validation du dialog hors écran (tests : tap manqué, y≈734 sur 800×600 ; prod : écrans courts) | `Dialog` n'applique qu'un `minWidth` (280) par défaut et ne borne PAS la hauteur de son enfant : un `SingleChildScrollView` s'étale sur la hauteur de son contenu (police Ahem très haute en tests) au lieu de déborder en défilement | Pour un dialog au contenu variable, borner explicitement la hauteur (`ConstrainedBox(maxHeight: écran - insets)`) et placer l'action de validation dans un **pied fixe** hors de la zone `Flexible`/`SingleChildScrollView` (contenu défilant dans `Flexible(fit: FlexFit.loose)` — `BoxFit.loose` n'existe pas)
+
+- Ex: 2026-06 | `setState()` called during build | Modification de l'état asynchrone dans le constructeur ou initState | Utiliser des callbacks ou post-frame callbacks si nécessaire.
 
 ## 8. CONVENTIONS GIT
+
 - Commits atomiques : un changement logique par commit.
 - Conventional Commits : `<type>(<scope>) : <description>` (`feat`, `fix`, `refactor`, `docs`, `style`, `test`, `chore`).
 - Ne créer de commit qu'à la demande explicite de l'utilisateur ou en fin de tâche validée.

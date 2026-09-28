@@ -3,6 +3,7 @@
 // (matrix_score_summary.dart)
 // ===========================================================================
 
+import '../config/app_config.dart';
 import '../models/models.dart';
 import 'estim_score_calculator.dart';
 
@@ -23,6 +24,16 @@ class MatrixScoreSummary {
 
 /// Calcule la moyenne et le delta (amplitude max - min) d'une série d'estimations.
 abstract final class MatrixScoreSummaryCalculator {
+  /// Renvoie la moyenne inverse d'une moyenne d'estimation : soustraction de la
+  /// moyenne au score maximum de l'échelle 0-20 (une moyenne de 8 devient 12).
+  /// Renvoie `null` si la moyenne est absente.
+  static double? invertedAverage(double? average) {
+    if (average == null) {
+      return null;
+    }
+    return estimScoreMaximum - average;
+  }
+
   /// Calcule le résumé pour une séquence d'estimations (éventuellement nulles ou sans score).
   static MatrixScoreSummary summarize(Iterable<Estim?> estims) {
     final midpoints = <double>[];
@@ -35,11 +46,7 @@ abstract final class MatrixScoreSummaryCalculator {
     }
 
     if (midpoints.isEmpty) {
-      return const MatrixScoreSummary(
-        count: 0,
-        average: null,
-        delta: null,
-      );
+      return const MatrixScoreSummary(count: 0, average: null, delta: null);
     }
 
     var min = midpoints.first;

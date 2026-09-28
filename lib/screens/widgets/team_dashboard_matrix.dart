@@ -95,13 +95,6 @@ class TeamDashboardMatrix extends StatelessWidget {
                   estimParJoueurEtAdversaire['${player.id}$dashboardEstimKeySeparator${opponent.id}'],
               ]),
           };
-    final MatrixScoreSummary? totalSummary = !showSummary
-        ? null
-        : MatrixScoreSummaryCalculator.summarize([
-            for (final player in controller.teamMembers)
-              for (final opponent in opponents)
-                estimParJoueurEtAdversaire['${player.id}$dashboardEstimKeySeparator${opponent.id}'],
-          ]);
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -212,7 +205,8 @@ class TeamDashboardMatrix extends StatelessWidget {
             if (showSummary) ...[
               SizedBox(height: _summaryGap),
 
-              // 2. Ligne de synthèse détachée (moyenne / delta par adversaire)
+              // 2. Ligne de synthèse détachée (moyenne inverse / delta par
+              // adversaire)
               Row(
                 children: [
                   const SizedBox(
@@ -220,7 +214,7 @@ class TeamDashboardMatrix extends StatelessWidget {
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 12),
                       child: Text(
-                        "Moy. / Δ",
+                        "Moy. inv. / Δ",
                         style: TextStyle(fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
@@ -238,20 +232,9 @@ class TeamDashboardMatrix extends StatelessWidget {
                               average: null,
                               delta: null,
                             ),
+                        inverseAverage: true,
                       ),
                     ),
-                  SizedBox(width: _summaryGap),
-                  // Synthèse globale, alignée sous la colonne détachée
-                  SizedBox(
-                    width: _opponentColumnWidth,
-                    height: MatrixSummaryCell.cellHeight,
-                    child: MatrixSummaryCell(
-                      summary: totalSummary!,
-                      backgroundColor: theme.colorScheme.primaryContainer
-                          .withValues(alpha: 0.5),
-                      emphasized: true,
-                    ),
-                  ),
                 ],
               ),
             ],

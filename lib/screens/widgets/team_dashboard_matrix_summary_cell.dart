@@ -19,14 +19,16 @@ class MatrixSummaryCell extends StatelessWidget {
   static const double lineSpacing = 2;
 
   final MatrixScoreSummary summary;
-  final Color? backgroundColor;
-  final bool emphasized;
+
+  /// Affiche la moyenne inverse (score maximum - moyenne) au lieu de la
+  /// moyenne brute. Le delta affiché est inchangé : l'amplitude max - min est
+  /// invariante par inversion sur l'échelle 0-20.
+  final bool inverseAverage;
 
   const MatrixSummaryCell({
     super.key,
     required this.summary,
-    this.backgroundColor,
-    this.emphasized = false,
+    this.inverseAverage = false,
   });
 
   @override
@@ -36,7 +38,10 @@ class MatrixSummaryCell extends StatelessWidget {
     final String deltaText;
 
     if (summary.hasData) {
-      averageText = summary.average!.toStringAsFixed(scoreSummaryDecimalPlaces);
+      final double displayedAverage = inverseAverage
+          ? MatrixScoreSummaryCalculator.invertedAverage(summary.average)!
+          : summary.average!;
+      averageText = displayedAverage.toStringAsFixed(scoreSummaryDecimalPlaces);
       deltaText =
           'Δ ${summary.delta!.toStringAsFixed(scoreSummaryDecimalPlaces)}';
     } else {
@@ -48,7 +53,9 @@ class MatrixSummaryCell extends StatelessWidget {
 
     return Tooltip(
       message: summary.hasData
-          ? "Moyenne : $averageText\nDelta (max - min) : $deltaText"
+          ? (inverseAverage
+                ? "Moyenne inverse ($estimScoreMaximum - moyenne) : $averageText\nDelta (max - min) : $deltaText"
+                : "Moyenne : $averageText\nDelta (max - min) : $deltaText")
           : "Aucune estimation renseignée",
       child: Container(
         margin: const EdgeInsets.symmetric(
@@ -58,11 +65,11 @@ class MatrixSummaryCell extends StatelessWidget {
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
         decoration: BoxDecoration(
-          color: backgroundColor ?? theme.colorScheme.surfaceContainerHighest,
+          color: theme.colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(cornerRadius),
           border: Border.all(
-            color: accentColor.withValues(alpha: emphasized ? 0.6 : 0.25),
-            width: emphasized ? 1.5 : 1,
+            color: accentColor.withValues(alpha: 0.25),
+            width: 1,
           ),
           boxShadow: [
             BoxShadow(

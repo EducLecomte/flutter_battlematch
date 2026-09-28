@@ -77,11 +77,30 @@ void main() {
       );
 
       // midpoints: 7.0, 10.0, 13.0 -> sum: 30.0 -> average: 10.0, max: 13.0, min: 7.0, delta: 6.0
-      final summary = MatrixScoreSummaryCalculator.summarize([estim1, estim2, estim3]);
+      final summary = MatrixScoreSummaryCalculator.summarize([
+        estim1,
+        estim2,
+        estim3,
+      ]);
       expect(summary.hasData, isTrue);
       expect(summary.count, 3);
       expect(summary.average, 10.0);
       expect(summary.delta, 6.0);
+    });
+
+    test(
+      'renvoie la moyenne inverse par soustraction au score maximum (0-20)',
+      () {
+        expect(MatrixScoreSummaryCalculator.invertedAverage(8.0), 12.0);
+        expect(MatrixScoreSummaryCalculator.invertedAverage(10.0), 10.0);
+        expect(MatrixScoreSummaryCalculator.invertedAverage(0.0), 20.0);
+        expect(MatrixScoreSummaryCalculator.invertedAverage(20.0), 0.0);
+        expect(MatrixScoreSummaryCalculator.invertedAverage(7.5), 12.5);
+      },
+    );
+
+    test('renvoie null quand la moyenne est absente', () {
+      expect(MatrixScoreSummaryCalculator.invertedAverage(null), isNull);
     });
   });
 }
