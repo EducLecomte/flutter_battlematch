@@ -12,12 +12,14 @@ class TeamManagementTeamSettingsPanel extends StatefulWidget {
   final TeamManagementController controller;
   final ValueChanged<String> onUpdateMotDePasse;
   final ValueChanged<Joueur> onNominateCaptain;
+  final void Function(bool, bool, bool) onUpdateOptions;
 
   const TeamManagementTeamSettingsPanel({
     super.key,
     required this.controller,
     required this.onUpdateMotDePasse,
     required this.onNominateCaptain,
+    required this.onUpdateOptions,
   });
 
   @override
@@ -28,6 +30,9 @@ class TeamManagementTeamSettingsPanel extends StatefulWidget {
 class _TeamManagementTeamSettingsPanelState
     extends State<TeamManagementTeamSettingsPanel> {
   late final TextEditingController _passwordController;
+  late bool _membresVoirSynthese;
+  late bool _membresMatcher;
+  late bool _membresEditerEstims;
 
   @override
   void initState() {
@@ -35,6 +40,16 @@ class _TeamManagementTeamSettingsPanelState
     _passwordController = TextEditingController(
       text: widget.controller.selectedTeam?.motDePasse ?? '',
     );
+    final team = widget.controller.selectedTeam;
+    if (team != null) {
+      _membresVoirSynthese = team.membresVoirSynthese;
+      _membresMatcher = team.membresMatcher;
+      _membresEditerEstims = team.membresEditerEstims;
+    } else {
+      _membresVoirSynthese = false;
+      _membresMatcher = false;
+      _membresEditerEstims = false;
+    }
   }
 
   @override
@@ -95,6 +110,57 @@ class _TeamManagementTeamSettingsPanelState
                     const SizedBox(width: 12),
                     saveButton,
                   ],
+                );
+              },
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              "Permissions des membres",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            SwitchListTile(
+              title: const Text("Voir les colonnes Moy. / Δ"),
+              subtitle: const Text("Permet aux membres (non-capitaines) de voir les colonnes Moy. / Δ."),
+              value: _membresVoirSynthese,
+              onChanged: (bool value) {
+                setState(() {
+                  _membresVoirSynthese = value;
+                });
+                widget.onUpdateOptions(
+                  _membresVoirSynthese,
+                  _membresMatcher,
+                  _membresEditerEstims,
+                );
+              },
+            ),
+            SwitchListTile(
+              title: const Text("Matcher les parties"),
+              subtitle: const Text("Permet aux membres (non-capitaines) de matcher les parties."),
+              value: _membresMatcher,
+              onChanged: (bool value) {
+                setState(() {
+                  _membresMatcher = value;
+                });
+                widget.onUpdateOptions(
+                  _membresVoirSynthese,
+                  _membresMatcher,
+                  _membresEditerEstims,
+                );
+              },
+            ),
+            SwitchListTile(
+              title: const Text("Modifier les estimations des autres"),
+              subtitle: const Text("Permet aux membres (non-capitaines) de modifier les estimations des autres."),
+              value: _membresEditerEstims,
+              onChanged: (bool value) {
+                setState(() {
+                  _membresEditerEstims = value;
+                });
+                widget.onUpdateOptions(
+                  _membresVoirSynthese,
+                  _membresMatcher,
+                  _membresEditerEstims,
                 );
               },
             ),

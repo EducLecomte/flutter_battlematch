@@ -1,6 +1,6 @@
 // ===========================================================================
-// Tableau de bord d’équipe (team_dashboard_screen.dart)
-// Écran principal affichant la matrice d’estimations et d’appariement.
+// Tableau de bord d'équipe (team_dashboard_screen.dart)
+// Écran principal affichant la matrice d'estimations et d'appariement.
 // La logique métier vit dans TeamDashboardController ; le rendu dans
 // lib/screens/widgets/team_dashboard_*.dart.
 // ===========================================================================
@@ -92,6 +92,8 @@ class _TeamDashboardScreenState extends State<TeamDashboardScreen> {
         controller: _controller,
         estimActions: _estimActions,
         isCaptain: isCaptain,
+        canViewSummary: _controller.canViewSummary(),
+        canToggleMatched: _controller.canToggleMatched(),
         onOpponentDeleted: _deleteOpponent,
       ),
     );

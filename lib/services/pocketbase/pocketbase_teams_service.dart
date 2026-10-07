@@ -84,6 +84,24 @@ class PocketbaseTeamsService {
     return getTeam(teamId);
   }
 
+  /// Met à jour les options de permissions de l'équipe (réservé au capitaine).
+  Future<Team> updateTeamOptions(
+    String teamId, {
+    required bool membresVoirSynthese,
+    required bool membresMatcher,
+    required bool membresEditerEstims,
+  }) async {
+    await _holder.clientPocketBase.collection(collectionNameTeams).update(
+      teamId,
+      body: {
+        'membres_voir_synthese': membresVoirSynthese,
+        'membres_matcher': membresMatcher,
+        'membres_editer_estims': membresEditerEstims,
+      },
+    );
+    return getTeam(teamId);
+  }
+
   /// Récupère les équipes dont l'utilisateur est membre ayant ACCEPTÉ.
   Future<List<Team>> getTeamsForUser(String userId) async {
     try {

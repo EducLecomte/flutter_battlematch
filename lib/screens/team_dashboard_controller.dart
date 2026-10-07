@@ -1,5 +1,5 @@
 // ===========================================================================
-// Contrôleur du tableau de bord d’équipe (team_dashboard_controller.dart)
+// Contrôleur du tableau de bord d'équipe (team_dashboard_controller.dart)
 // Détient les données de référence, les flux temps réel et les règles
 // métier (rôles capitaine/joueur, appariements, estimations).
 // ===========================================================================
@@ -13,15 +13,15 @@ class TeamDashboardController {
   final PocketbaseDataService _pocketbaseService =
       PocketbaseDataService.instance;
 
-  // Profil de l’utilisateur actuellement connecté
+  // Profil de l'utilisateur actuellement connecté
   Joueur? currentUserProfile;
 
   // Listes de référence statiques chargées au démarrage
   List<Armee> armies = [];
   List<Choix> choiceList = [];
 
-  // Liste des membres acceptés qui jouent dans l’équipe (les coachs sont
-  // exclus : ils n’ont pas de ligne dans la matrice des appariements).
+  // Liste des membres acceptés qui jouent dans l'équipe (les coachs sont
+  // exclus : ils n'ont pas de ligne dans la matrice des appariements).
   List<Joueur> teamMembers = [];
 
   // Flux temps réel créés UNE seule fois : des streams récréés à chaque
@@ -40,7 +40,7 @@ class TeamDashboardController {
   });
 
   // Charge le profil connecté, les armées, les choix et les membres
-  // acceptés. Retourne un message d’erreur, ou null en cas de succès.
+  // acceptés. Retourne un message d'erreur, ou null en cas de succès.
   Future<String?> loadReferenceAndTeamData() async {
     try {
       currentUserProfile =
@@ -71,7 +71,7 @@ class TeamDashboardController {
     await _pocketbaseService.deleteTeamMeta(opponentId);
   }
 
-  // Résout l’armée de référence d'un joueur de la méta adverse.
+  // Résout l'armée de référence d'un joueur de la méta adverse.
   Armee armyForOpponent(TeamMeta opponent, {String fallbackName = 'Inconnue'}) {
     return armies.firstWhere(
       (army) => army.id == opponent.armeeId,
@@ -79,22 +79,42 @@ class TeamDashboardController {
     );
   }
 
-  // Vérifie si l’utilisateur connecté est le capitaine.
+  // Vérifie si l'utilisateur connecté est le capitaine.
   bool isCaptain() {
     if (currentUserProfile == null) return false;
     return team.capitaineId == currentUserProfile!.id;
   }
 
-  // Vérifie si l’utilisateur courant a le droit d’éditer l’estimation de
+  // Vérifie si l'utilisateur courant peut voir les colonnes de synthèse
+  // (Moy. / Δ) : le capitaine toujours, les membres si l'option est activée.
+  bool canViewSummary() {
+    if (isCaptain()) return true;
+    return team.membresVoirSynthese;
+  }
+
+  // Vérifie si l'utilisateur courant peut matcher les parties (toggle
+  // matched) : le capitaine toujours, les membres si l'option est activée.
+  bool canToggleMatched() {
+    if (isCaptain()) return true;
+    return team.membresMatcher;
+  }
+
+  // Vérifie si l'utilisateur courant a le droit d'éditer l'estimation de
   // ce joueur : chaque joueur édite les siennes, le capitaine édite celles
-  // de toute son équipe.
+  // de toute son équipe, et les membres si l'option est activée.
   bool canEditEstimateOf(Joueur player) {
     if (currentUserProfile == null) return false;
     if (currentUserProfile!.id == player.id) return true;
-    return isCaptain();
+    if (isCaptain()) return true;
+    return team.membresEditerEstims;
   }
 
-  // Verrouille/déverrouille l’appariement. Retourne false si l’appariement
+  // Nouvelles méthodes pour une meilleure séparation des responsabilités
+  bool isCaptainOrCanViewSummary() => isCaptain() || team.membresVoirSynthese;
+  bool isCaptainOrCanToggleMatched() => isCaptain() || team.membresMatcher;
+  bool isCaptainOrCanEditEstims() => isCaptain() || team.membresEditerEstims;
+
+  // Verrouille/déverrouille l'appariement. Retourne false si l'appariement
   // est impossible (joueur ou adversaire déjà apparié ailleurs).
   Future<bool> toggleMatched(Joueur player, TeamMeta opponent) async {
     try {

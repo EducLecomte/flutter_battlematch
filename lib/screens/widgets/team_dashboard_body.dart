@@ -20,6 +20,8 @@ class TeamDashboardBody extends StatelessWidget {
   final TeamDashboardController controller;
   final TeamDashboardEstimActions estimActions;
   final bool isCaptain;
+  final bool canViewSummary;
+  final bool canToggleMatched;
   final Future<void> Function(TeamMeta opponent) onOpponentDeleted;
 
   const TeamDashboardBody({
@@ -27,6 +29,8 @@ class TeamDashboardBody extends StatelessWidget {
     required this.controller,
     required this.estimActions,
     required this.isCaptain,
+    required this.canViewSummary,
+    required this.canToggleMatched,
     required this.onOpponentDeleted,
   });
 
@@ -69,7 +73,12 @@ class TeamDashboardBody extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      TeamDashboardModeBanner(isCaptain: isCaptain),
+                      TeamDashboardModeBanner(
+                        isCaptain: isCaptain,
+                        canToggleMatched: canToggleMatched,
+                        canViewSummary: canViewSummary,
+                        canEditEstims: controller.isCaptainOrCanEditEstims(),
+                      ),
                       const SizedBox(height: 16),
                       TeamDashboardScoreSummary(summary: matchedScoreSummary),
                       if (matchedScoreSummary.matchedCount > 0)
@@ -81,7 +90,7 @@ class TeamDashboardBody extends StatelessWidget {
                           opponents: opponents,
                           estims: estims,
                           matches: matches,
-                          showSummary: isCaptain,
+                          showSummary: canViewSummary,
                           onOpponentHeaderTap: (opponent) =>
                               showOpponentDetailsDialog(
                                 context,

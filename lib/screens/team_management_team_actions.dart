@@ -133,6 +133,34 @@ class TeamManagementTeamActions {
     }
   }
 
+  // Met à jour les options de permissions des membres de l'équipe.
+  Future<void> updateTeamOptions(
+    BuildContext context,
+    TeamManagementController controller,
+    bool membresVoirSynthese,
+    bool membresMatcher,
+    bool membresEditerEstims,
+    VoidCallback onStateChanged,
+  ) async {
+    final Team? selectedTeam = controller.selectedTeam;
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    if (selectedTeam == null || !controller.isCaptain()) return;
+
+    try {
+      final Team updatedTeam = await _pocketbaseService.updateTeamOptions(
+        selectedTeam.id,
+        membresVoirSynthese: membresVoirSynthese,
+        membresMatcher: membresMatcher,
+        membresEditerEstims: membresEditerEstims,
+      );
+      controller.replaceTeam(updatedTeam);
+      onStateChanged();
+    } catch (optionsError) {
+      showErrorSnackBarUsingMessenger(
+          messenger, "Erreur des options : $optionsError");
+    }
+  }
+
   // Transfère la capitainerie à un membre accepté.
   Future<void> nominateNewCaptain(
     BuildContext context,

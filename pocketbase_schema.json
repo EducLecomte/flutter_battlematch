@@ -208,6 +208,33 @@
         "autogeneratePattern": ""
       },
       {
+        "type": "bool",
+        "id": "f_membresvs001",
+        "name": "membres_voir_synthese",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "default": false
+      },
+      {
+        "type": "bool",
+        "id": "f_membresma001",
+        "name": "membres_matcher",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "default": false
+      },
+      {
+        "type": "bool",
+        "id": "f_membresee001",
+        "name": "membres_editer_estims",
+        "system": false,
+        "hidden": false,
+        "presentable": false,
+        "default": false
+      },
+      {
         "type": "autodate",
         "id": "autodate2990389176",
         "name": "created",

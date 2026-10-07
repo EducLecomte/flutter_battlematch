@@ -212,6 +212,19 @@ class PocketbaseDataService {
   Future<Team> updateTeamMotDePasse(String teamId, String motDePasse) =>
       _serviceTeams.updateTeamMotDePasse(teamId, motDePasse);
 
+  Future<Team> updateTeamOptions(
+    String teamId, {
+    required bool membresVoirSynthese,
+    required bool membresMatcher,
+    required bool membresEditerEstims,
+  }) =>
+      _serviceTeams.updateTeamOptions(
+        teamId,
+        membresVoirSynthese: membresVoirSynthese,
+        membresMatcher: membresMatcher,
+        membresEditerEstims: membresEditerEstims,
+      );
+
   Future<Team> reclamerEquipeEnCapitaine(String teamId) async {
     await _verifierCapaciteAjoutJoueur(teamId);
     return _serviceTeamAccess.reclamerEquipeEnCapitaine(teamId);
