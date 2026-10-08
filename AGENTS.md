@@ -67,6 +67,7 @@ La correction, la compréhension de l'architecture et la vérification sont prio
 *Format d'entrée : Date/Contexte | Problème rencontré | Cause racine | Règle préventive*
 
 - Ex: 2026-06 | `setState()` called during build | Modification de l'état asynchrone dans le constructeur ou initState | Utiliser des callbacks ou post-frame callbacks si nécessaire.
+- 2026-10 | Import PocketBase du schéma | L'aperçu d'import menaçait de supprimer des collections et leurs données (ex: `joueurs`) | L'import PocketBase est une restauration miroir par ID de collection : toute collection présente en BDD mais absente du fichier est supprimée. L'ancien `pocketbase_schema.json` n'avait pas les 5 collections système (`_superusers`, `_authOrigins`, `_externalAuths`, `_mfas`, `_otps`) → risque de suppression de l'admin et des données système | Avant tout import : exporter le schéma réel de la BDD live (collections système incluses), vérifier la correspondance des IDs par diff, puis appliquer les modifications sur cet export. Fichier de référence actuel : `pb_schema.json`.
 
 ## 8. CONVENTIONS GIT
 

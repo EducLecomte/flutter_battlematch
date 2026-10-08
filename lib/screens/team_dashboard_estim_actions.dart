@@ -67,9 +67,9 @@ class TeamDashboardEstimActions {
     );
   }
 
-  // Gère le clic sur une cellule de la matrice : le capitaine
-  // verrouille/déverrouille l'appariement, un joueur normal édite son
-  // estimation sur sa propre ligne.
+  // Gère le clic sur une cellule de la matrice : le capitaine (ou un
+  // membre si l'option « matcher » est activée) verrouille/déverrouille
+  // l'appariement, sinon un joueur édite une estimation s'il y est en droit.
   Future<void> handleCellTap(
     BuildContext context,
     Joueur player,
@@ -78,7 +78,7 @@ class TeamDashboardEstimActions {
   ) async {
     if (dashboardController.currentUserProfile == null) return;
 
-    if (dashboardController.isCaptain()) {
+    if (dashboardController.canToggleMatched()) {
       final pairingSucceeded =
           await dashboardController.toggleMatched(player, opponent);
       if (!pairingSucceeded && context.mounted) {
