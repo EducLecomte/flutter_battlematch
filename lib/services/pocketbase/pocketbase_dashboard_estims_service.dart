@@ -34,14 +34,20 @@ class PocketbaseDashboardEstimsService {
               '&& team_meta_id = "${_holder.echapperFiltrePocketBase(estim.teamMetaId)}"',
         );
 
+    final Map<String, dynamic> corps = estim.toJson();
+    final String? modifieParId = _holder.currentUserId;
+    if (modifieParId != null) {
+      corps['modifie_par'] = modifieParId;
+    }
+
     if (existants.isNotEmpty) {
       await _holder.clientPocketBase
           .collection(collectionNameEstims)
-          .update(existants.first.id, body: estim.toJson());
+          .update(existants.first.id, body: corps);
     } else {
       await _holder.clientPocketBase
           .collection(collectionNameEstims)
-          .create(body: estim.toJson());
+          .create(body: corps);
     }
   }
 

@@ -12,6 +12,8 @@ class Estim {
   final int? scoreMax;
   final String confiance; // 'faible', 'moyen', 'eleve'
   final String? commentaire;
+  final String? modifieParId; // Dernier éditeur (relation joueurs)
+  final DateTime? updated; // Dernière modification (autodate PocketBase)
 
   Estim({
     required this.joueurId,
@@ -23,9 +25,12 @@ class Estim {
     this.scoreMax,
     this.confiance = 'moyen',
     this.commentaire,
+    this.modifieParId,
+    this.updated,
   });
 
   factory Estim.fromPocketBaseRecord(RecordModel record) {
+    final String? updatedBrut = record.get<String?>('updated', null);
     return Estim(
       joueurId: record.get<String>('joueur_id'),
       teamId: record.get<String>('team_id'),
@@ -36,6 +41,8 @@ class Estim {
       scoreMax: record.get<int?>('score_max', null),
       confiance: record.get<String>('confiance', 'moyen'),
       commentaire: record.get<String?>('commentaire', null),
+      modifieParId: record.get<String?>('modifie_par', null),
+      updated: updatedBrut == null ? null : DateTime.parse(updatedBrut),
     );
   }
 

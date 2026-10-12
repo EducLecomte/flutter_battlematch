@@ -1,9 +1,10 @@
 // ===========================================================================
 // Cellule de matchup de la matrice (team_dashboard_matrix_matchup_cell.dart)
 // Affiche pour un couple (joueur, adversaire) : le verrou d'appariement,
-// l'appréciation générale (Dicy en gris si absente), la fourchette du score
-// estimé et l'étoile de confiance. Les valeurs restent visibles même quand
-// la cellule est verrouillée ou bloquée par un appariement ailleurs.
+ // l'appréciation générale (Dicy en gris si absente), la fourchette du score
+ // estimé, l'étoile de confiance et un stylo si l'estimation a été modifiée
+ // par un autre membre. Les valeurs restent visibles même quand la cellule
+ // est verrouillée ou bloquée par un appariement ailleurs.
 // ===========================================================================
 
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class MatrixMatchupCell extends StatelessWidget {
   final Estim? existingEstim;
   final Choix? selectedChoice;
   final bool isThisMatched;
+  final bool isModifiedByOther;
   final bool isPlayerMatchedElsewhere;
   final bool isOpponentMatchedElsewhere;
   final void Function(Estim? currentEstim) onCellTap;
@@ -37,6 +39,7 @@ class MatrixMatchupCell extends StatelessWidget {
     this.existingEstim,
     this.selectedChoice,
     required this.isThisMatched,
+    required this.isModifiedByOther,
     required this.isPlayerMatchedElsewhere,
     required this.isOpponentMatchedElsewhere,
     required this.onCellTap,
@@ -108,13 +111,21 @@ class MatrixMatchupCell extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          if (currentEstim != null) ...[
-                            const SizedBox(width: detailElementSpacing),
-                            ConfidenceStarIcon(
-                              confidenceLevel: currentEstim.confiance,
-                              iconSize: confidenceIconSize,
-                            ),
-                          ],
+                           if (currentEstim != null) ...[
+                             const SizedBox(width: detailElementSpacing),
+                             ConfidenceStarIcon(
+                               confidenceLevel: currentEstim.confiance,
+                               iconSize: confidenceIconSize,
+                             ),
+                           ],
+                           if (isModifiedByOther) ...[
+                             const SizedBox(width: detailElementSpacing),
+                             Icon(
+                               Icons.edit,
+                               color: textColor,
+                               size: confidenceIconSize,
+                             ),
+                           ],
                         ],
                       ),
                       if (matchedScoreLabel != null)

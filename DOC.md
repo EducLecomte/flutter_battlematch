@@ -1,5 +1,31 @@
 # DOC.md — Cartographie technique MetaWar
 
+*[2026-10-08] M31 — Permissions d'équipe sur le dashboard + suivi du dernier
+estimateur (RESOLU). Deux volets. (1) Règles PocketBase dans `pb_schema.json`,
+nouveau fichier de référence unique (export live avec les 5 collections
+système, sans `records` ; l'ancien `pocketbase_schema.json` supprimé — un
+import PocketBase est une restauration miroir par ID de collection, destructive
+pour toute collection présente en BDD mais absente du fichier) :
+`estims.createRule`/`updateRule` augmentées d'une branche `membres_editer_estims`
+(membre accepté de l'équipe, même sous-requête `team_membres` que la branche
+capitaine) ; `matched.createRule`/`updateRule`/`deleteRule` augmentées d'une
+branche `membres_matcher` (mêmes conditions) ; `estims.deleteRule` inchangée.
+Côté Flutter : `Team` lit les 3 booléens, `updateTeamOptions` (service teams +
+façade), `TeamDashboardController` (`canToggleMatched`/`canEditEstimateOf`/
+`isCaptainOr...`), 3 bascules dans `team_management_team_settings_panel.dart`,
+bannière de mode du dashboard. **Import manuel du schéma dans l'admin PB
+requis.** (2) Suivi du dernier estimateur : champ `estims.modifie_par`
+(relation `joueurs`, sélection simple, sans cascade, optionnel) horodaté côté
+service — `saveEstim` injecte `modifie_par` = utilisateur connecté
+(`PocketbaseClientHolder.currentUserId`) dans le corps create/update ;
+`Estim.modifieParId` + `Estim.updated` (parse de la chaîne `updated` brute, le
+getter `record.updated` du SDK étant déprécié) ; la feuille de détail affiche
+« Dernière modification par {nom} le {jj/mm/aaaa hh:mm} » (nom résolu via
+`teamMembers`, « inconnu » dans le cas d'un coach accepté, absent de
+`teamMembers`) et la matrice montre un stylo (`Icons.edit`) sur les cellules
+modifiées par un autre joueur que celui de la ligne. Validation :
+`flutter analyze` sans problème, `flutter test` OK hors 3 échecs préexistants
+(fixtures `exemple_tournoi*.txt` absents de l'arbre de travail). Précédent :
 *[2026-09-09] M30 — Point 11 MEMO : section « Paramètres » du profil (thème
 clair/sombre, à-propos, re-visionnage tutoriel) (RESOLU). Nouvelle section
 « Paramètres » (`profile_settings_section.dart`) intégrée en bas de

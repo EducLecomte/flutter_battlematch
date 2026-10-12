@@ -56,12 +56,24 @@ class TeamDashboardEstimActions {
       dashboardController.choiceList,
       estim.choixId,
     );
+    Joueur? modifiePar;
+    final String? modifieParId = estim.modifieParId;
+    if (modifieParId != null) {
+      if (modifieParId == player.id) {
+        modifiePar = player;
+      } else {
+        modifiePar = dashboardController.teamMembers
+            .where((membre) => membre.id == modifieParId)
+            .firstOrNull;
+      }
+    }
     showEstimDetailsSheet(
       context,
       joueur: player,
       opponent: opponent,
       estim: estim,
       choix: choice,
+      modifiePar: modifiePar,
       canEdit: dashboardController.canEditEstimateOf(player),
       onEdit: () => openEstimDialog(context, player, opponent, estim),
     );

@@ -17,6 +17,7 @@ void showEstimDetailsSheet(
   required TeamMeta opponent,
   required Estim estim,
   required Choix? choix,
+  required Joueur? modifiePar,
   required bool canEdit,
   required VoidCallback onEdit,
 }) {
@@ -88,9 +89,30 @@ void showEstimDetailsSheet(
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-              const Text(
-                "Notes / Commentaires du joueur :",
+               const SizedBox(height: 16),
+               if (estim.modifieParId != null) ...[
+                 Row(
+                   mainAxisSize: MainAxisSize.min,
+                   children: [
+                     Icon(
+                       Icons.history,
+                       size: 16,
+                       color: theme.colorScheme.outline,
+                     ),
+                     const SizedBox(width: 6),
+                     Flexible(
+                       child: Text(
+                         "Dernière modification par ${modifiePar?.nom ?? 'inconnu'}"
+                         '${estim.updated != null ? " le ${_formaterDateHeure(estim.updated!)}" : ''}',
+                         style: theme.textTheme.bodySmall,
+                       ),
+                     ),
+                   ],
+                 ),
+                 const SizedBox(height: 16),
+               ],
+               const Text(
+                 "Notes / Commentaires du joueur :",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
@@ -123,4 +145,11 @@ void showEstimDetailsSheet(
       );
     },
   );
+}
+
+String _formaterDateHeure(DateTime date) {
+  final local = date.toLocal();
+  String deuxChiffres(int valeur) => valeur.toString().padLeft(2, '0');
+  return '${deuxChiffres(local.day)}/${deuxChiffres(local.month)}/${local.year} '
+      '${deuxChiffres(local.hour)}h${deuxChiffres(local.minute)}';
 }
