@@ -1,10 +1,10 @@
 // ===========================================================================
 // Cellule de matchup de la matrice (team_dashboard_matrix_matchup_cell.dart)
 // Affiche pour un couple (joueur, adversaire) : le verrou d'appariement,
- // l'appréciation générale (Dicy en gris si absente), la fourchette du score
- // estimé, l'étoile de confiance et un stylo si l'estimation a été modifiée
- // par un autre membre. Les valeurs restent visibles même quand la cellule
- // est verrouillée ou bloquée par un appariement ailleurs.
+// l'appréciation générale (Dicy en gris si absente), la fourchette du score
+// estimé, l'étoile de confiance et un stylo si l'estimation a été modifiée
+// par un autre membre. Les valeurs restent visibles même quand la cellule
+// est verrouillée ou bloquée par un appariement ailleurs.
 // ===========================================================================
 
 import 'package:flutter/material.dart';
@@ -50,8 +50,9 @@ class MatrixMatchupCell extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final currentEstim = existingEstim;
-    final matchedScoreLabel =
-        EstimScoreCalculator.scoreRangeLabel(currentEstim);
+    final matchedScoreLabel = EstimScoreCalculator.scoreRangeLabel(
+      currentEstim,
+    );
     final hasKnownAppreciation = currentEstim != null && selectedChoice != null;
     final appreciationLabel = hasKnownAppreciation
         ? selectedChoice!.short
@@ -75,8 +76,9 @@ class MatrixMatchupCell extends StatelessWidget {
       cellColor = knownAppreciationColor;
       textColor = Colors.white;
     } else if (currentEstim != null) {
-      cellColor = theme.disabledColor
-          .withValues(alpha: unknownAppreciationBackgroundOpacity);
+      cellColor = theme.disabledColor.withValues(
+        alpha: unknownAppreciationBackgroundOpacity,
+      );
     }
 
     return TableCell(
@@ -90,58 +92,58 @@ class MatrixMatchupCell extends StatelessWidget {
             height: matchupCellHeight,
             alignment: Alignment.center,
             child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (isThisMatched) ...[
-                            Icon(
-                              Icons.lock,
-                              color: textColor,
-                              size: matchedLockIconSize,
-                            ),
-                            const SizedBox(width: detailElementSpacing),
-                          ],
-                          Text(
-                            appreciationLabel,
-                            style: TextStyle(
-                              color: textColor,
-                              fontSize: appreciationFontSize,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                           if (currentEstim != null) ...[
-                             const SizedBox(width: detailElementSpacing),
-                             ConfidenceStarIcon(
-                               confidenceLevel: currentEstim.confiance,
-                               iconSize: confidenceIconSize,
-                             ),
-                           ],
-                           if (isModifiedByOther) ...[
-                             const SizedBox(width: detailElementSpacing),
-                             Icon(
-                               Icons.edit,
-                               color: textColor,
-                               size: confidenceIconSize,
-                             ),
-                           ],
-                        ],
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (isThisMatched) ...[
+                      Icon(
+                        Icons.lock,
+                        color: textColor,
+                        size: matchedLockIconSize,
                       ),
-                      if (matchedScoreLabel != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: detailLineSpacing),
-                          child: Text(
-                            matchedScoreLabel,
-                            style: TextStyle(
-                              color: textColor,
-                              fontSize: matchedScoreFontSize,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                      const SizedBox(width: detailElementSpacing),
                     ],
+                    Text(
+                      appreciationLabel,
+                      style: TextStyle(
+                        color: textColor,
+                        fontSize: appreciationFontSize,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (currentEstim != null) ...[
+                      const SizedBox(width: detailElementSpacing),
+                      ConfidenceStarIcon(
+                        confidenceLevel: currentEstim.confiance,
+                        iconSize: confidenceIconSize,
+                      ),
+                    ],
+                    if (isModifiedByOther) ...[
+                      const SizedBox(width: detailElementSpacing),
+                      Icon(
+                        Icons.edit,
+                        color: textColor,
+                        size: confidenceIconSize,
+                      ),
+                    ],
+                  ],
+                ),
+                if (matchedScoreLabel != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: detailLineSpacing),
+                    child: Text(
+                      matchedScoreLabel,
+                      style: TextStyle(
+                        color: textColor,
+                        fontSize: matchedScoreFontSize,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
+              ],
+            ),
           ),
         ),
       ),

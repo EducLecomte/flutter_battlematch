@@ -84,10 +84,10 @@ class TournamentTeamImportService {
 
       final TournamentTextImportSummary summary =
           await TournamentTextImportService.instance.importTeamMeta(
-        team: equipeCible,
-        players: joueursParEquipe[nomEquipe]!,
-        referenceArmies: referenceArmies,
-      );
+            team: equipeCible,
+            players: joueursParEquipe[nomEquipe]!,
+            referenceArmies: referenceArmies,
+          );
       createdTeamMetaCount += summary.createdTeamMetaCount;
       updatedTeamMetaCount += summary.updatedTeamMetaCount;
       unknownArmyCount += summary.unknownArmyCount;

@@ -12,8 +12,7 @@ abstract final class HexColorParser {
 
   /// Renvoie la couleur correspondante, ou `null` si la valeur est invalide.
   static Color? parseHexadecimalColor(String hexadecimalColorValue) {
-    final int? colorValue =
-        parseHexadecimalColorValue(hexadecimalColorValue);
+    final int? colorValue = parseHexadecimalColorValue(hexadecimalColorValue);
     if (colorValue == null) {
       return null;
     }
@@ -23,27 +22,25 @@ abstract final class HexColorParser {
   /// Normalise une valeur en `#RRGGBB` majuscule (format stocké dans
   /// PocketBase), ou `null` si la valeur est invalide.
   static String? normalizeHexadecimalColor(String hexadecimalColorValue) {
-    final int? colorValue =
-        parseHexadecimalColorValue(hexadecimalColorValue);
+    final int? colorValue = parseHexadecimalColorValue(hexadecimalColorValue);
     if (colorValue == null) {
       return null;
     }
-    return '#${colorValue.toRadixString(hexadecimalRadix).padLeft(
-        expectedHexadecimalDigitCount, '0').toUpperCase()}';
+    return '#${colorValue.toRadixString(hexadecimalRadix).padLeft(expectedHexadecimalDigitCount, '0').toUpperCase()}';
   }
 
   /// Convertit une couleur en chaîne `#RRGGBB` majuscule (format stocké dans
   /// PocketBase) ; la composante alpha est ignorée.
   static String colorToHexString(Color color) {
     final int colorValue = 0x00FFFFFF & color.toARGB32();
-    return '#${colorValue.toRadixString(hexadecimalRadix).padLeft(
-        expectedHexadecimalDigitCount, '0').toUpperCase()}';
+    return '#${colorValue.toRadixString(hexadecimalRadix).padLeft(expectedHexadecimalDigitCount, '0').toUpperCase()}';
   }
 
   /// Extrait la valeur entière d'une couleur hexadécimale, ou `null`.
   static int? parseHexadecimalColorValue(String hexadecimalColorValue) {
-    final String normalizedColorValue =
-        hexadecimalColorValue.trim().replaceFirst('#', '');
+    final String normalizedColorValue = hexadecimalColorValue
+        .trim()
+        .replaceFirst('#', '');
     if (normalizedColorValue.length != expectedHexadecimalDigitCount) {
       return null;
     }

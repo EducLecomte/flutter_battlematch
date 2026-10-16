@@ -25,13 +25,9 @@ class PocketbaseDashboardAdversairesService {
   /// Récupère la méta (joueurs + armées + listes) d'une équipe.
   Future<List<TeamMeta>> getTeamMeta(String teamId) async {
     try {
-      final List<RecordModel> records =
-          await _holder.clientPocketBase
-              .collection(collectionNameTeamMeta)
-              .getFullList(
-                filter: _filtreParEquipe(teamId),
-                sort: 'created',
-              );
+      final List<RecordModel> records = await _holder.clientPocketBase
+          .collection(collectionNameTeamMeta)
+          .getFullList(filter: _filtreParEquipe(teamId), sort: 'created');
       return records.map(TeamMeta.fromPocketBaseRecord).toList();
     } catch (exception) {
       debugPrint('Erreur de chargement de la méta d\'équipe : $exception');
@@ -42,10 +38,9 @@ class PocketbaseDashboardAdversairesService {
   /// Nombre de joueurs importés dans la méta d'une équipe : c'est la taille
   /// d'équipe du tournoi (une ligne team_meta = un joueur importé).
   Future<int> compterTeamMeta(String teamId) async {
-    final List<RecordModel> records =
-        await _holder.clientPocketBase
-            .collection(collectionNameTeamMeta)
-            .getFullList(filter: _filtreParEquipe(teamId));
+    final List<RecordModel> records = await _holder.clientPocketBase
+        .collection(collectionNameTeamMeta)
+        .getFullList(filter: _filtreParEquipe(teamId));
     return records.length;
   }
 
@@ -69,12 +64,14 @@ class PocketbaseDashboardAdversairesService {
   ) async {
     final RecordModel record = await _holder.clientPocketBase
         .collection(collectionNameTeamMeta)
-        .create(body: {
-      'team_id': teamId,
-      'armee_id': armeeId,
-      'nom_jo': nomJo,
-      'liste_jo': listeJo,
-    });
+        .create(
+          body: {
+            'team_id': teamId,
+            'armee_id': armeeId,
+            'nom_jo': nomJo,
+            'liste_jo': listeJo,
+          },
+        );
     return TeamMeta.fromPocketBaseRecord(record);
   }
 

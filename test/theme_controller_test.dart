@@ -19,10 +19,13 @@ void main() {
       await ThemeController.instance.init();
     }
 
-    test('sans valeur stockée, le mode est clair (comportement initial)', () async {
-      await initialiserAvec({});
-      expect(ThemeController.instance.themeMode, ThemeMode.light);
-    });
+    test(
+      'sans valeur stockée, le mode est clair (comportement initial)',
+      () async {
+        await initialiserAvec({});
+        expect(ThemeController.instance.themeMode, ThemeMode.light);
+      },
+    );
 
     test('la valeur sombre persistée est rétablie au démarrage', () async {
       await initialiserAvec({
@@ -32,9 +35,7 @@ void main() {
     });
 
     test('une valeur inattendue retombe sur le mode clair', () async {
-      await initialiserAvec({
-        sharedPreferencesKeyThemeMode: 'inattendu',
-      });
+      await initialiserAvec({sharedPreferencesKeyThemeMode: 'inattendu'});
       expect(ThemeController.instance.themeMode, ThemeMode.light);
     });
 

@@ -41,8 +41,10 @@ class NewRecruitImportService {
           return extractPlayersFromTournamentJson(parsedJson);
         }
       } catch (jsonParsingException) {
-        debugPrint('Contenu non parsable en JSON, tentative textuelle : '
-            '$jsonParsingException');
+        debugPrint(
+          'Contenu non parsable en JSON, tentative textuelle : '
+          '$jsonParsingException',
+        );
       }
     }
 

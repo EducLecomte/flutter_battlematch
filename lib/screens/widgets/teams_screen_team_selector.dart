@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../models/models.dart';
 
 /// Affiche le nom de l'équipe active du tournoi (affichage seul, sans
@@ -19,8 +20,10 @@ class TeamsScreenTeamSelector extends StatelessWidget {
           children: [
             const Icon(Icons.group_outlined, color: Colors.blueAccent),
             const SizedBox(width: 12),
-            const Text('Équipe active :',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const Text(
+              'Équipe active :',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
             const SizedBox(width: 16),
             Expanded(
               child: currentTeam == null

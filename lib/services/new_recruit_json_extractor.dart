@@ -28,7 +28,8 @@ List<Map<String, dynamic>> extractPlayersFromTournamentJson(
     for (final dynamic playerItem in playersList) {
       if (playerItem is! Map<String, dynamic>) continue;
 
-      final String playerName = playerItem['name'] as String? ?? 'Joueur adverse';
+      final String playerName =
+          playerItem['name'] as String? ?? 'Joueur adverse';
       final dynamic lists = playerItem['lists'];
 
       String listText = '';

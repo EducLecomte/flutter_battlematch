@@ -27,24 +27,26 @@ class PocketbaseTeamInvitationsService {
 
   /// Récupère les invitations en attente pour un joueur.
   /// Retourne une liste de maps : {'role', 'statut', 'team'}.
-  Future<List<Map<String, dynamic>>> getPendingInvitations(String userId) async {
+  Future<List<Map<String, dynamic>>> getPendingInvitations(
+    String userId,
+  ) async {
     try {
-      final List<RecordModel> records =
-          await _holder.clientPocketBase
-              .collection(collectionNameTeamMembres)
-              .getFullList(
-                filter:
-                    'joueur_id = "${_holder.echapperFiltrePocketBase(userId)}" '
-                    '&& statut = "$statutEnAttente"',
-                expand: 'team_id',
-              );
+      final List<RecordModel> records = await _holder.clientPocketBase
+          .collection(collectionNameTeamMembres)
+          .getFullList(
+            filter:
+                'joueur_id = "${_holder.echapperFiltrePocketBase(userId)}" '
+                '&& statut = "$statutEnAttente"',
+            expand: 'team_id',
+          );
 
       return records.map((RecordModel record) {
         return <String, dynamic>{
           'role': record.get<String>('role'),
           'statut': record.get<String>('statut'),
           'team': Team.fromPocketBaseRecord(
-              record.get<RecordModel>('expand.team_id')),
+            record.get<RecordModel>('expand.team_id'),
+          ),
         };
       }).toList();
     } catch (exception) {
@@ -55,31 +57,39 @@ class PocketbaseTeamInvitationsService {
 
   /// Invite un joueur dans l'équipe (rôle 'player', statut 'pending').
   Future<void> inviteJoueurToTeam(String teamId, String joueurId) async {
-    await _holder.clientPocketBase.collection(collectionNameTeamMembres).create(
-      body: {
-        'team_id': teamId,
-        'joueur_id': joueurId,
-        'role': roleJoueur,
-        'statut': statutEnAttente,
-      },
-    );
+    await _holder.clientPocketBase
+        .collection(collectionNameTeamMembres)
+        .create(
+          body: {
+            'team_id': teamId,
+            'joueur_id': joueurId,
+            'role': roleJoueur,
+            'statut': statutEnAttente,
+          },
+        );
   }
 
   /// Accepte une invitation d'équipe (le joueur invité bascule son statut).
   Future<void> acceptTeamInvite(String teamId, String joueurId) async {
-    final RecordModel recordMembre =
-        await _trouverEnregistrementTeamMembre(teamId, joueurId);
-
-    await _holder.clientPocketBase.collection(collectionNameTeamMembres).update(
-      recordMembre.id,
-      body: {'statut': PocketbaseTeamMembresService.statutAccepte},
+    final RecordModel recordMembre = await _trouverEnregistrementTeamMembre(
+      teamId,
+      joueurId,
     );
+
+    await _holder.clientPocketBase
+        .collection(collectionNameTeamMembres)
+        .update(
+          recordMembre.id,
+          body: {'statut': PocketbaseTeamMembresService.statutAccepte},
+        );
   }
 
   /// Refuse ou retire une invitation / appartenance d'équipe.
   Future<void> declineOrRemoveTeamInvite(String teamId, String joueurId) async {
-    final RecordModel recordMembre =
-        await _trouverEnregistrementTeamMembre(teamId, joueurId);
+    final RecordModel recordMembre = await _trouverEnregistrementTeamMembre(
+      teamId,
+      joueurId,
+    );
 
     await _holder.clientPocketBase
         .collection(collectionNameTeamMembres)
@@ -91,12 +101,13 @@ class PocketbaseTeamInvitationsService {
     String teamId,
     String joueurId,
   ) async {
-    final List<RecordModel> resultats =
-        await _holder.clientPocketBase.collection(collectionNameTeamMembres).getFullList(
-              filter:
-                  'team_id = "${_holder.echapperFiltrePocketBase(teamId)}" '
-                  '&& joueur_id = "${_holder.echapperFiltrePocketBase(joueurId)}"',
-            );
+    final List<RecordModel> resultats = await _holder.clientPocketBase
+        .collection(collectionNameTeamMembres)
+        .getFullList(
+          filter:
+              'team_id = "${_holder.echapperFiltrePocketBase(teamId)}" '
+              '&& joueur_id = "${_holder.echapperFiltrePocketBase(joueurId)}"',
+        );
 
     if (resultats.isEmpty) {
       throw Exception(

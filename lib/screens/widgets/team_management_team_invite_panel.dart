@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../models/models.dart';
 
 class TeamManagementTeamInvitePanel extends StatelessWidget {
@@ -67,7 +68,10 @@ class TeamManagementTeamInvitePanel extends StatelessWidget {
                     title: Text(player.nom),
                     subtitle: Text(player.email),
                     trailing: IconButton(
-                      icon: const Icon(Icons.person_add_alt_1, color: Colors.blueAccent),
+                      icon: const Icon(
+                        Icons.person_add_alt_1,
+                        color: Colors.blueAccent,
+                      ),
                       onPressed: () => onSendInvite(player.id),
                     ),
                   );

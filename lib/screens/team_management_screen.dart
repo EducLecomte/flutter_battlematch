@@ -185,24 +185,25 @@ class _TeamManagementScreenState
                                 candidate,
                                 _refreshUserInterface,
                               ),
-                           onMemberRoleChanged: (player, role) =>
-                               _teamActions.changeMemberRole(
-                                 context,
-                                 _controller,
-                                 player,
-                                 role,
-                                 _refreshUserInterface,
-                               ),
-                           onUpdateOptions: (voirSynthese, matcher, editerEstims) =>
-                               _teamActions.updateTeamOptions(
-                                 context,
-                                 _controller,
-                                 voirSynthese,
-                                 matcher,
-                                 editerEstims,
-                                 _refreshUserInterface,
-                               ),
-                         ),
+                          onMemberRoleChanged: (player, role) =>
+                              _teamActions.changeMemberRole(
+                                context,
+                                _controller,
+                                player,
+                                role,
+                                _refreshUserInterface,
+                              ),
+                          onUpdateOptions:
+                              (voirSynthese, matcher, editerEstims) =>
+                                  _teamActions.updateTeamOptions(
+                                    context,
+                                    _controller,
+                                    voirSynthese,
+                                    matcher,
+                                    editerEstims,
+                                    _refreshUserInterface,
+                                  ),
+                        ),
                 ),
               ],
             );
@@ -276,15 +277,16 @@ class _TeamManagementScreenState
                               role,
                               _refreshUserInterface,
                             ),
-                        onUpdateOptions: (voirSynthese, matcher, editerEstims) =>
-                            _teamActions.updateTeamOptions(
-                              context,
-                              _controller,
-                              voirSynthese,
-                              matcher,
-                              editerEstims,
-                              _refreshUserInterface,
-                            ),
+                        onUpdateOptions:
+                            (voirSynthese, matcher, editerEstims) =>
+                                _teamActions.updateTeamOptions(
+                                  context,
+                                  _controller,
+                                  voirSynthese,
+                                  matcher,
+                                  editerEstims,
+                                  _refreshUserInterface,
+                                ),
                       ),
               ),
             ],

@@ -59,7 +59,9 @@ class _EstimDialogState extends State<EstimDialog> {
 
   Future<void> _submit() async {
     await controller.save(onSave: widget.onSave);
-    if (!controller.isSaving && controller.validationMessage == null && mounted) {
+    if (!controller.isSaving &&
+        controller.validationMessage == null &&
+        mounted) {
       Navigator.of(context).pop();
     }
   }

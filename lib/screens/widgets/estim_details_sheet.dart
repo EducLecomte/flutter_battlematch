@@ -58,21 +58,21 @@ void showEstimDetailsSheet(
                 children: [
                   const Text("Estimation globale : "),
                   Chip(
-                    label: Text(choix?.libelle ?? AppreciationScale.unknownLabel),
-                    backgroundColor: (
-                      HexColorParser.parseHexadecimalColor(
-                        choix?.couleurHex ?? '',
-                      ) ??
-                      theme.disabledColor
-                    ).withValues(alpha: 0.2),
+                    label: Text(
+                      choix?.libelle ?? AppreciationScale.unknownLabel,
+                    ),
+                    backgroundColor:
+                        (HexColorParser.parseHexadecimalColor(
+                                  choix?.couleurHex ?? '',
+                                ) ??
+                                theme.disabledColor)
+                            .withValues(alpha: 0.2),
                   ),
                 ],
               ),
               const SizedBox(height: 8),
               if (scoreRangeLabel != null)
-                Text(
-                  "Score attendu (système 20-0) : $scoreRangeLabel points",
-                ),
+                Text("Score attendu (système 20-0) : $scoreRangeLabel points"),
               const SizedBox(height: 8),
               Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
@@ -89,30 +89,30 @@ void showEstimDetailsSheet(
                   ),
                 ],
               ),
-               const SizedBox(height: 16),
-               if (estim.modifieParId != null) ...[
-                 Row(
-                   mainAxisSize: MainAxisSize.min,
-                   children: [
-                     Icon(
-                       Icons.history,
-                       size: 16,
-                       color: theme.colorScheme.outline,
-                     ),
-                     const SizedBox(width: 6),
-                     Flexible(
-                       child: Text(
-                         "Dernière modification par ${modifiePar?.nom ?? 'inconnu'}"
-                         '${estim.updated != null ? " le ${_formaterDateHeure(estim.updated!)}" : ''}',
-                         style: theme.textTheme.bodySmall,
-                       ),
-                     ),
-                   ],
-                 ),
-                 const SizedBox(height: 16),
-               ],
-               const Text(
-                 "Notes / Commentaires du joueur :",
+              const SizedBox(height: 16),
+              if (estim.modifieParId != null) ...[
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.history,
+                      size: 16,
+                      color: theme.colorScheme.outline,
+                    ),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        "Dernière modification par ${modifiePar?.nom ?? 'inconnu'}"
+                        '${estim.updated != null ? " le ${_formaterDateHeure(estim.updated!)}" : ''}',
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+              ],
+              const Text(
+                "Notes / Commentaires du joueur :",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),

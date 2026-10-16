@@ -31,8 +31,7 @@ class _TutorielGateState extends State<TutorielGate> {
   }
 
   Future<void> _verifierTutoriel() async {
-    final SharedPreferences preferences =
-        await SharedPreferences.getInstance();
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
     final bool tutorielDejaVu =
         preferences.getBool(sharedPreferencesKeyTutorielVu) ?? false;
     if (tutorielDejaVu || !mounted) return;

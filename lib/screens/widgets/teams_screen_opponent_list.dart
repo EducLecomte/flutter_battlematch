@@ -19,8 +19,7 @@ class TeamsScreenOpponentList extends StatefulWidget {
       _TeamsScreenOpponentListState();
 }
 
-class _TeamsScreenOpponentListState
-    extends State<TeamsScreenOpponentList> {
+class _TeamsScreenOpponentListState extends State<TeamsScreenOpponentList> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
@@ -40,8 +39,8 @@ class _TeamsScreenOpponentListState
     final List<Team> filteredOpponentTeams = query.isEmpty
         ? widget.opponentTeams
         : widget.opponentTeams
-            .where((team) => team.nom.toLowerCase().contains(query))
-            .toList();
+              .where((team) => team.nom.toLowerCase().contains(query))
+              .toList();
 
     if (widget.opponentTeams.isEmpty) {
       return const Center(
@@ -96,8 +95,7 @@ class _TeamsScreenOpponentListState
                 )
               : ListView(
                   children: [
-                    for (final Team opponentTeam
-                        in filteredOpponentTeams)
+                    for (final Team opponentTeam in filteredOpponentTeams)
                       Card(
                         margin: const EdgeInsets.only(bottom: 8),
                         child: ListTile(
@@ -110,24 +108,18 @@ class _TeamsScreenOpponentListState
                           ),
                           title: Text(
                             opponentTeam.nom,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: const Text(
                             "Équipe adverse du tournoi — Cliquez pour ouvrir",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                            ),
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
                           ),
                           trailing: const Icon(
                             Icons.chevron_right,
                             color: Colors.grey,
                           ),
-                          onTap: () => widget.onOpponentTeamSelected(
-                            opponentTeam,
-                          ),
+                          onTap: () =>
+                              widget.onOpponentTeamSelected(opponentTeam),
                         ),
                       ),
                   ],

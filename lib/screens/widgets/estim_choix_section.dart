@@ -65,8 +65,9 @@ class EstimChoixSection extends StatelessWidget {
           alignment: WrapAlignment.center,
           children: choices.map((choice) {
             final bool isSelected = selectedChoixId == choice.id;
-            final Color? parsedColor =
-                HexColorParser.parseHexadecimalColor(choice.couleurHex);
+            final Color? parsedColor = HexColorParser.parseHexadecimalColor(
+              choice.couleurHex,
+            );
             final Color badgeColor = parsedColor ?? theme.disabledColor;
 
             return InkWell(

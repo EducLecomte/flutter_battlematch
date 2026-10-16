@@ -17,9 +17,8 @@ Future<void> showTeamsScreenInvitePlayerDialog(
 ) {
   return showDialog<void>(
     context: context,
-    builder: (dialogContext) => _TeamsScreenInvitePlayerDialog(
-      controller: controller,
-    ),
+    builder: (dialogContext) =>
+        _TeamsScreenInvitePlayerDialog(controller: controller),
   );
 }
 
@@ -49,8 +48,7 @@ class _TeamsScreenInvitePlayerDialogState
   }
 
   Future<void> _onSendInvite(String playerId) async {
-    final String? errorMessage =
-        await widget.controller.sendInvite(playerId);
+    final String? errorMessage = await widget.controller.sendInvite(playerId);
     if (!mounted) return;
     if (errorMessage == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -97,35 +95,35 @@ class _TeamsScreenInvitePlayerDialogState
                       child: Center(child: CircularProgressIndicator()),
                     )
                   : results.isEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.all(24),
-                          child: Text(
-                            _searchController.text.trim().isEmpty
-                                ? "Recherchez un joueur à inviter."
-                                : "Aucun joueur trouvé",
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(color: Colors.grey),
+                  ? Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Text(
+                        _searchController.text.trim().isEmpty
+                            ? "Recherchez un joueur à inviter."
+                            : "Aucun joueur trouvé",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                    )
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: results.length,
+                      itemBuilder: (context, index) {
+                        final player = results[index];
+                        return ListTile(
+                          title: Text(player.nom),
+                          subtitle: Text(player.email),
+                          trailing: IconButton(
+                            icon: const Icon(
+                              Icons.person_add_alt_1,
+                              color: Colors.blueAccent,
+                            ),
+                            tooltip: "Inviter",
+                            onPressed: () => _onSendInvite(player.id),
                           ),
-                        )
-                      : ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: results.length,
-                          itemBuilder: (context, index) {
-                            final player = results[index];
-                            return ListTile(
-                              title: Text(player.nom),
-                              subtitle: Text(player.email),
-                              trailing: IconButton(
-                                icon: const Icon(
-                                  Icons.person_add_alt_1,
-                                  color: Colors.blueAccent,
-                                ),
-                                tooltip: "Inviter",
-                                onPressed: () => _onSendInvite(player.id),
-                              ),
-                            );
-                          },
-                        ),
+                        );
+                      },
+                    ),
             ),
           ],
         ),

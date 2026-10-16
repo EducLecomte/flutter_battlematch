@@ -31,8 +31,8 @@ class AdminController {
     try {
       final List<Armee> armeesChargees = await _pocketbaseService.getArmees();
       final List<Choix> choixChargees = await _pocketbaseService.getChoix();
-      final List<Joueur> joueursChargees =
-          await _pocketbaseService.getJoueursAdministration();
+      final List<Joueur> joueursChargees = await _pocketbaseService
+          .getJoueursAdministration();
       listeArmees = armeesChargees;
       listeChoix = choixChargees;
       listeJoueurs = joueursChargees;
@@ -76,8 +76,10 @@ class AdminController {
     }
   }
 
-  Future<String?> deleteArmee(String armeeId,
-      {required VoidCallback onStateChanged}) async {
+  Future<String?> deleteArmee(
+    String armeeId, {
+    required VoidCallback onStateChanged,
+  }) async {
     isWorking = true;
     onStateChanged();
     try {
@@ -101,13 +103,15 @@ class AdminController {
     required String libelle,
     required String short,
     required String couleurHex,
+    int? scoreDefaut,
     required VoidCallback onStateChanged,
   }) async {
     if (libelle.trim().isEmpty || short.trim().isEmpty) {
       return "Libellé et initiales sont obligatoires";
     }
-    final String? couleurNormalisee =
-        HexColorParser.normalizeHexadecimalColor(couleurHex);
+    final String? couleurNormalisee = HexColorParser.normalizeHexadecimalColor(
+      couleurHex,
+    );
     if (couleurNormalisee == null) {
       return "Couleur invalide (format attendu : #RRGGBB)";
     }
@@ -115,11 +119,20 @@ class AdminController {
     onStateChanged();
     try {
       if (choixId.isEmpty) {
-        await _pocketbaseService
-            .createChoix(libelle.trim(), short.trim(), couleurNormalisee);
+        await _pocketbaseService.createChoix(
+          libelle.trim(),
+          short.trim(),
+          couleurNormalisee,
+          scoreDefaut,
+        );
       } else {
         await _pocketbaseService.updateChoix(
-            choixId, libelle.trim(), short.trim(), couleurNormalisee);
+          choixId,
+          libelle.trim(),
+          short.trim(),
+          couleurNormalisee,
+          scoreDefaut,
+        );
       }
       listeChoix = await _pocketbaseService.getChoix();
       return null;
@@ -131,8 +144,10 @@ class AdminController {
     }
   }
 
-  Future<String?> deleteChoix(String choixId,
-      {required VoidCallback onStateChanged}) async {
+  Future<String?> deleteChoix(
+    String choixId, {
+    required VoidCallback onStateChanged,
+  }) async {
     isWorking = true;
     onStateChanged();
     try {
@@ -152,8 +167,10 @@ class AdminController {
   // -------------------------------------------------------------------
 
   Future<String?> toggleJoueurAdmin(
-      Joueur joueur, bool nouvelleValeur,
-      {required VoidCallback onStateChanged}) async {
+    Joueur joueur,
+    bool nouvelleValeur, {
+    required VoidCallback onStateChanged,
+  }) async {
     isWorking = true;
     onStateChanged();
     try {
@@ -168,8 +185,10 @@ class AdminController {
     }
   }
 
-  Future<String?> deleteJoueur(Joueur joueur,
-      {required VoidCallback onStateChanged}) async {
+  Future<String?> deleteJoueur(
+    Joueur joueur, {
+    required VoidCallback onStateChanged,
+  }) async {
     isWorking = true;
     onStateChanged();
     try {

@@ -41,8 +41,7 @@ void main() {
       );
 
       final estimByKey = {
-        'joueur00001${dashboardEstimKeySeparator}adversaire00001':
-            scoredEstim,
+        'joueur00001${dashboardEstimKeySeparator}adversaire00001': scoredEstim,
         'joueur00002${dashboardEstimKeySeparator}adversaire00002':
             unscoredEstim,
       };

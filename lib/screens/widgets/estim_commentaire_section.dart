@@ -8,10 +8,7 @@ import 'package:flutter/material.dart';
 class EstimCommentaireSection extends StatelessWidget {
   final TextEditingController commentController;
 
-  const EstimCommentaireSection({
-    super.key,
-    required this.commentController,
-  });
+  const EstimCommentaireSection({super.key, required this.commentController});
 
   @override
   Widget build(BuildContext context) {

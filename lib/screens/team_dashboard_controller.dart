@@ -27,29 +27,26 @@ class TeamDashboardController {
   // Flux temps réel créés UNE seule fois : des streams récréés à chaque
   // rebuild forceraient des résouscriptions SSE et des refetchs en cascade.
   // Les adversaires (colonnes) = la méta (team_meta) de l'équipe adverse.
-  late final Stream<List<TeamMeta>> opponentsStream =
-      _pocketbaseService.streamTeamMeta(adversaireTeam.id);
-  late final Stream<List<Estim>> estimsStream =
-      _pocketbaseService.streamEstims(team.id, adversaireTeam.id);
-  late final Stream<List<Matched>> matchedStream =
-      _pocketbaseService.streamMatched(team.id, adversaireTeam.id);
+  late final Stream<List<TeamMeta>> opponentsStream = _pocketbaseService
+      .streamTeamMeta(adversaireTeam.id);
+  late final Stream<List<Estim>> estimsStream = _pocketbaseService.streamEstims(
+    team.id,
+    adversaireTeam.id,
+  );
+  late final Stream<List<Matched>> matchedStream = _pocketbaseService
+      .streamMatched(team.id, adversaireTeam.id);
 
-  TeamDashboardController({
-    required this.team,
-    required this.adversaireTeam,
-  });
+  TeamDashboardController({required this.team, required this.adversaireTeam});
 
   // Charge le profil connecté, les armées, les choix et les membres
   // acceptés. Retourne un message d'erreur, ou null en cas de succès.
   Future<String?> loadReferenceAndTeamData() async {
     try {
-      currentUserProfile =
-          await _pocketbaseService.getCurrentJoueurProfile();
+      currentUserProfile = await _pocketbaseService.getCurrentJoueurProfile();
       armies = await _pocketbaseService.getArmees();
       choiceList = await _pocketbaseService.getChoix();
 
-      final memberRecords =
-          await _pocketbaseService.getTeamMembres(team.id);
+      final memberRecords = await _pocketbaseService.getTeamMembres(team.id);
       teamMembers = memberRecords
           .where(
             (memberRecord) =>

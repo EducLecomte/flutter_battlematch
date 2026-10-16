@@ -22,7 +22,8 @@ class TeamManagementTeamDetailPanel extends StatelessWidget {
     bool membresVoirSynthese,
     bool membresMatcher,
     bool membresEditerEstims,
-  ) onUpdateOptions;
+  )
+  onUpdateOptions;
 
   const TeamManagementTeamDetailPanel({
     super.key,

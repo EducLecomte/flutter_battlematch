@@ -25,6 +25,10 @@ abstract final class AppreciationScale {
   /// Symbole d'appréciation générale absente ou inconnue, affiché en gris.
   static const String dicyLabel = 'Dicy';
 
+  /// Renvoie le score par défaut pour un code d'appréciation donné.
+  static int defaultScoreForCode(String code) =>
+      Choix.defaultScoreForShort(code);
+
   /// Renvoie le choix correspondant à un code court exact.
   static Choix? choiceByCode(List<Choix> availableChoices, String code) {
     for (final choice in availableChoices) {

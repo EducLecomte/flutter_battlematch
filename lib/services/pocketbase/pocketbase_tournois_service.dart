@@ -21,10 +21,9 @@ class PocketbaseTournoisService {
   /// Récupère la liste de tous les tournois (du plus récent au plus ancien).
   Future<List<Tournoi>> getTournois() async {
     try {
-      final List<RecordModel> records =
-          await _holder.clientPocketBase
-              .collection(collectionNameTournois)
-              .getFullList(sort: '-created');
+      final List<RecordModel> records = await _holder.clientPocketBase
+          .collection(collectionNameTournois)
+          .getFullList(sort: '-created');
       return records.map(Tournoi.fromPocketBaseRecord).toList();
     } catch (exception) {
       debugPrint('Erreur de chargement des tournois : $exception');
@@ -43,10 +42,7 @@ class PocketbaseTournoisService {
 
     final RecordModel record = await _holder.clientPocketBase
         .collection(collectionNameTournois)
-        .create(body: {
-        'nom': nomNettoye,
-        'created_by': createdById,
-      });
+        .create(body: {'nom': nomNettoye, 'created_by': createdById});
     return Tournoi.fromPocketBaseRecord(record);
   }
 
@@ -67,18 +63,15 @@ class PocketbaseTournoisService {
 
     final RecordModel record = await _holder.clientPocketBase
         .collection(collectionNameTournois)
-        .update(tournoiId, body: {
-      'nom': nomNettoye,
-    });
+        .update(tournoiId, body: {'nom': nomNettoye});
     return Tournoi.fromPocketBaseRecord(record);
   }
 
   /// Marque le tournoi comme ayant reçu son import d'équipes.
   Future<void> markTournoiImportEffectue(String tournoiId) async {
-    await _holder.clientPocketBase.collection(collectionNameTournois).update(
-      tournoiId,
-      body: {'import_effectue': true},
-    );
+    await _holder.clientPocketBase
+        .collection(collectionNameTournois)
+        .update(tournoiId, body: {'import_effectue': true});
   }
 
   /// Supprime un tournoi (équipes/listes adverses purgées en cascade).

@@ -31,8 +31,7 @@ abstract final class MatchedScoreSummaryCalculator {
     var totalScore = zeroScore;
 
     for (final matched in matchedList) {
-      final estimKey =
-          '${matched.joueurId}$keySeparator${matched.teamMetaId}';
+      final estimKey = '${matched.joueurId}$keySeparator${matched.teamMetaId}';
       final midpoint = EstimScoreCalculator.midpointScore(estimByKey[estimKey]);
       if (midpoint != null) {
         scoredCount++;
@@ -40,8 +39,9 @@ abstract final class MatchedScoreSummaryCalculator {
       }
     }
 
-    final averageScore =
-        scoredCount == 0 ? zeroScore : totalScore / scoredCount;
+    final averageScore = scoredCount == 0
+        ? zeroScore
+        : totalScore / scoredCount;
 
     return MatchedScoreSummary(
       matchedCount: matchedList.length,

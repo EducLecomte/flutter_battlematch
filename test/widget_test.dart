@@ -74,7 +74,7 @@ void main() {
         'joueur_id': 'abc123def456ghi',
         'team_id': 'team000001ab',
         'adversaire_team_id': 'adversaire0001ab',
-         'team_meta_id': 'metaadv000001ab',
+        'team_meta_id': 'metaadv000001ab',
         'choix_id': 'choix00000001ab',
       });
 
@@ -94,7 +94,7 @@ void main() {
         'team_id': 'team000001ab',
         'adversaire_team_id': 'adversaire0001ab',
         'joueur_id': 'abc123def456ghi',
-         'team_meta_id': 'metaadv000001ab',
+        'team_meta_id': 'metaadv000001ab',
       });
 
       final matched = Matched.fromPocketBaseRecord(record);

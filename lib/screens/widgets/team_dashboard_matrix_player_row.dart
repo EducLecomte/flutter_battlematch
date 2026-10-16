@@ -81,7 +81,8 @@ class MatrixPlayerRow {
       isThisMatched: pairesJoueurAdversaireAppariees.contains(
         '${player.id}$dashboardEstimKeySeparator${opponent.id}',
       ),
-      isModifiedByOther: existingEstim != null &&
+      isModifiedByOther:
+          existingEstim != null &&
           existingEstim.modifieParId != null &&
           existingEstim.modifieParId != player.id,
       isPlayerMatchedElsewhere: joueurIdsApparies.contains(player.id),

@@ -23,7 +23,10 @@ class AdminArmeesTab extends StatelessWidget {
   });
 
   Future<void> _saveArmee(
-      Armee? existingArmee, String nom, String short) async {
+    Armee? existingArmee,
+    String nom,
+    String short,
+  ) async {
     final String? errorMessage = await controller.saveArmee(
       armeeId: existingArmee?.id ?? '',
       nom: nom,
@@ -33,8 +36,10 @@ class AdminArmeesTab extends StatelessWidget {
     if (errorMessage != null) {
       onMessage(errorMessage, true);
     } else {
-      onMessage(existingArmee == null ? "Armée créée." : "Armée enregistrée.",
-          false);
+      onMessage(
+        existingArmee == null ? "Armée créée." : "Armée enregistrée.",
+        false,
+      );
     }
   }
 
@@ -53,8 +58,9 @@ class AdminArmeesTab extends StatelessWidget {
       builder: (dialogContext) => AlertDialog(
         title: const Text("Supprimer cette armée ?"),
         content: Text(
-            '"${armee.nom}" sera retirée du référentiel. Les métas adverses'
-            ' qui l\'utilisent passeront en inconnues.'),
+          '"${armee.nom}" sera retirée du référentiel. Les métas adverses'
+          ' qui l\'utilisent passeront en inconnues.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -70,8 +76,10 @@ class AdminArmeesTab extends StatelessWidget {
     );
     if (confirmed != true) return;
 
-    final String? errorMessage =
-        await controller.deleteArmee(armee.id, onStateChanged: onStateChanged);
+    final String? errorMessage = await controller.deleteArmee(
+      armee.id,
+      onStateChanged: onStateChanged,
+    );
     if (errorMessage != null) onMessage(errorMessage, true);
   }
 

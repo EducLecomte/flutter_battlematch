@@ -15,10 +15,7 @@ class TeamDashboardScoreSummary extends StatelessWidget {
 
   final MatchedScoreSummary summary;
 
-  const TeamDashboardScoreSummary({
-    super.key,
-    required this.summary,
-  });
+  const TeamDashboardScoreSummary({super.key, required this.summary});
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +24,12 @@ class TeamDashboardScoreSummary extends StatelessWidget {
     }
 
     final theme = Theme.of(context);
-    final totalScoreLabel =
-        summary.totalScore.toStringAsFixed(scoreSummaryDecimalPlaces);
-    final averageScoreLabel =
-        summary.averageScore.toStringAsFixed(scoreSummaryDecimalPlaces);
+    final totalScoreLabel = summary.totalScore.toStringAsFixed(
+      scoreSummaryDecimalPlaces,
+    );
+    final averageScoreLabel = summary.averageScore.toStringAsFixed(
+      scoreSummaryDecimalPlaces,
+    );
 
     return Container(
       width: double.infinity,

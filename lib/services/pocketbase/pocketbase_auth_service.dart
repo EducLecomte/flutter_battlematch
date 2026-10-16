@@ -32,14 +32,16 @@ class PocketbaseAuthService {
   /// Identifiant PocketBase de l'utilisateur actuellement connecté (null si déconnecté).
   String? get currentUserId => _holder.currentUserId;
 
+  /// Indique si l'utilisateur est actuellement authentifié.
+  bool get isUserAuthenticated => _holder.isUserAuthenticated;
+
   /// Flux booléen reflétant l'état d'authentification (pour l'AuthGate).
-  /// Émet immédiatement l'état courant (session persistée restaurée) puis
+  /// Émet immédiatement l'état courant (session persistée restaurée et valide) puis
   /// à chaque changement du authStore.
   late final Stream<bool> authStateChanges = () async* {
-    yield _holder.clientPocketBase.authStore.record != null;
-    await for (final AuthStoreEvent event
-        in _holder.clientPocketBase.authStore.onChange) {
-      yield event.record != null;
+    yield _holder.isUserAuthenticated;
+    await for (final _ in _holder.clientPocketBase.authStore.onChange) {
+      yield _holder.isUserAuthenticated;
     }
   }().asBroadcastStream();
 
@@ -52,15 +54,17 @@ class PocketbaseAuthService {
     required String nom,
   }) async {
     try {
-      await _holder.clientPocketBase.collection(collectionNameJoueurs).create(
-        body: {
-          'email': email,
-          'password': password,
-          'passwordConfirm': password,
-          'emailVisibility': true,
-          'nom': nom,
-        },
-      );
+      await _holder.clientPocketBase
+          .collection(collectionNameJoueurs)
+          .create(
+            body: {
+              'email': email,
+              'password': password,
+              'passwordConfirm': password,
+              'emailVisibility': true,
+              'nom': nom,
+            },
+          );
     } on ClientException catch (exceptionInscription) {
       throw ErreurAuthentification(
         'Inscription impossible : ${_messageServeurPocketBase(exceptionInscription)}',
@@ -71,10 +75,7 @@ class PocketbaseAuthService {
   }
 
   /// Connexion de l'utilisateur (met à jour l'authStore et donc l'AuthGate).
-  Future<void> signIn({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> signIn({required String email, required String password}) async {
     try {
       await _holder.clientPocketBase
           .collection(collectionNameJoueurs)
@@ -108,7 +109,7 @@ class PocketbaseAuthService {
 
   /// Déconnexion
   Future<void> signOut() async {
-    _holder.clientPocketBase.authStore.clear();
+    _holder.handleSessionExpired();
   }
 
   /// Récupère le profil joueur associé à l'utilisateur actuellement connecté.
@@ -132,9 +133,7 @@ class PocketbaseAuthService {
   }
 
   /// Met à jour le pseudo du profil de l'utilisateur courant.
-  Future<void> updateJoueurProfileFields({
-    required String nom,
-  }) async {
+  Future<void> updateJoueurProfileFields({required String nom}) async {
     final String? userId = currentUserId;
     if (userId == null) throw Exception("Non authentifié");
 
@@ -148,11 +147,12 @@ class PocketbaseAuthService {
     final String recherche = _holder.echapperFiltrePocketBase(query.trim());
     if (recherche.isEmpty) return [];
     try {
-      final List<RecordModel> records =
-          await _holder.clientPocketBase.collection(collectionNameJoueurs).getFullList(
-                filter: 'nom ~ "$recherche" || email ~ "$recherche"',
-                sort: 'nom',
-              );
+      final List<RecordModel> records = await _holder.clientPocketBase
+          .collection(collectionNameJoueurs)
+          .getFullList(
+            filter: 'nom ~ "$recherche" || email ~ "$recherche"',
+            sort: 'nom',
+          );
       return records.map(Joueur.fromPocketBaseRecord).toList();
     } catch (exception) {
       debugPrint('Erreur de recherche joueurs : $exception');

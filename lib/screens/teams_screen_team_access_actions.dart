@@ -25,7 +25,10 @@ class TeamsScreenTeamAccessActions {
       await controller.claimTeam(team.id);
       await _reloadTeamsAfterAccess(onStateChanged);
       if (context.mounted) {
-        _showSnackBar(context, "Vous êtes maintenant capitaine de « ${team.nom} ».");
+        _showSnackBar(
+          context,
+          "Vous êtes maintenant capitaine de « ${team.nom} ».",
+        );
       }
     } catch (claimError) {
       if (context.mounted) {

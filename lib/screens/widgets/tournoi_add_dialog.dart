@@ -39,10 +39,7 @@ class TournoiAddDialog extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
           child: const Text("Annuler"),
         ),
-        ElevatedButton(
-          onPressed: onAddSubmitted,
-          child: const Text("Ajouter"),
-        ),
+        ElevatedButton(onPressed: onAddSubmitted, child: const Text("Ajouter")),
       ],
     );
   }

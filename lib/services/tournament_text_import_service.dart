@@ -32,8 +32,8 @@ class TournamentTextImportService {
     required List<Map<String, dynamic>> players,
     required List<Armee> referenceArmies,
   }) async {
-    final List<TeamMeta> metasExistantes =
-        await _pocketbaseDataService.getTeamMeta(team.id);
+    final List<TeamMeta> metasExistantes = await _pocketbaseDataService
+        .getTeamMeta(team.id);
     final Map<String, TeamMeta> metasParNomJo = {
       for (final TeamMeta meta in metasExistantes)
         meta.nomJo.trim().toLowerCase(): meta,
@@ -44,20 +44,22 @@ class TournamentTextImportService {
     int unknownArmyCount = 0;
 
     for (final Map<String, dynamic> importedPlayer in players) {
-      final String nomJo = (importedPlayer['playerName'] as String? ?? '').trim();
+      final String nomJo = (importedPlayer['playerName'] as String? ?? '')
+          .trim();
       if (nomJo.isEmpty) continue;
 
       final Armee? resolvedArmy = NewRecruitImportService.instance
-          .findArmeeByName(importedPlayer['armyName'] as String,
-              referenceArmies);
+          .findArmeeByName(
+            importedPlayer['armyName'] as String,
+            referenceArmies,
+          );
       if (resolvedArmy == null) {
         unknownArmyCount++;
         continue;
       }
 
       final String listeJo = importedPlayer['listText'] as String;
-      final TeamMeta? metaExistante =
-          metasParNomJo[nomJo.trim().toLowerCase()];
+      final TeamMeta? metaExistante = metasParNomJo[nomJo.trim().toLowerCase()];
       if (metaExistante == null) {
         await _pocketbaseDataService.createTeamMeta(
           team.id,

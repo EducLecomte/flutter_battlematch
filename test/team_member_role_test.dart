@@ -133,8 +133,9 @@ void main() {
       expect(rolesChoisis.single, PocketbaseDataService.roleJoueur);
     });
 
-    testWidgets('permet de passer un capitaine coach en capitaine',
-        (tester) async {
+    testWidgets('permet de passer un capitaine coach en capitaine', (
+      tester,
+    ) async {
       final Joueur capitaine = Joueur(
         id: 'capitaine1',
         email: 'capitaine@exemple.fr',

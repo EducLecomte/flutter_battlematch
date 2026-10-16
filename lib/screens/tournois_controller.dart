@@ -60,8 +60,8 @@ class TournoiController {
         .toList();
     await Future.wait(
       tournoisImportes.map((tournoi) async {
-        tailleEquipeParTournoi[tournoi.id] =
-            await _pocketbaseService.getTailleEquipeTournoi(tournoi.id);
+        tailleEquipeParTournoi[tournoi.id] = await _pocketbaseService
+            .getTailleEquipeTournoi(tournoi.id);
       }),
     );
   }

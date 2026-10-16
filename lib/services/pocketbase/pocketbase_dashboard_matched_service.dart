@@ -31,13 +31,14 @@ class PocketbaseDashboardMatchedService {
     String joueurId,
     String teamMetaId,
   ) async {
-    final List<RecordModel> existants =
-        await _holder.clientPocketBase.collection(collectionNameMatched).getFullList(
-               filter:
-                   '${_filtreParEquipes(teamId, adversaireTeamId)} '
-                   '&& joueur_id = "${_holder.echapperFiltrePocketBase(joueurId)}" '
-                   '&& team_meta_id = "${_holder.echapperFiltrePocketBase(teamMetaId)}"',
-             );
+    final List<RecordModel> existants = await _holder.clientPocketBase
+        .collection(collectionNameMatched)
+        .getFullList(
+          filter:
+              '${_filtreParEquipes(teamId, adversaireTeamId)} '
+              '&& joueur_id = "${_holder.echapperFiltrePocketBase(joueurId)}" '
+              '&& team_meta_id = "${_holder.echapperFiltrePocketBase(teamMetaId)}"',
+        );
 
     if (existants.isNotEmpty) {
       // Déjà apparié sur cette case précise -> suppression (déverrouillage)
@@ -47,14 +48,16 @@ class PocketbaseDashboardMatchedService {
     } else {
       // Non apparié -> création (les index uniques bloquent les doublons
       // joueur ou adversaire déjà engagés ailleurs, erreur propagée à l’écran)
-      await _holder.clientPocketBase.collection(collectionNameMatched).create(
-        body: {
-          'team_id': teamId,
-          'adversaire_team_id': adversaireTeamId,
-          'joueur_id': joueurId,
-          'team_meta_id': teamMetaId,
-        },
-      );
+      await _holder.clientPocketBase
+          .collection(collectionNameMatched)
+          .create(
+            body: {
+              'team_id': teamId,
+              'adversaire_team_id': adversaireTeamId,
+              'joueur_id': joueurId,
+              'team_meta_id': teamMetaId,
+            },
+          );
     }
   }
 
@@ -64,12 +67,9 @@ class PocketbaseDashboardMatchedService {
     String adversaireTeamId,
   ) async {
     try {
-      final List<RecordModel> records =
-          await _holder.clientPocketBase
-              .collection(collectionNameMatched)
-              .getFullList(
-                filter: _filtreParEquipes(teamId, adversaireTeamId),
-              );
+      final List<RecordModel> records = await _holder.clientPocketBase
+          .collection(collectionNameMatched)
+          .getFullList(filter: _filtreParEquipes(teamId, adversaireTeamId));
       return records.map(Matched.fromPocketBaseRecord).toList();
     } catch (exception) {
       debugPrint('Erreur de chargement des appariements : $exception');
@@ -78,10 +78,7 @@ class PocketbaseDashboardMatchedService {
   }
 
   /// Flux temps réel des appariements validés d’un duo d’équipes.
-  Stream<List<Matched>> streamMatched(
-    String teamId,
-    String adversaireTeamId,
-  ) {
+  Stream<List<Matched>> streamMatched(String teamId, String adversaireTeamId) {
     return _holder
         .streamCollectionRecords(
           nomCollection: collectionNameMatched,

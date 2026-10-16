@@ -72,6 +72,8 @@ class PocketbaseDataService {
 
   String? get currentUserId => _serviceAuth.currentUserId;
 
+  bool get isUserAuthenticated => _serviceAuth.isUserAuthenticated;
+
   Stream<bool> get authStateChanges => _serviceAuth.authStateChanges;
 
   Future<void> signUp({
@@ -217,13 +219,12 @@ class PocketbaseDataService {
     required bool membresVoirSynthese,
     required bool membresMatcher,
     required bool membresEditerEstims,
-  }) =>
-      _serviceTeams.updateTeamOptions(
-        teamId,
-        membresVoirSynthese: membresVoirSynthese,
-        membresMatcher: membresMatcher,
-        membresEditerEstims: membresEditerEstims,
-      );
+  }) => _serviceTeams.updateTeamOptions(
+    teamId,
+    membresVoirSynthese: membresVoirSynthese,
+    membresMatcher: membresMatcher,
+    membresEditerEstims: membresEditerEstims,
+  );
 
   Future<Team> reclamerEquipeEnCapitaine(String teamId) async {
     await _verifierCapaciteAjoutJoueur(teamId);
@@ -344,15 +345,27 @@ class PocketbaseDataService {
   Future<void> deleteArmee(String armeeId) =>
       _serviceReferentiels.deleteArmee(armeeId);
 
-  Future<Choix> createChoix(String libelle, String short, String couleurHex) =>
-      _serviceReferentiels.createChoix(libelle, short, couleurHex);
+  Future<Choix> createChoix(
+    String libelle,
+    String short,
+    String couleurHex, [
+    int? scoreDefaut,
+  ]) =>
+      _serviceReferentiels.createChoix(libelle, short, couleurHex, scoreDefaut);
 
   Future<Choix> updateChoix(
     String choixId,
     String libelle,
     String short,
-    String couleurHex,
-  ) => _serviceReferentiels.updateChoix(choixId, libelle, short, couleurHex);
+    String couleurHex, [
+    int? scoreDefaut,
+  ]) => _serviceReferentiels.updateChoix(
+    choixId,
+    libelle,
+    short,
+    couleurHex,
+    scoreDefaut,
+  );
 
   Future<void> deleteChoix(String choixId) =>
       _serviceReferentiels.deleteChoix(choixId);

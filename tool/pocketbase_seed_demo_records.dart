@@ -39,9 +39,21 @@ const int amplitudeScoreMaximumDemonstration = 5;
 
 /// Comptes joueurs de démonstration (upsert par email).
 const List<Map<String, String>> referentielJoueursDemo = [
-  {'email': 'martin.demo@pedagogeek.fr', 'nom': 'Martin Dupont', 'short': 'MDUP'},
-  {'email': 'sophie.demo@pedagogeek.fr', 'nom': 'Sophie Martin', 'short': 'SMAR'},
-  {'email': 'lucas.demo@pedagogeek.fr', 'nom': 'Lucas Bernard', 'short': 'LBER'},
+  {
+    'email': 'martin.demo@pedagogeek.fr',
+    'nom': 'Martin Dupont',
+    'short': 'MDUP',
+  },
+  {
+    'email': 'sophie.demo@pedagogeek.fr',
+    'nom': 'Sophie Martin',
+    'short': 'SMAR',
+  },
+  {
+    'email': 'lucas.demo@pedagogeek.fr',
+    'nom': 'Lucas Bernard',
+    'short': 'LBER',
+  },
   {'email': 'emma.demo@pedagogeek.fr', 'nom': 'Emma Petit', 'short': 'EPET'},
   {'email': 'hugo.demo@pedagogeek.fr', 'nom': 'Hugo Moreau', 'short': 'HMOR'},
 ];
@@ -129,11 +141,12 @@ const List<String> commentairesEstimation = [
 ];
 
 Future<void> main(List<String> arguments) async {
-  final String? emailSuperuser = _extraireValeurArgument(arguments, '--email') ??
+  final String? emailSuperuser =
+      _extraireValeurArgument(arguments, '--email') ??
       Platform.environment['PB_SUPERUSER_EMAIL'];
   final String? motDePasseSuperuser =
       _extraireValeurArgument(arguments, '--password') ??
-          Platform.environment['PB_SUPERUSER_PASSWORD'];
+      Platform.environment['PB_SUPERUSER_PASSWORD'];
 
   if (emailSuperuser == null || motDePasseSuperuser == null) {
     stderr.writeln(
@@ -163,12 +176,15 @@ Future<void> main(List<String> arguments) async {
         .collection(collectionNameArmees)
         .getFullList(sort: 'short');
     final Map<String, String> idsArmeesParShort = {
-      for (final RecordModel armee in armees) armee.data['short'] as String: armee.id,
+      for (final RecordModel armee in armees)
+        armee.data['short'] as String: armee.id,
     };
-    final List<RecordModel> choix =
-        await clientPocketBase.collection(collectionNameChoix).getFullList(sort: 'short');
-    final List<RecordModel> choixAppreciation =
-        _filtrerAppreciationsFixes(choix);
+    final List<RecordModel> choix = await clientPocketBase
+        .collection(collectionNameChoix)
+        .getFullList(sort: 'short');
+    final List<RecordModel> choixAppreciation = _filtrerAppreciationsFixes(
+      choix,
+    );
     if (choixAppreciation.isEmpty) {
       stderr.writeln(
         'Aucune appréciation fixe trouvée. '
@@ -195,12 +211,14 @@ Future<void> main(List<String> arguments) async {
       if (existants.isEmpty) {
         final RecordModel cree = await clientPocketBase
             .collection(collectionNameJoueurs)
-            .create(body: <String, dynamic>{
-          'email': email,
-          'password': motDePasseDemonstration,
-          'passwordConfirm': motDePasseDemonstration,
-          ...corps,
-        });
+            .create(
+              body: <String, dynamic>{
+                'email': email,
+                'password': motDePasseDemonstration,
+                'passwordConfirm': motDePasseDemonstration,
+                ...corps,
+              },
+            );
         joueursDemoParEmail[email] = cree;
         nombreJoueursCrees++;
       } else {
@@ -212,15 +230,26 @@ Future<void> main(List<String> arguments) async {
         nombreJoueursMisAJour++;
       }
     }
-    final List<RecordModel> listeJoueursDemo = joueursDemoParEmail.values.toList();
+    final List<RecordModel> listeJoueursDemo = joueursDemoParEmail.values
+        .toList();
 
     // --- Équipe cible ----------------------------------------------------------
-    final RecordModel equipeCible = await _rechercherPremier(clientPocketBase,
-            nomCollection: collectionNameTeams, filtre: 'nom = "Les randomiques"') ??
-        await clientPocketBase.collection(collectionNameTeams).create(
-              body: {'nom': '[DEMO] Équipe Test', 'capitaine_id': listeJoueursDemo.first.id},
+    final RecordModel equipeCible =
+        await _rechercherPremier(
+          clientPocketBase,
+          nomCollection: collectionNameTeams,
+          filtre: 'nom = "Les randomiques"',
+        ) ??
+        await clientPocketBase
+            .collection(collectionNameTeams)
+            .create(
+              body: {
+                'nom': '[DEMO] Équipe Test',
+                'capitaine_id': listeJoueursDemo.first.id,
+              },
             );
-    final String identifiantCapitaine = equipeCible.data['capitaine_id'] as String;
+    final String identifiantCapitaine =
+        equipeCible.data['capitaine_id'] as String;
     final RecordModel capitaine = await clientPocketBase
         .collection(collectionNameJoueurs)
         .getOne(identifiantCapitaine);
@@ -234,33 +263,43 @@ Future<void> main(List<String> arguments) async {
         filtre: 'team_id = "${equipeCible.id}" && joueur_id = "${joueur.id}"',
       );
       if (membreExistant != null) continue;
-      await clientPocketBase.collection(collectionNameTeamMembres).create(body: {
-        'team_id': equipeCible.id,
-        'joueur_id': joueur.id,
-        'role': 'player',
-        'statut': 'accepted',
-      });
+      await clientPocketBase
+          .collection(collectionNameTeamMembres)
+          .create(
+            body: {
+              'team_id': equipeCible.id,
+              'joueur_id': joueur.id,
+              'role': 'player',
+              'statut': 'accepted',
+            },
+          );
       nombreMembresCrees++;
     }
 
     // --- Tournoi cible ----------------------------------------------------------
-    RecordModel? tournoiTrouve = await _rechercherPremier(clientPocketBase,
-        nomCollection: collectionNameTournois,
-        filtre: 'created_by = "$identifiantCapitaine" && nom = "IR2026"');
-    tournoiTrouve ??= await _rechercherPremier(clientPocketBase,
-        nomCollection: collectionNameTournois,
-        filtre: 'created_by = "$identifiantCapitaine"');
-    final RecordModel tournoiCible = tournoiTrouve ??
-        await clientPocketBase.collection(collectionNameTournois).create(
+    RecordModel? tournoiTrouve = await _rechercherPremier(
+      clientPocketBase,
+      nomCollection: collectionNameTournois,
+      filtre: 'created_by = "$identifiantCapitaine" && nom = "IR2026"',
+    );
+    tournoiTrouve ??= await _rechercherPremier(
+      clientPocketBase,
+      nomCollection: collectionNameTournois,
+      filtre: 'created_by = "$identifiantCapitaine"',
+    );
+    final RecordModel tournoiCible =
+        tournoiTrouve ??
+        await clientPocketBase
+            .collection(collectionNameTournois)
+            .create(
               body: {
                 'nom': '[DEMO] Tournoi IR2026',
                 'created_by': identifiantCapitaine,
               },
             );
-    await clientPocketBase.collection(collectionNameTeams).update(
-      equipeCible.id,
-      body: {'tournoi_id': tournoiCible.id},
-    );
+    await clientPocketBase
+        .collection(collectionNameTeams)
+        .update(equipeCible.id, body: {'tournoi_id': tournoiCible.id});
 
     // --- Équipes adverses et listes ---------------------------------------------
     var nombreEquipesAdversesCreees = 0;
@@ -268,38 +307,54 @@ Future<void> main(List<String> arguments) async {
     final List<RecordModel> equipesAdversesDemo = [];
     final Map<String, List<RecordModel>> adversairesParEquipeAdverse = {};
 
-    for (final Map<String, dynamic> definitionEquipeAdverse in definitionEquipesAdversesDemo) {
-      final String nomEquipeAdverse = definitionEquipeAdverse['nom_equipe'] as String;
-      final RecordModel equipeAdverse = await _rechercherPremier(clientPocketBase,
-              nomCollection: collectionNameTeams,
-              filtre:
-                  'tournoi_id = "${tournoiCible.id}" && nom = "$nomEquipeAdverse"') ??
-          await clientPocketBase.collection(collectionNameTeams).create(body: {
-            'tournoi_id': tournoiCible.id,
-            'nom': nomEquipeAdverse,
-          });
+    for (final Map<String, dynamic> definitionEquipeAdverse
+        in definitionEquipesAdversesDemo) {
+      final String nomEquipeAdverse =
+          definitionEquipeAdverse['nom_equipe'] as String;
+      final RecordModel equipeAdverse =
+          await _rechercherPremier(
+            clientPocketBase,
+            nomCollection: collectionNameTeams,
+            filtre:
+                'tournoi_id = "${tournoiCible.id}" && nom = "$nomEquipeAdverse"',
+          ) ??
+          await clientPocketBase
+              .collection(collectionNameTeams)
+              .create(
+                body: {'tournoi_id': tournoiCible.id, 'nom': nomEquipeAdverse},
+              );
       if (_estNouvelleCreation(equipeAdverse)) nombreEquipesAdversesCreees++;
       equipesAdversesDemo.add(equipeAdverse);
 
       final List<RecordModel> adversairesDeLEquipe = [];
-      for (final String shortArmee in definitionEquipeAdverse['shorts_armees'] as List<String>) {
+      for (final String shortArmee
+          in definitionEquipeAdverse['shorts_armees'] as List<String>) {
         final Map<String, String>? adversaireReference =
             adversairesParShortArmee[shortArmee];
         final String? identifiantArmee = idsArmeesParShort[shortArmee];
         if (adversaireReference == null || identifiantArmee == null) {
-          stderr.writeln('Avertissement : armée "$shortArmee" introuvable, adversaire ignoré.');
+          stderr.writeln(
+            'Avertissement : armée "$shortArmee" introuvable, adversaire ignoré.',
+          );
           continue;
         }
-        final RecordModel adversaire = await _rechercherPremier(clientPocketBase,
-                nomCollection: collectionNameTeamMeta,
-                filtre:
-                    'team_id = "${equipeAdverse.id}" && nom_jo = "${adversaireReference['pseudo']}"') ??
-            await clientPocketBase.collection(collectionNameTeamMeta).create(body: {
-              'team_id': equipeAdverse.id,
-              'armee_id': identifiantArmee,
-              'nom_jo': adversaireReference['pseudo'],
-              'liste_jo': adversaireReference['liste'],
-            });
+        final RecordModel adversaire =
+            await _rechercherPremier(
+              clientPocketBase,
+              nomCollection: collectionNameTeamMeta,
+              filtre:
+                  'team_id = "${equipeAdverse.id}" && nom_jo = "${adversaireReference['pseudo']}"',
+            ) ??
+            await clientPocketBase
+                .collection(collectionNameTeamMeta)
+                .create(
+                  body: {
+                    'team_id': equipeAdverse.id,
+                    'armee_id': identifiantArmee,
+                    'nom_jo': adversaireReference['pseudo'],
+                    'liste_jo': adversaireReference['liste'],
+                  },
+                );
         if (_estNouvelleCreation(adversaire)) nombreAdversairesCrees++;
         adversairesDeLEquipe.add(adversaire);
       }
@@ -307,11 +362,19 @@ Future<void> main(List<String> arguments) async {
     }
 
     // --- Estimations pré-remplies (avec trous volontaires) ---------------------
-    final List<RecordModel> estimateurs = <RecordModel>[capitaine, ...listeJoueursDemo];
+    final List<RecordModel> estimateurs = <RecordModel>[
+      capitaine,
+      ...listeJoueursDemo,
+    ];
     var nombreEstimsCreees = 0;
     for (final RecordModel equipeAdverse in equipesAdversesDemo) {
-      final List<RecordModel> adversaires = adversairesParEquipeAdverse[equipeAdverse.id]!;
-      for (var indexJoueur = 0; indexJoueur < estimateurs.length; indexJoueur++) {
+      final List<RecordModel> adversaires =
+          adversairesParEquipeAdverse[equipeAdverse.id]!;
+      for (
+        var indexJoueur = 0;
+        indexJoueur < estimateurs.length;
+        indexJoueur++
+      ) {
         for (var indexAdv = 0; indexAdv < adversaires.length; indexAdv++) {
           // Trous volontaires (~1 case sur 6) pour tester la saisie manuelle.
           if ((indexJoueur + indexAdv) % 6 == 2) continue;
@@ -326,27 +389,38 @@ Future<void> main(List<String> arguments) async {
           );
           if (estimExistante != null) continue;
 
-          final int scoreMin = scoreMinimuDemonstration +
+          final int scoreMin =
+              scoreMinimuDemonstration +
               ((indexJoueur + indexAdv) * pasScoreMinimuDemonstration) %
                   amplitudeScoreMinimuDemonstration;
-          final int scoreMax = (scoreMin +
-                  incrementScoreMaximumDemonstration +
-                  (indexJoueur * indexAdv) %
-                      amplitudeScoreMaximumDemonstration)
-              .clamp(scoreMin, estimScoreMaximum);
-          await clientPocketBase.collection(collectionNameEstims).create(body: {
-            'joueur_id': estimateur.id,
-            'team_id': equipeCible.id,
-             'adversaire_team_id': equipeAdverse.id,
-             'team_meta_id': adversaire.id,
-            'choix_id':
-                choixAppreciation[(indexJoueur * 2 + indexAdv) % choixAppreciation.length].id,
-            'score_min': scoreMin,
-            'score_max': scoreMax,
-            'confiance':
-                estimConfianceOptions[(indexJoueur + indexAdv) % estimConfianceOptions.length],
-            'commentaire': commentairesEstimation[(indexJoueur * 2 + indexAdv) % commentairesEstimation.length],
-          });
+          final int scoreMax =
+              (scoreMin +
+                      incrementScoreMaximumDemonstration +
+                      (indexJoueur * indexAdv) %
+                          amplitudeScoreMaximumDemonstration)
+                  .clamp(scoreMin, estimScoreMaximum);
+          await clientPocketBase
+              .collection(collectionNameEstims)
+              .create(
+                body: {
+                  'joueur_id': estimateur.id,
+                  'team_id': equipeCible.id,
+                  'adversaire_team_id': equipeAdverse.id,
+                  'team_meta_id': adversaire.id,
+                  'choix_id':
+                      choixAppreciation[(indexJoueur * 2 + indexAdv) %
+                              choixAppreciation.length]
+                          .id,
+                  'score_min': scoreMin,
+                  'score_max': scoreMax,
+                  'confiance':
+                      estimConfianceOptions[(indexJoueur + indexAdv) %
+                          estimConfianceOptions.length],
+                  'commentaire':
+                      commentairesEstimation[(indexJoueur * 2 + indexAdv) %
+                          commentairesEstimation.length],
+                },
+              );
           nombreEstimsCreees++;
         }
       }
@@ -355,7 +429,9 @@ Future<void> main(List<String> arguments) async {
     // --- Un appariement exemple sur la première équipe adverse ------------------
     var nombreMatchedCrees = 0;
     if (equipesAdversesDemo.isNotEmpty &&
-        (adversairesParEquipeAdverse[equipesAdversesDemo.first.id]?.isNotEmpty ?? false)) {
+        (adversairesParEquipeAdverse[equipesAdversesDemo.first.id]
+                ?.isNotEmpty ??
+            false)) {
       final RecordModel premiereEquipeAdverse = equipesAdversesDemo.first;
       final RecordModel premierAdversaire =
           adversairesParEquipeAdverse[premiereEquipeAdverse.id]!.first;
@@ -366,12 +442,16 @@ Future<void> main(List<String> arguments) async {
             'team_id = "${equipeCible.id}" && adversaire_team_id = "${premiereEquipeAdverse.id}"',
       );
       if (appariementExistant == null) {
-        await clientPocketBase.collection(collectionNameMatched).create(body: {
-          'team_id': equipeCible.id,
-          'adversaire_team_id': premiereEquipeAdverse.id,
-           'joueur_id': listeJoueursDemo.first.id,
-           'team_meta_id': premierAdversaire.id,
-        });
+        await clientPocketBase
+            .collection(collectionNameMatched)
+            .create(
+              body: {
+                'team_id': equipeCible.id,
+                'adversaire_team_id': premiereEquipeAdverse.id,
+                'joueur_id': listeJoueursDemo.first.id,
+                'team_meta_id': premierAdversaire.id,
+              },
+            );
         nombreMatchedCrees++;
       }
     }
@@ -380,8 +460,8 @@ Future<void> main(List<String> arguments) async {
     stdout.writeln(
       'Jeu de données de démonstration terminé sur $pocketBaseServerUrl :\n'
       '  joueurs démo créés/maj       : $nombreJoueursCrees / $nombreJoueursMisAJour\n'
-       '  membres ajoutés              : $nombreMembresCrees\n'
-       '  équipes adverses créées      : $nombreEquipesAdversesCreees\n'
+      '  membres ajoutés              : $nombreMembresCrees\n'
+      '  équipes adverses créées      : $nombreEquipesAdversesCreees\n'
       '  adversaires créés            : $nombreAdversairesCrees\n'
       '  estimations créées           : $nombreEstimsCreees\n'
       '  appariements exemple créés   : $nombreMatchedCrees\n'
@@ -393,7 +473,9 @@ Future<void> main(List<String> arguments) async {
       );
     }
   } on ClientException catch (exceptionEcriture) {
-    stderr.writeln("Échec d'écriture du jeu de données : ${exceptionEcriture.response}");
+    stderr.writeln(
+      "Échec d'écriture du jeu de données : ${exceptionEcriture.response}",
+    );
     exit(66);
   }
 
@@ -428,9 +510,9 @@ Future<RecordModel?> _rechercherPremier(
 List<RecordModel> _filtrerAppreciationsFixes(List<RecordModel> choixBruts) {
   final List<RecordModel> choixAppreciation = choixBruts
       .where(
-        (choix) =>
-            AppreciationScale.fixedCodes
-                .contains(choix.data['short'] as String),
+        (choix) => AppreciationScale.fixedCodes.contains(
+          choix.data['short'] as String,
+        ),
       )
       .toList();
 
@@ -438,7 +520,9 @@ List<RecordModel> _filtrerAppreciationsFixes(List<RecordModel> choixBruts) {
     (choixGauche, choixDroit) => AppreciationScale.fixedCodes
         .indexOf(choixGauche.data['short'] as String)
         .compareTo(
-          AppreciationScale.fixedCodes.indexOf(choixDroit.data['short'] as String),
+          AppreciationScale.fixedCodes.indexOf(
+            choixDroit.data['short'] as String,
+          ),
         ),
   );
 
@@ -447,8 +531,9 @@ List<RecordModel> _filtrerAppreciationsFixes(List<RecordModel> choixBruts) {
 
 /// Indique si l'enregistrement vient d'être créé (créé à l'instant par ce run).
 bool _estNouvelleCreation(RecordModel enregistrement) {
-  final DateTime? dateCreation =
-      DateTime.tryParse(enregistrement.get<String>('created'));
+  final DateTime? dateCreation = DateTime.tryParse(
+    enregistrement.get<String>('created'),
+  );
   if (dateCreation == null) return false;
   return DateTime.now().difference(dateCreation).inMinutes < 1;
 }

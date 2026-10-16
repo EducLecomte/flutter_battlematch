@@ -37,8 +37,9 @@ class TournoiEditDialog extends StatefulWidget {
 }
 
 class _TournoiEditDialogState extends State<TournoiEditDialog> {
-  late final TextEditingController _nomController =
-      TextEditingController(text: widget.tournoi.nom);
+  late final TextEditingController _nomController = TextEditingController(
+    text: widget.tournoi.nom,
+  );
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -49,9 +50,7 @@ class _TournoiEditDialogState extends State<TournoiEditDialog> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      Navigator.of(context).pop(TournoiEditResult(
-        nom: _nomController.text,
-      ));
+      Navigator.of(context).pop(TournoiEditResult(nom: _nomController.text));
     }
   }
 
@@ -82,10 +81,7 @@ class _TournoiEditDialogState extends State<TournoiEditDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: const Text("Annuler"),
         ),
-        ElevatedButton(
-          onPressed: _submit,
-          child: const Text("Enregistrer"),
-        ),
+        ElevatedButton(onPressed: _submit, child: const Text("Enregistrer")),
       ],
     );
   }

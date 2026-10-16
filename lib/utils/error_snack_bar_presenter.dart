@@ -8,7 +8,9 @@ void showErrorSnackBar(BuildContext buildContext, String messageError) {
 }
 
 void showErrorSnackBarUsingMessenger(
-    ScaffoldMessengerState messenger, String messageError) {
+  ScaffoldMessengerState messenger,
+  String messageError,
+) {
   debugPrint('MetaWar error: $messageError');
 
   messenger.showSnackBar(

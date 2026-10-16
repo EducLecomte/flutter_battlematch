@@ -28,10 +28,15 @@ class TournamentTextImportAnalysisSection extends StatelessWidget {
         if (errorMessage != null)
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
-            child: Text(errorMessage!,
-                style: const TextStyle(color: Colors.redAccent)),
+            child: Text(
+              errorMessage!,
+              style: const TextStyle(color: Colors.redAccent),
+            ),
           ),
-        ElevatedButton(onPressed: onAnalyze, child: const Text('Analyser le texte')),
+        ElevatedButton(
+          onPressed: onAnalyze,
+          child: const Text('Analyser le texte'),
+        ),
       ],
     );
   }

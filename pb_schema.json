@@ -518,6 +518,19 @@
         "type": "text"
       },
       {
+        "help": "Score par défaut dans la fourchette d'estimation (0-20)",
+        "hidden": false,
+        "id": "f_scoredefaut01",
+        "max": 20,
+        "min": 0,
+        "name": "score_defaut",
+        "onlyInt": true,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
         "hidden": false,
         "id": "autodate2990389176",
         "name": "created",

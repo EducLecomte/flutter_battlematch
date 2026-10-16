@@ -42,10 +42,12 @@ class ArmeeEditDialog extends StatefulWidget {
 }
 
 class _ArmeeEditDialogState extends State<ArmeeEditDialog> {
-  late final TextEditingController _nomController =
-      TextEditingController(text: widget.existingArmee?.nom ?? '');
-  late final TextEditingController _shortController =
-      TextEditingController(text: widget.existingArmee?.short ?? '');
+  late final TextEditingController _nomController = TextEditingController(
+    text: widget.existingArmee?.nom ?? '',
+  );
+  late final TextEditingController _shortController = TextEditingController(
+    text: widget.existingArmee?.short ?? '',
+  );
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -57,19 +59,18 @@ class _ArmeeEditDialogState extends State<ArmeeEditDialog> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
-      Navigator.of(context).pop(ArmeeEditResult(
-        nom: _nomController.text,
-        short: _shortController.text,
-      ));
+      Navigator.of(context).pop(
+        ArmeeEditResult(nom: _nomController.text, short: _shortController.text),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.existingArmee == null
-          ? "Ajouter une armée"
-          : "Modifier l'armée"),
+      title: Text(
+        widget.existingArmee == null ? "Ajouter une armée" : "Modifier l'armée",
+      ),
       content: Form(
         key: _formKey,
         child: Column(
@@ -105,10 +106,7 @@ class _ArmeeEditDialogState extends State<ArmeeEditDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: const Text("Annuler"),
         ),
-        ElevatedButton(
-          onPressed: _submit,
-          child: const Text("Enregistrer"),
-        ),
+        ElevatedButton(onPressed: _submit, child: const Text("Enregistrer")),
       ],
     );
   }

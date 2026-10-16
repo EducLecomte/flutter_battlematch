@@ -28,10 +28,7 @@ class PocketbaseTeamsService {
     }
     final RecordModel recordEquipe = await _holder.clientPocketBase
         .collection(collectionNameTeams)
-        .create(body: {
-       'nom': nomNettoye,
-       'tournoi_id': tournoiId,
-     });
+        .create(body: {'nom': nomNettoye, 'tournoi_id': tournoiId});
     return Team.fromPocketBaseRecord(recordEquipe);
   }
 
@@ -46,14 +43,13 @@ class PocketbaseTeamsService {
   /// Récupère toutes les équipes rattachées à un tournoi.
   Future<List<Team>> getTeamsForTournoi(String tournoiId) async {
     try {
-      final List<RecordModel> recordsEquipes =
-          await _holder.clientPocketBase
-              .collection(collectionNameTeams)
-              .getFullList(
-                filter:
-                    'tournoi_id = "${_holder.echapperFiltrePocketBase(tournoiId)}"',
-                sort: 'nom',
-              );
+      final List<RecordModel> recordsEquipes = await _holder.clientPocketBase
+          .collection(collectionNameTeams)
+          .getFullList(
+            filter:
+                'tournoi_id = "${_holder.echapperFiltrePocketBase(tournoiId)}"',
+            sort: 'nom',
+          );
       return recordsEquipes.map(Team.fromPocketBaseRecord).toList();
     } catch (exception) {
       debugPrint('Erreur de chargement des équipes du tournoi : $exception');
@@ -68,19 +64,17 @@ class PocketbaseTeamsService {
         "Le mot de passe ne peut dépasser $teamPasswordMaxLength caractères.",
       );
     }
-    await _holder.clientPocketBase.collection(collectionNameTeams).update(
-      teamId,
-      body: {'mot_de_passe': motDePasse},
-    );
+    await _holder.clientPocketBase
+        .collection(collectionNameTeams)
+        .update(teamId, body: {'mot_de_passe': motDePasse});
     return getTeam(teamId);
   }
 
   /// Met à jour l'identifiant du capitaine d'une équipe.
   Future<Team> updateTeamCapitaineId(String teamId, String capitaineId) async {
-    await _holder.clientPocketBase.collection(collectionNameTeams).update(
-      teamId,
-      body: {'capitaine_id': capitaineId},
-    );
+    await _holder.clientPocketBase
+        .collection(collectionNameTeams)
+        .update(teamId, body: {'capitaine_id': capitaineId});
     return getTeam(teamId);
   }
 
@@ -91,33 +85,35 @@ class PocketbaseTeamsService {
     required bool membresMatcher,
     required bool membresEditerEstims,
   }) async {
-    await _holder.clientPocketBase.collection(collectionNameTeams).update(
-      teamId,
-      body: {
-        'membres_voir_synthese': membresVoirSynthese,
-        'membres_matcher': membresMatcher,
-        'membres_editer_estims': membresEditerEstims,
-      },
-    );
+    await _holder.clientPocketBase
+        .collection(collectionNameTeams)
+        .update(
+          teamId,
+          body: {
+            'membres_voir_synthese': membresVoirSynthese,
+            'membres_matcher': membresMatcher,
+            'membres_editer_estims': membresEditerEstims,
+          },
+        );
     return getTeam(teamId);
   }
 
   /// Récupère les équipes dont l'utilisateur est membre ayant ACCEPTÉ.
   Future<List<Team>> getTeamsForUser(String userId) async {
     try {
-      final List<RecordModel> recordsMembres =
-          await _holder.clientPocketBase
-              .collection(collectionNameTeamMembres)
-              .getFullList(
-                filter:
-                    'joueur_id = "${_holder.echapperFiltrePocketBase(userId)}" '
-                    '&& statut = "accepted"',
-                expand: 'team_id',
-              );
+      final List<RecordModel> recordsMembres = await _holder.clientPocketBase
+          .collection(collectionNameTeamMembres)
+          .getFullList(
+            filter:
+                'joueur_id = "${_holder.echapperFiltrePocketBase(userId)}" '
+                '&& statut = "accepted"',
+            expand: 'team_id',
+          );
 
       return recordsMembres.map((RecordModel recordMembre) {
-        final RecordModel recordEquipe =
-            recordMembre.get<RecordModel>('expand.team_id');
+        final RecordModel recordEquipe = recordMembre.get<RecordModel>(
+          'expand.team_id',
+        );
         return Team.fromPocketBaseRecord(recordEquipe);
       }).toList();
     } catch (exception) {
@@ -128,6 +124,8 @@ class PocketbaseTeamsService {
 
   /// Supprime une équipe (membres et données adverses purgés en cascade).
   Future<void> deleteTeam(String teamId) async {
-    await _holder.clientPocketBase.collection(collectionNameTeams).delete(teamId);
+    await _holder.clientPocketBase
+        .collection(collectionNameTeams)
+        .delete(teamId);
   }
 }

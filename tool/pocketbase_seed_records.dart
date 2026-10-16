@@ -55,11 +55,12 @@ const List<Map<String, String>> referentielChoix = [
 const String collectionNameSuperusers = '_superusers';
 
 Future<void> main(List<String> arguments) async {
-  final String? emailSuperuser = _extraireValeurArgument(arguments, '--email') ??
+  final String? emailSuperuser =
+      _extraireValeurArgument(arguments, '--email') ??
       Platform.environment['PB_SUPERUSER_EMAIL'];
   final String? motDePasseSuperuser =
       _extraireValeurArgument(arguments, '--password') ??
-          Platform.environment['PB_SUPERUSER_PASSWORD'];
+      Platform.environment['PB_SUPERUSER_PASSWORD'];
 
   if (emailSuperuser == null || motDePasseSuperuser == null) {
     stderr.writeln(
@@ -90,8 +91,7 @@ Future<void> main(List<String> arguments) async {
 
   try {
     for (final Map<String, String> definitionArmee in referentielArmees) {
-      final enregistrementExistant =
-          await _rechercherEnregistrementParChamp(
+      final enregistrementExistant = await _rechercherEnregistrementParChamp(
         clientPocketBase,
         nomCollection: collectionNameArmees,
         champRecherche: 'nom',
@@ -99,12 +99,14 @@ Future<void> main(List<String> arguments) async {
       );
 
       if (enregistrementExistant == null) {
-        await clientPocketBase.collection(collectionNameArmees).create(
-              body: Map<String, dynamic>.of(definitionArmee),
-            );
+        await clientPocketBase
+            .collection(collectionNameArmees)
+            .create(body: Map<String, dynamic>.of(definitionArmee));
         nombreArmeesCreees++;
       } else {
-        await clientPocketBase.collection(collectionNameArmees).update(
+        await clientPocketBase
+            .collection(collectionNameArmees)
+            .update(
               enregistrementExistant.id,
               body: Map<String, dynamic>.of(definitionArmee),
             );
@@ -113,8 +115,7 @@ Future<void> main(List<String> arguments) async {
     }
 
     for (final Map<String, String> definitionChoix in referentielChoix) {
-      final enregistrementExistant =
-          await _rechercherEnregistrementParChamp(
+      final enregistrementExistant = await _rechercherEnregistrementParChamp(
         clientPocketBase,
         nomCollection: collectionNameChoix,
         champRecherche: 'short',
@@ -122,12 +123,14 @@ Future<void> main(List<String> arguments) async {
       );
 
       if (enregistrementExistant == null) {
-        await clientPocketBase.collection(collectionNameChoix).create(
-              body: Map<String, dynamic>.of(definitionChoix),
-            );
+        await clientPocketBase
+            .collection(collectionNameChoix)
+            .create(body: Map<String, dynamic>.of(definitionChoix));
         nombreChoixCrees++;
       } else {
-        await clientPocketBase.collection(collectionNameChoix).update(
+        await clientPocketBase
+            .collection(collectionNameChoix)
+            .update(
               enregistrementExistant.id,
               body: Map<String, dynamic>.of(definitionChoix),
             );

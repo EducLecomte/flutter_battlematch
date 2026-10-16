@@ -7,11 +7,7 @@ class Armee {
   final String nom;
   final String short; // BH, DE, etc.
 
-  Armee({
-    required this.id,
-    required this.nom,
-    required this.short,
-  });
+  Armee({required this.id, required this.nom, required this.short});
 
   factory Armee.fromPocketBaseRecord(RecordModel record) {
     return Armee(

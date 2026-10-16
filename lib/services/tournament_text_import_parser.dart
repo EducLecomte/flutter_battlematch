@@ -31,8 +31,9 @@ class TournamentTextImportParser {
       if (lines.isEmpty) continue;
 
       // Détecte si le bloc contient des lignes d'unités d'armée (ex: "785 - Necromancer...")
-      final bool hasUnitLines =
-          lines.any((l) => RegExp(r'^\d+\s*-\s*.+').hasMatch(l));
+      final bool hasUnitLines = lines.any(
+        (l) => RegExp(r'^\d+\s*-\s*.+').hasMatch(l),
+      );
 
       if (!hasUnitLines) {
         // C'est un bloc d'en-tête d'équipe
@@ -61,8 +62,8 @@ class TournamentTextImportParser {
 
       if (headerLines.length == 1) {
         final String header = headerLines.first;
-        final Iterable<RegExpMatch> dashMatches =
-            RegExp(r'\s+[-–—]\s+').allMatches(header);
+        final Iterable<RegExpMatch> dashMatches = RegExp(r'\s+[-–—]\s+')
+            .allMatches(header);
 
         if (dashMatches.isNotEmpty) {
           final RegExpMatch lastMatch = dashMatches.last;
@@ -75,14 +76,14 @@ class TournamentTextImportParser {
           if (matchedArmy != null) {
             armyNameCandidate = matchedArmy.nom;
             // Vérifie si la partie gauche contient "Équipe - Joueur"
-            final Iterable<RegExpMatch> subDashes =
-                RegExp(r'\s+[-–—]\s+').allMatches(left);
+            final Iterable<RegExpMatch> subDashes = RegExp(r'\s+[-–—]\s+')
+                .allMatches(left);
             if (subDashes.isNotEmpty) {
               final RegExpMatch firstMatch = subDashes.first;
-              final String teamPart =
-                  left.substring(0, firstMatch.start).trim();
-              final String playerPart =
-                  left.substring(firstMatch.end).trim();
+              final String teamPart = left
+                  .substring(0, firstMatch.start)
+                  .trim();
+              final String playerPart = left.substring(firstMatch.end).trim();
               if (currentTeamName.isEmpty) currentTeamName = teamPart;
               playerName = playerPart;
             } else {
@@ -106,14 +107,12 @@ class TournamentTextImportParser {
 
         if (armyLine2 != null) {
           armyNameCandidate = armyLine2.nom;
-          final Iterable<RegExpMatch> subDashes =
-              RegExp(r'\s+[-–—]\s+').allMatches(line1);
+          final Iterable<RegExpMatch> subDashes = RegExp(r'\s+[-–—]\s+')
+              .allMatches(line1);
           if (subDashes.isNotEmpty) {
             final RegExpMatch lastDash = subDashes.last;
-            final String teamPart =
-                line1.substring(0, lastDash.start).trim();
-            final String playerPart =
-                line1.substring(lastDash.end).trim();
+            final String teamPart = line1.substring(0, lastDash.start).trim();
+            final String playerPart = line1.substring(lastDash.end).trim();
             if (currentTeamName.isEmpty ||
                 currentTeamName.toLowerCase() == teamPart.toLowerCase()) {
               currentTeamName = teamPart;
@@ -130,10 +129,10 @@ class TournamentTextImportParser {
           armyNameCandidate = armyLine1.nom;
           playerName = line2;
         } else {
-          final RegExpMatch? dashMatchLine2 =
-              RegExp(r'\s+[-–—]\s+').firstMatch(line2);
-          final RegExpMatch? dashMatchLine1 =
-              RegExp(r'\s+[-–—]\s+').firstMatch(line1);
+          final RegExpMatch? dashMatchLine2 = RegExp(r'\s+[-–—]\s+')
+              .firstMatch(line2);
+          final RegExpMatch? dashMatchLine1 = RegExp(r'\s+[-–—]\s+')
+              .firstMatch(line1);
 
           if (dashMatchLine2 != null) {
             currentTeamName = line1;
@@ -157,8 +156,9 @@ class TournamentTextImportParser {
           .findArmeeByName(armyNameCandidate, referenceArmies);
 
       importedPlayers.add(<String, dynamic>{
-        'teamName':
-            currentTeamName.isEmpty ? 'Équipe Importée' : currentTeamName,
+        'teamName': currentTeamName.isEmpty
+            ? 'Équipe Importée'
+            : currentTeamName,
         'playerName': playerName,
         'armyName': resolvedArmy?.nom ?? armyNameCandidate,
         'listText': listLines.join('\n'),

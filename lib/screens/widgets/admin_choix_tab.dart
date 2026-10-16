@@ -23,22 +23,30 @@ class AdminChoixTab extends StatelessWidget {
     required this.onMessage,
   });
 
-  Future<void> _saveChoix(Choix? existingChoix, String libelle, String short,
-      String couleurHex) async {
+  Future<void> _saveChoix(
+    Choix? existingChoix,
+    String libelle,
+    String short,
+    String couleurHex,
+    int? scoreDefaut,
+  ) async {
     final String? errorMessage = await controller.saveChoix(
       choixId: existingChoix?.id ?? '',
       libelle: libelle,
       short: short,
       couleurHex: couleurHex,
+      scoreDefaut: scoreDefaut,
       onStateChanged: onStateChanged,
     );
     if (errorMessage != null) {
       onMessage(errorMessage, true);
     } else {
-      onMessage(existingChoix == null
-          ? "Appréciation créée."
-          : "Appréciation enregistrée.",
-          false);
+      onMessage(
+        existingChoix == null
+            ? "Appréciation créée."
+            : "Appréciation enregistrée.",
+        false,
+      );
     }
   }
 
@@ -46,8 +54,12 @@ class AdminChoixTab extends StatelessWidget {
     showChoixEditDialog(
       dialogContext: context,
       existingChoix: existingChoix,
-      onSave: (String libelle, String short, String couleurHex) =>
-          _saveChoix(existingChoix, libelle, short, couleurHex),
+      onSave: (
+        String libelle,
+        String short,
+        String couleurHex,
+        int? scoreDefaut,
+      ) => _saveChoix(existingChoix, libelle, short, couleurHex, scoreDefaut),
     );
   }
 
@@ -56,8 +68,7 @@ class AdminChoixTab extends StatelessWidget {
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text("Supprimer cette appréciation ?"),
-        content:
-            Text('"${choix.libelle}" sera retirée du référentiel.'),
+        content: Text('"${choix.libelle}" sera retirée du référentiel.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -73,8 +84,10 @@ class AdminChoixTab extends StatelessWidget {
     );
     if (confirmed != true) return;
 
-    final String? errorMessage =
-        await controller.deleteChoix(choix.id, onStateChanged: onStateChanged);
+    final String? errorMessage = await controller.deleteChoix(
+      choix.id,
+      onStateChanged: onStateChanged,
+    );
     if (errorMessage != null) onMessage(errorMessage, true);
   }
 
@@ -113,7 +126,9 @@ class AdminChoixTab extends StatelessWidget {
                         ),
                       ),
                       title: Text(choix.libelle),
-                      subtitle: Text(choix.short),
+                      subtitle: Text(
+                        '${choix.short} • Score par défaut : ${choix.defaultScore}',
+                      ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [

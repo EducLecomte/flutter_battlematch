@@ -36,10 +36,10 @@ class TeamDashboardEstimActions {
           ownTeamId: dashboardController.team.id,
           listChoix: dashboardController.choiceList,
           currentEstim: currentEstim,
-           onSave: (newEstim) async {
-             await _pocketbaseService.saveEstim(newEstim);
-             return null;
-           },
+          onSave: (newEstim) async {
+            await _pocketbaseService.saveEstim(newEstim);
+            return null;
+          },
         );
       },
     );
@@ -91,8 +91,10 @@ class TeamDashboardEstimActions {
     if (dashboardController.currentUserProfile == null) return;
 
     if (dashboardController.canToggleMatched()) {
-      final pairingSucceeded =
-          await dashboardController.toggleMatched(player, opponent);
+      final pairingSucceeded = await dashboardController.toggleMatched(
+        player,
+        opponent,
+      );
       if (!pairingSucceeded && context.mounted) {
         showErrorSnackBar(
           context,

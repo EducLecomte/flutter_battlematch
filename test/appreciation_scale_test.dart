@@ -21,10 +21,15 @@ Choix buildTestChoix(
 void main() {
   group('AppreciationScale', () {
     test('définit les sept codes fixes dans l’ordre stratégique', () {
-      expect(
-        AppreciationScale.fixedCodes,
-        ['--', '-', '=-', '=', '=+', '+', '++'],
-      );
+      expect(AppreciationScale.fixedCodes, [
+        '--',
+        '-',
+        '=-',
+        '=',
+        '=+',
+        '+',
+        '++',
+      ]);
       expect(AppreciationScale.defaultCode, '=');
       expect(AppreciationScale.unknownLabel, '??');
     });
@@ -35,8 +40,7 @@ void main() {
         buildTestChoix('choix00002', 'Égalité', '=', '#F9A825'),
       ];
 
-      final matchedChoice =
-          AppreciationScale.choiceByCode(choiceList, '=');
+      final matchedChoice = AppreciationScale.choiceByCode(choiceList, '=');
 
       expect(matchedChoice?.id, 'choix00002');
       expect(AppreciationScale.choiceByCode(choiceList, 'x'), isNull);
@@ -47,8 +51,10 @@ void main() {
         buildTestChoix('choix00001', 'Défavorable', '-', '#D32F2F'),
       ];
 
-      expect(AppreciationScale.choiceById(choiceList, 'choix00001')?.short,
-          '-');
+      expect(
+        AppreciationScale.choiceById(choiceList, 'choix00001')?.short,
+        '-',
+      );
       expect(AppreciationScale.choiceById(choiceList, 'choix00002'), isNull);
       expect(AppreciationScale.choiceById(choiceList, null), isNull);
     });
@@ -61,13 +67,14 @@ void main() {
         buildTestChoix('choix00004', 'Lég. favor.', '=+', '#7CB342'),
       ];
 
-      final orderedChoiceList =
-          AppreciationScale.orderedChoices(choiceList);
+      final orderedChoiceList = AppreciationScale.orderedChoices(choiceList);
 
-      expect(
-        orderedChoiceList.map((choice) => choice.short).toList(),
-        ['--', '=', '=+', 'x'],
-      );
+      expect(orderedChoiceList.map((choice) => choice.short).toList(), [
+        '--',
+        '=',
+        '=+',
+        'x',
+      ]);
     });
 
     test('filtre uniquement les choix de l’échelle fixe', () {

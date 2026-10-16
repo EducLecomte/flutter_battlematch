@@ -10,12 +10,16 @@ import '../models/models.dart';
 Armee? matchArmeeInReference(String armyName, List<Armee> referenceArmies) {
   if (armyName.isEmpty) return null;
 
-  final String normalizedArmyName =
-      armyName.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '');
+  final String normalizedArmyName = armyName.toLowerCase().replaceAll(
+    RegExp(r'[^a-z0-9]'),
+    '',
+  );
 
   for (final Armee armee in referenceArmies) {
-    final String normalizedArmeeName =
-        armee.nom.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '');
+    final String normalizedArmeeName = armee.nom.toLowerCase().replaceAll(
+      RegExp(r'[^a-z0-9]'),
+      '',
+    );
     final String normalizedShortName = armee.short.toLowerCase();
 
     // Test de correspondance exacte ou approchée

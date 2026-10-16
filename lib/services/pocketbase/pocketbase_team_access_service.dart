@@ -58,7 +58,9 @@ class PocketbaseTeamAccessService {
 
     final Team equipe = await _serviceTeams.getTeam(teamId);
     if (equipe.motDePasse.isEmpty) {
-      throw Exception("Cette équipe n’accepte pas d’adhésion par mot de passe.");
+      throw Exception(
+        "Cette équipe n’accepte pas d’adhésion par mot de passe.",
+      );
     }
     if (await _serviceTeamMembres.aDejaUneAppartenance(teamId, joueurId)) {
       throw Exception("Vous êtes déjà membre de cette équipe.");
@@ -91,19 +93,15 @@ class PocketbaseTeamAccessService {
 
     // L'ancien capitaine redevient un joueur s'il jouait ; s'il n'était que
     // coach, il conserve son rôle de coach.
-    final RecordModel? recordAncienCapitaine =
-        await _serviceTeamMembres.getTeamMembreRecord(
-      teamId,
-      capitaineIdActuel,
-    );
-    final String roleAncienCapitaine = recordAncienCapitaine?.get<String>(
-          'role',
-        ) ??
+    final RecordModel? recordAncienCapitaine = await _serviceTeamMembres
+        .getTeamMembreRecord(teamId, capitaineIdActuel);
+    final String roleAncienCapitaine =
+        recordAncienCapitaine?.get<String>('role') ??
         PocketbaseTeamMembresService.roleJoueur;
     final String roleAncienCapitaineAPres =
         PocketbaseTeamMembresService.estRouleJoueur(roleAncienCapitaine)
-            ? PocketbaseTeamMembresService.roleJoueur
-            : PocketbaseTeamMembresService.roleCoach;
+        ? PocketbaseTeamMembresService.roleJoueur
+        : PocketbaseTeamMembresService.roleCoach;
     await _serviceTeamMembres.mettreAJourRoleMembre(
       teamId,
       capitaineIdActuel,

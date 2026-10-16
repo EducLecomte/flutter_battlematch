@@ -85,9 +85,7 @@ class _TeamDashboardScreenState extends State<TeamDashboardScreen> {
     final isCaptain = _controller.isCaptain();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("vs ${widget.adversaireTeam.nom}"),
-      ),
+      appBar: AppBar(title: Text("vs ${widget.adversaireTeam.nom}")),
       body: TeamDashboardBody(
         controller: _controller,
         estimActions: _estimActions,

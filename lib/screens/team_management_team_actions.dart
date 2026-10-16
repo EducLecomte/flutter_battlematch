@@ -51,7 +51,10 @@ class TeamManagementTeamActions {
       onStateChanged();
       _showSuccessSnackBar(messenger, "Membre retiré.");
     } catch (removeError) {
-      showErrorSnackBarUsingMessenger(messenger, "Erreur de retrait : $removeError");
+      showErrorSnackBarUsingMessenger(
+        messenger,
+        "Erreur de retrait : $removeError",
+      );
     }
   }
 
@@ -64,7 +67,10 @@ class TeamManagementTeamActions {
     VoidCallback onStateChanged,
   ) async {
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
-    final String? errorMessage = await controller.changeMemberRole(player, role);
+    final String? errorMessage = await controller.changeMemberRole(
+      player,
+      role,
+    );
     if (errorMessage != null) {
       onStateChanged();
       showErrorSnackBarUsingMessenger(
@@ -100,7 +106,9 @@ class TeamManagementTeamActions {
       _showSuccessSnackBar(messenger, "Équipe supprimée.");
     } catch (deleteError) {
       showErrorSnackBarUsingMessenger(
-          messenger, "Erreur de suppression : $deleteError");
+        messenger,
+        "Erreur de suppression : $deleteError",
+      );
     }
   }
 
@@ -122,14 +130,18 @@ class TeamManagementTeamActions {
     }
 
     try {
-      final Team updatedTeam = await _pocketbaseService
-          .updateTeamMotDePasse(selectedTeam.id, motDePasse);
+      final Team updatedTeam = await _pocketbaseService.updateTeamMotDePasse(
+        selectedTeam.id,
+        motDePasse,
+      );
       controller.replaceTeam(updatedTeam);
       onStateChanged();
       _showSuccessSnackBar(messenger, "Mot de passe mis à jour.");
     } catch (passwordError) {
       showErrorSnackBarUsingMessenger(
-          messenger, "Erreur du mot de passe : $passwordError");
+        messenger,
+        "Erreur du mot de passe : $passwordError",
+      );
     }
   }
 
@@ -157,7 +169,9 @@ class TeamManagementTeamActions {
       onStateChanged();
     } catch (optionsError) {
       showErrorSnackBarUsingMessenger(
-          messenger, "Erreur des options : $optionsError");
+        messenger,
+        "Erreur des options : $optionsError",
+      );
     }
   }
 
@@ -187,15 +201,19 @@ class TeamManagementTeamActions {
     if (!confirmed) return;
 
     try {
-      final Team updatedTeam = await _pocketbaseService
-          .nommerNouveauCapitaine(selectedTeam.id, candidate.id);
+      final Team updatedTeam = await _pocketbaseService.nommerNouveauCapitaine(
+        selectedTeam.id,
+        candidate.id,
+      );
       controller.replaceTeam(updatedTeam);
       await controller.loadMembersForSelectedTeam();
       onStateChanged();
       _showSuccessSnackBar(messenger, "Capitainerie transférée.");
     } catch (nominationError) {
       showErrorSnackBarUsingMessenger(
-          messenger, "Erreur de nomination : $nominationError");
+        messenger,
+        "Erreur de nomination : $nominationError",
+      );
     }
   }
 

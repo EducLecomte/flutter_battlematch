@@ -22,10 +22,9 @@ class PocketbaseAdminService {
   /// Charge l'ensemble des profils joueurs (accessibles par tout compte
   /// authentifié, filtrage par admin côté interface uniquement).
   Future<List<Joueur>> listJoueurs() async {
-    final List<RecordModel> records =
-        await _holder.clientPocketBase
-            .collection(collectionNameJoueurs)
-            .getFullList(sort: 'nom');
+    final List<RecordModel> records = await _holder.clientPocketBase
+        .collection(collectionNameJoueurs)
+        .getFullList(sort: 'nom');
     return records.map(Joueur.fromPocketBaseRecord).toList();
   }
 
@@ -52,23 +51,22 @@ class PocketbaseAdminService {
       throw Exception('Non authentifié');
     }
 
-    final String escapedUserId =
-        _holder.echapperFiltrePocketBase(currentUserId);
+    final String escapedUserId = _holder.echapperFiltrePocketBase(
+      currentUserId,
+    );
 
-    final List<RecordModel> ownedTeams =
-        await _holder.clientPocketBase
-            .collection(collectionNameTeams)
-            .getFullList(filter: 'capitaine_id = "$escapedUserId"');
+    final List<RecordModel> ownedTeams = await _holder.clientPocketBase
+        .collection(collectionNameTeams)
+        .getFullList(filter: 'capitaine_id = "$escapedUserId"');
     for (final RecordModel ownedTeam in ownedTeams) {
       await _holder.clientPocketBase
           .collection(collectionNameTeams)
           .delete(ownedTeam.id);
     }
 
-    final List<RecordModel> ownedTournaments =
-        await _holder.clientPocketBase
-            .collection(collectionNameTournois)
-            .getFullList(filter: 'created_by = "$escapedUserId"');
+    final List<RecordModel> ownedTournaments = await _holder.clientPocketBase
+        .collection(collectionNameTournois)
+        .getFullList(filter: 'created_by = "$escapedUserId"');
     for (final RecordModel ownedTournament in ownedTournaments) {
       await _holder.clientPocketBase
           .collection(collectionNameTournois)

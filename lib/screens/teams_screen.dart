@@ -48,10 +48,8 @@ class _TeamsScreenState extends State<TeamsScreen> {
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (dashboardContext) => TeamDashboardScreen(
-          team: activeTeam,
-          adversaireTeam: opponentTeam,
-        ),
+        builder: (dashboardContext) =>
+            TeamDashboardScreen(team: activeTeam, adversaireTeam: opponentTeam),
       ),
     );
   }

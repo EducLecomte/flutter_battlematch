@@ -21,10 +21,9 @@ class PocketbaseReferentielsService {
   /// Charge les 16 armées du référentiel.
   Future<List<Armee>> getArmees() async {
     try {
-      final List<RecordModel> records =
-          await _holder.clientPocketBase
-              .collection(collectionNameArmees)
-              .getFullList(sort: 'nom');
+      final List<RecordModel> records = await _holder.clientPocketBase
+          .collection(collectionNameArmees)
+          .getFullList(sort: 'nom');
       return records.map(Armee.fromPocketBaseRecord).toList();
     } catch (exception) {
       debugPrint('Erreur de chargement des armées : $exception');
@@ -35,10 +34,9 @@ class PocketbaseReferentielsService {
   /// Charge les 6 choix d'estimation du référentiel.
   Future<List<Choix>> getChoix() async {
     try {
-      final List<RecordModel> records =
-          await _holder.clientPocketBase
-              .collection(collectionNameChoix)
-              .getFullList(sort: 'id');
+      final List<RecordModel> records = await _holder.clientPocketBase
+          .collection(collectionNameChoix)
+          .getFullList(sort: 'id');
       return records.map(Choix.fromPocketBaseRecord).toList();
     } catch (exception) {
       debugPrint('Erreur de chargement des choix : $exception');
@@ -68,35 +66,54 @@ class PocketbaseReferentielsService {
 
   /// Supprime une armée du référentiel.
   Future<void> deleteArmee(String armeeId) async {
-    await _holder.clientPocketBase.collection(collectionNameArmees).delete(armeeId);
+    await _holder.clientPocketBase
+        .collection(collectionNameArmees)
+        .delete(armeeId);
   }
 
   /// Crée un choix d'estimation dans le référentiel.
   Future<Choix> createChoix(
-      String libelle, String short, String couleurHex) async {
+    String libelle,
+    String short,
+    String couleurHex, [
+    int? scoreDefaut,
+  ]) async {
+    final Map<String, dynamic> body = {
+      'libelle': libelle,
+      'short': short,
+      'couleur_hex': couleurHex,
+      'score_defaut': ?scoreDefaut,
+    };
     final RecordModel recordChoix = await _holder.clientPocketBase
         .collection(collectionNameChoix)
-        .create(
-            body: {'libelle': libelle, 'short': short, 'couleur_hex': couleurHex});
+        .create(body: body);
     return Choix.fromPocketBaseRecord(recordChoix);
   }
 
-  /// Modifie le libellé, l'initiale ou la couleur d'un choix.
-  Future<Choix> updateChoix(String choixId, String libelle, String short,
-      String couleurHex) async {
+  /// Modifie le libellé, l'initiale, la couleur ou le score par défaut d'un choix.
+  Future<Choix> updateChoix(
+    String choixId,
+    String libelle,
+    String short,
+    String couleurHex, [
+    int? scoreDefaut,
+  ]) async {
+    final Map<String, dynamic> body = {
+      'libelle': libelle,
+      'short': short,
+      'couleur_hex': couleurHex,
+      'score_defaut': scoreDefaut,
+    };
     final RecordModel recordChoix = await _holder.clientPocketBase
         .collection(collectionNameChoix)
-        .update(choixId,
-            body: {
-              'libelle': libelle,
-              'short': short,
-              'couleur_hex': couleurHex,
-            });
+        .update(choixId, body: body);
     return Choix.fromPocketBaseRecord(recordChoix);
   }
 
   /// Supprime un choix du référentiel.
   Future<void> deleteChoix(String choixId) async {
-    await _holder.clientPocketBase.collection(collectionNameChoix).delete(choixId);
+    await _holder.clientPocketBase
+        .collection(collectionNameChoix)
+        .delete(choixId);
   }
 }

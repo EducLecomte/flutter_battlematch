@@ -73,10 +73,11 @@ class TeamsScreenController {
       return;
     }
     try {
-      final List<Map<String, dynamic>> members =
-          await _pocketbaseService.getTeamMembres(activeTeamId);
-      _activeTeamMemberIds =
-          members.map((member) => (member['joueur'] as Joueur).id).toSet();
+      final List<Map<String, dynamic>> members = await _pocketbaseService
+          .getTeamMembres(activeTeamId);
+      _activeTeamMemberIds = members
+          .map((member) => (member['joueur'] as Joueur).id)
+          .toSet();
     } catch (_) {
       _activeTeamMemberIds = {};
     }

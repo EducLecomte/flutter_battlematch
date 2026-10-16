@@ -22,13 +22,18 @@ class AdminJoueursTab extends StatelessWidget {
   });
 
   Future<void> _handleToggleAdmin(Joueur joueur, bool nouvelleValeur) async {
-    final String? errorMessage = await controller.toggleJoueurAdmin(joueur,
-        nouvelleValeur, onStateChanged: onStateChanged);
+    final String? errorMessage = await controller.toggleJoueurAdmin(
+      joueur,
+      nouvelleValeur,
+      onStateChanged: onStateChanged,
+    );
     if (errorMessage == null) {
-      onMessage(nouvelleValeur
-          ? "${joueur.nom} est maintenant administrateur."
-          : "Rôle administrateur retiré à ${joueur.nom}.",
-          false);
+      onMessage(
+        nouvelleValeur
+            ? "${joueur.nom} est maintenant administrateur."
+            : "Rôle administrateur retiré à ${joueur.nom}.",
+        false,
+      );
     } else {
       onMessage(errorMessage, true);
     }
@@ -39,9 +44,10 @@ class AdminJoueursTab extends StatelessWidget {
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text("Supprimer ce compte joueur ?"),
-        content:
-            Text('Le compte de "${joueur.nom}" (${joueur.email}) sera'
-                ' définitivement supprimé, ainsi que ses données rattachées.'),
+        content: Text(
+          'Le compte de "${joueur.nom}" (${joueur.email}) sera'
+          ' définitivement supprimé, ainsi que ses données rattachées.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
@@ -57,8 +63,10 @@ class AdminJoueursTab extends StatelessWidget {
     );
     if (confirmed != true) return;
 
-    final String? errorMessage =
-        await controller.deleteJoueur(joueur, onStateChanged: onStateChanged);
+    final String? errorMessage = await controller.deleteJoueur(
+      joueur,
+      onStateChanged: onStateChanged,
+    );
     if (errorMessage != null) onMessage(errorMessage, true);
   }
 
@@ -72,15 +80,12 @@ class AdminJoueursTab extends StatelessWidget {
             itemCount: controller.listeJoueurs.length,
             itemBuilder: (listContext, int index) {
               final Joueur joueur = controller.listeJoueurs[index];
-              final bool estLeCompteConnecte =
-                  joueur.id == currentJoueurId;
+              final bool estLeCompteConnecte = joueur.id == currentJoueurId;
               return ListTile(
-                leading: Icon(joueur.admin
-                    ? Icons.workspace_premium
-                    : Icons.person),
-                title: Text(
-                  joueur.nom,
+                leading: Icon(
+                  joueur.admin ? Icons.workspace_premium : Icons.person,
                 ),
+                title: Text(joueur.nom),
                 subtitle: Text(joueur.email),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -93,7 +98,7 @@ class AdminJoueursTab extends StatelessWidget {
                       onChanged: enLectureSeule
                           ? null
                           : (bool nouvelleValeur) =>
-                              _handleToggleAdmin(joueur, nouvelleValeur),
+                                _handleToggleAdmin(joueur, nouvelleValeur),
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete),

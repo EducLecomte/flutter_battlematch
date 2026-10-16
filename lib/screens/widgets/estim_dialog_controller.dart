@@ -15,9 +15,9 @@ class EstimDialogController extends ChangeNotifier {
   final TextEditingController commentaireController = TextEditingController();
 
   String? selectedChoiceId;
-  String confidenceLevel;
-  int minimumScore;
-  int maximumScore;
+  late String confidenceLevel;
+  late int minimumScore;
+  late int maximumScore;
   bool isSaving;
   String? validationMessage;
 
@@ -27,21 +27,30 @@ class EstimDialogController extends ChangeNotifier {
     required this.ownTeamId,
     required List<Choix> choiceList,
     Estim? existingEstim,
-  })  : orderedChoiceList = AppreciationScale.scaleChoices(choiceList),
-        selectedChoiceId = existingEstim?.choixId ??
-            AppreciationScale.choiceByCode(
-              choiceList,
-              AppreciationScale.defaultCode,
-            )?.id,
-        confidenceLevel = existingEstim?.confiance ?? estimConfianceDefault,
-        minimumScore = existingEstim?.scoreMin ?? estimScoreDefault,
-        maximumScore = existingEstim?.scoreMax ?? estimScoreDefault,
-        isSaving = false {
+  }) : orderedChoiceList = AppreciationScale.scaleChoices(choiceList),
+       isSaving = false {
+    final Choix? defaultChoice = AppreciationScale.choiceByCode(
+      choiceList,
+      AppreciationScale.defaultCode,
+    );
+    selectedChoiceId = existingEstim?.choixId ?? defaultChoice?.id;
+    confidenceLevel = existingEstim?.confiance ?? estimConfianceDefault;
+    minimumScore =
+        existingEstim?.scoreMin ??
+        defaultChoice?.defaultScore ??
+        estimScoreDefault;
+    maximumScore =
+        existingEstim?.scoreMax ??
+        defaultChoice?.defaultScore ??
+        estimScoreDefault;
     commentaireController.text = existingEstim?.commentaire ?? '';
   }
 
   void selectChoice(Choix choice) {
     selectedChoiceId = choice.id;
+    final int defaultScore = choice.defaultScore;
+    minimumScore = defaultScore;
+    maximumScore = defaultScore;
     notifyListeners();
   }
 
@@ -61,8 +70,10 @@ class EstimDialogController extends ChangeNotifier {
   }
 
   String? validationError() {
-    final selectedChoice =
-        AppreciationScale.choiceById(orderedChoiceList, selectedChoiceId);
+    final selectedChoice = AppreciationScale.choiceById(
+      orderedChoiceList,
+      selectedChoiceId,
+    );
     if (selectedChoice == null) {
       return 'Sélectionnez une appréciation.';
     }

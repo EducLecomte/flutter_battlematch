@@ -65,10 +65,7 @@ class ProfileInvitationsSection extends StatelessWidget {
                         tooltip: "Accepter",
                       ),
                       IconButton(
-                        icon: const Icon(
-                          Icons.close,
-                          color: Colors.redAccent,
-                        ),
+                        icon: const Icon(Icons.close, color: Colors.redAccent),
                         onPressed: () => onRespondToInvite(team, false),
                         tooltip: "Refuser",
                       ),

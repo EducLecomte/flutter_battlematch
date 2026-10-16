@@ -13,12 +13,18 @@ import 'screens/refreshable_screen.dart';
 import 'screens/team_management_screen.dart';
 import 'screens/tournois_screen.dart';
 import 'screens/widgets/tutoriel_gate.dart';
+import 'services/pocketbase/pocketbase_client_holder.dart';
 import 'services/pocketbase_data_service.dart';
 import 'services/theme_controller.dart';
+
+final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await ThemeController.instance.init();
+  PocketbaseClientHolder.instance.onSessionExpired = () {
+    appNavigatorKey.currentState?.popUntil((route) => route.isFirst);
+  };
   await PocketbaseDataService.instance.ensureInitialized();
   runApp(const MetawarApp());
 }
@@ -35,6 +41,7 @@ class MetawarApp extends StatelessWidget {
       listenable: ThemeController.instance,
       builder: (BuildContext context, Widget? child) {
         return MaterialApp(
+          navigatorKey: appNavigatorKey,
           title: applicationName,
           themeMode: ThemeController.instance.themeMode,
           theme: ThemeData(
@@ -65,9 +72,13 @@ class AuthGate extends StatelessWidget {
       stream: PocketbaseDataService.instance.authStateChanges,
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         final bool estAuthentifie = snapshot.data ?? false;
-        return estAuthentifie
-            ? const TutorielGate(child: HomeShell())
-            : const LoginScreen();
+        if (!estAuthentifie) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            appNavigatorKey.currentState?.popUntil((route) => route.isFirst);
+          });
+          return const LoginScreen();
+        }
+        return const TutorielGate(child: HomeShell());
       },
     );
   }

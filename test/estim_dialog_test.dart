@@ -6,13 +6,29 @@ import 'package:flutter_metawar/screens/widgets/estim_dialog.dart';
 
 void main() {
   final joueur = Joueur(id: 'j1', email: 'j1@test.com', nom: 'Joueur 1');
-  final opponent = TeamMeta(id: 'opp1', teamId: 't2', armeeId: 'a1', nomJo: 'Adv 1', listeJo: 'Liste');
+  final opponent = TeamMeta(
+    id: 'opp1',
+    teamId: 't2',
+    armeeId: 'a1',
+    nomJo: 'Adv 1',
+    listeJo: 'Liste',
+  );
   final choices = [
-    Choix(id: 'c1', libelle: 'Grand favori', short: '++', couleurHex: '#00FF00'),
+    Choix(
+      id: 'c1',
+      libelle: 'Grand favori',
+      short: '++',
+      couleurHex: '#00FF00',
+    ),
     Choix(id: 'c2', libelle: 'Favori', short: '+', couleurHex: '#7CFC00'),
     Choix(id: 'c3', libelle: 'Egalite', short: '=', couleurHex: '#FFFF00'),
     Choix(id: 'c4', libelle: 'Defavorise', short: '-', couleurHex: '#FFA500'),
-    Choix(id: 'c5', libelle: 'Grand defavorise', short: '--', couleurHex: '#FF0000'),
+    Choix(
+      id: 'c5',
+      libelle: 'Grand defavorise',
+      short: '--',
+      couleurHex: '#FF0000',
+    ),
   ];
   final estim = Estim(
     joueurId: 'j1',
@@ -34,7 +50,10 @@ void main() {
     confiance: 'eleve',
     scoreMin: 10,
     scoreMax: 15,
-    commentaire: List.generate(20, (index) => 'Ligne de note tactique $index détaillant le plan de jeu').join('\n'),
+    commentaire: List.generate(
+      20,
+      (index) => 'Ligne de note tactique $index détaillant le plan de jeu',
+    ).join('\n'),
   );
 
   group('showEstimDetailsSheet défilement et absence d overflow', () {
@@ -53,9 +72,9 @@ void main() {
                   joueur: joueur,
                   opponent: opponent,
                   estim: estim,
-                   choix: choices.first,
-                   modifiePar: null,
-                   canEdit: true,
+                  choix: choices.first,
+                  modifiePar: null,
+                  canEdit: true,
                   onEdit: () {},
                 ),
                 child: const Text('open'),
@@ -72,7 +91,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('affiche la feuille en mode paysage 640x360 sans overflow', (tester) async {
+    testWidgets('affiche la feuille en mode paysage 640x360 sans overflow', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(640, 360);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(() => tester.view.resetPhysicalSize());
@@ -87,9 +108,9 @@ void main() {
                   joueur: joueur,
                   opponent: opponent,
                   estim: estim,
-                   choix: choices.first,
-                   modifiePar: null,
-                   canEdit: true,
+                  choix: choices.first,
+                  modifiePar: null,
+                  canEdit: true,
                   onEdit: () {},
                 ),
                 child: const Text('open'),
@@ -106,7 +127,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('défile sans overflow même avec un commentaire très long', (tester) async {
+    testWidgets('défile sans overflow même avec un commentaire très long', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(400, 600);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(() => tester.view.resetPhysicalSize());
@@ -121,9 +144,9 @@ void main() {
                   joueur: joueur,
                   opponent: opponent,
                   estim: veryLongEstim,
-                   choix: choices.first,
-                   modifiePar: null,
-                   canEdit: true,
+                  choix: choices.first,
+                  modifiePar: null,
+                  canEdit: true,
                   onEdit: () {},
                 ),
                 child: const Text('open'),
@@ -138,7 +161,10 @@ void main() {
 
       expect(tester.takeException(), isNull);
 
-      await tester.drag(find.byType(SingleChildScrollView).last, const Offset(0, -600));
+      await tester.drag(
+        find.byType(SingleChildScrollView).last,
+        const Offset(0, -600),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text("Éditer l'estimation"), findsOneWidget);
@@ -147,7 +173,9 @@ void main() {
   });
 
   group('EstimDialog défilement et absence d overflow', () {
-    testWidgets('s affiche sur écran très étroit 320x600 sans overflow', (tester) async {
+    testWidgets('s affiche sur écran très étroit 320x600 sans overflow', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(320, 600);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(() => tester.view.resetPhysicalSize());
@@ -182,7 +210,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('s affiche sur écran court 640x360 paysage sans overflow', (tester) async {
+    testWidgets('s affiche sur écran court 640x360 paysage sans overflow', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(640, 360);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(() => tester.view.resetPhysicalSize());
@@ -217,7 +247,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('s affiche avec clavier virtuel ouvert sans overflow', (tester) async {
+    testWidgets('s affiche avec clavier virtuel ouvert sans overflow', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(400, 700);
       tester.view.devicePixelRatio = 1.0;
       tester.view.viewInsets = const FakeViewPadding(bottom: 350);

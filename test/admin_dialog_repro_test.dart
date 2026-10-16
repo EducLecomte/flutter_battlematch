@@ -27,7 +27,8 @@ void main() {
                     onPressed: () => showChoixEditDialog(
                       dialogContext: context,
                       existingChoix: null,
-                      onSave: (libelle, short, couleur) async => savedCount++,
+                      onSave: (libelle, short, couleur, scoreDefaut) async =>
+                          savedCount++,
                     ),
                     child: const Text("choix"),
                   ),
@@ -41,8 +42,9 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets("dialogue armee : ouvrir, saisir, enregistrer, rouvrir",
-      (tester) async {
+  testWidgets("dialogue armee : ouvrir, saisir, enregistrer, rouvrir", (
+    tester,
+  ) async {
     await pumpHostPage(tester);
 
     await tester.tap(find.text("armee"));
@@ -82,8 +84,9 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets("dialogue choix : apercou couleur + deux cycles complets",
-      (tester) async {
+  testWidgets("dialogue choix : apercou couleur + deux cycles complets", (
+    tester,
+  ) async {
     await pumpHostPage(tester);
 
     for (int cycle = 0; cycle < 2; cycle++) {
@@ -101,7 +104,9 @@ void main() {
       );
       await tester.enterText(
         find.widgetWithText(
-            TextFormField, "Couleur hexadécimale (ex : #FBC02D)"),
+          TextFormField,
+          "Couleur hexadécimale (ex : #FBC02D)",
+        ),
         "#FBC02D",
       );
       await tester.pump();
@@ -112,8 +117,9 @@ void main() {
     }
   });
 
-  testWidgets("dialogue choix : colorpicker met à jour le champ couleur",
-      (tester) async {
+  testWidgets("dialogue choix : colorpicker met à jour le champ couleur", (
+    tester,
+  ) async {
     await pumpHostPage(tester);
 
     await tester.tap(find.text("choix"));
@@ -142,7 +148,9 @@ void main() {
     expect(find.text("Choisir une couleur"), findsNothing);
 
     final Finder champCouleur = find.widgetWithText(
-        TextFormField, "Couleur hexadécimale (ex : #FBC02D)");
+      TextFormField,
+      "Couleur hexadécimale (ex : #FBC02D)",
+    );
     final TextEditingController controllerChampCouleur =
         (champCouleur.evaluate().single.widget as TextFormField).controller!;
     expect(controllerChampCouleur.text, "#FFC107");
@@ -153,8 +161,9 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets("dialogue choix : annuler puis rouvrir sans exception",
-      (tester) async {
+  testWidgets("dialogue choix : annuler puis rouvrir sans exception", (
+    tester,
+  ) async {
     await pumpHostPage(tester);
 
     await tester.tap(find.text("choix"));

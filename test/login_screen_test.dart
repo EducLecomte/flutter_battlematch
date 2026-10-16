@@ -43,66 +43,75 @@ void main() {
       await tester.testTextInput.receiveAction(TextInputAction.done);
     }
 
-    testWidgets('Entrée sur le champ email déclenche la soumission (connexion)',
-        (tester) async {
-      int soumissions = 0;
-      await pumpFields(tester, onSubmit: () => soumissions++);
+    testWidgets(
+      'Entrée sur le champ email déclenche la soumission (connexion)',
+      (tester) async {
+        int soumissions = 0;
+        await pumpFields(tester, onSubmit: () => soumissions++);
 
-      await tester.enterText(find.byType(TextFormField).at(0), 'gus@test.fr');
-      await validerParEntree(tester);
+        await tester.enterText(find.byType(TextFormField).at(0), 'gus@test.fr');
+        await validerParEntree(tester);
 
-      expect(soumissions, 1);
-      expect(tester.takeException(), isNull);
-    });
+        expect(soumissions, 1);
+        expect(tester.takeException(), isNull);
+      },
+    );
 
     testWidgets(
-        'Entrée sur le champ mot de passe déclenche la soumission (connexion)',
-        (tester) async {
-      int soumissions = 0;
-      await pumpFields(tester, onSubmit: () => soumissions++);
+      'Entrée sur le champ mot de passe déclenche la soumission (connexion)',
+      (tester) async {
+        int soumissions = 0;
+        await pumpFields(tester, onSubmit: () => soumissions++);
 
-      await tester.enterText(find.byType(TextFormField).at(1), 'Secret1!');
-      await validerParEntree(tester);
+        await tester.enterText(find.byType(TextFormField).at(1), 'Secret1!');
+        await validerParEntree(tester);
 
-      expect(soumissions, 1);
-      expect(tester.takeException(), isNull);
-    });
+        expect(soumissions, 1);
+        expect(tester.takeException(), isNull);
+      },
+    );
 
-    testWidgets('Entrée sur le champ pseudo déclenche la soumission (inscription)',
-        (tester) async {
-      int soumissions = 0;
-      await pumpFields(tester, isSignUp: true, onSubmit: () => soumissions++);
+    testWidgets(
+      'Entrée sur le champ pseudo déclenche la soumission (inscription)',
+      (tester) async {
+        int soumissions = 0;
+        await pumpFields(tester, isSignUp: true, onSubmit: () => soumissions++);
 
-      // En mode inscription, le champ pseudo est le troisième champ.
-      await tester.enterText(find.byType(TextFormField).at(2), 'Augustin');
-      await validerParEntree(tester);
+        // En mode inscription, le champ pseudo est le troisième champ.
+        await tester.enterText(find.byType(TextFormField).at(2), 'Augustin');
+        await validerParEntree(tester);
 
-      expect(soumissions, 1);
-      expect(tester.takeException(), isNull);
-    });
+        expect(soumissions, 1);
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 
   group('point 9 MEMO — la validation bloque une soumission invalide', () {
     testWidgets(
-        'Entrée avec email invalide et mot de passe vide affiche les erreurs '
-        'sans tenter de soumettre', (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: LoginScreen()));
-      await tester.pump();
+      'Entrée avec email invalide et mot de passe vide affiche les erreurs '
+      'sans tenter de soumettre',
+      (tester) async {
+        await tester.pumpWidget(const MaterialApp(home: LoginScreen()));
+        await tester.pump();
 
-      // Saisit un email invalide et laisse le mot de passe vide, puis
-      // valide le champ email avec la touche Entrée.
-      await tester.enterText(find.byType(TextFormField).at(0), 'pasunemail');
-      await tester.testTextInput.receiveAction(TextInputAction.done);
-      await tester.pump();
+        // Saisit un email invalide et laisse le mot de passe vide, puis
+        // valide le champ email avec la touche Entrée.
+        await tester.enterText(find.byType(TextFormField).at(0), 'pasunemail');
+        await tester.testTextInput.receiveAction(TextInputAction.done);
+        await tester.pump();
 
-      // Les erreurs de validation des deux champs sont affichées.
-      expect(find.text('Adresse email invalide'), findsOneWidget);
-      expect(find.text('Veuillez renseigner votre mot de passe'),
-          findsOneWidget);
+        // Les erreurs de validation des deux champs sont affichées.
+        expect(find.text('Adresse email invalide'), findsOneWidget);
+        expect(
+          find.text('Veuillez renseigner votre mot de passe'),
+          findsOneWidget,
+        );
 
-      // Aucune tentative de soumission : pas de spinner de chargement.
-      expect(find.byType(CircularProgressIndicator), findsNothing);
-      expect(tester.takeException(), isNull);
-    });
+        // Aucune tentative de soumission : pas de spinner de chargement.
+        expect(find.byType(CircularProgressIndicator), findsNothing);
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 }

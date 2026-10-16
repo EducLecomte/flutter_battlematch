@@ -47,7 +47,8 @@ class ProfileTeamsSection extends StatelessWidget {
           ...userTeams.map((team) {
             final tournoi = userTournois[team.tournoiId];
             final String tournoiNom =
-                tournoi?.nom ?? (team.tournoiId.isEmpty ? "Sans tournoi" : "Tournoi inconnu");
+                tournoi?.nom ??
+                (team.tournoiId.isEmpty ? "Sans tournoi" : "Tournoi inconnu");
             final bool estCapitaine = _estCapitaine(team);
 
             return Card(

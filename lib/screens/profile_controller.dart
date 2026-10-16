@@ -41,16 +41,16 @@ class ProfileController {
     onStateChanged();
 
     try {
-      final Joueur? joueurCourant =
-          await _pocketbaseService.getCurrentJoueurProfile();
+      final Joueur? joueurCourant = await _pocketbaseService
+          .getCurrentJoueurProfile();
       if (joueurCourant != null) {
         joueur = joueurCourant;
         nomController.text = joueurCourant.nom;
 
-        invitations =
-            await _pocketbaseService.getPendingInvitations(joueurCourant.id);
-        userTeams =
-            await _pocketbaseService.getTeamsForUser(joueurCourant.id);
+        invitations = await _pocketbaseService.getPendingInvitations(
+          joueurCourant.id,
+        );
+        userTeams = await _pocketbaseService.getTeamsForUser(joueurCourant.id);
         await _loadUserTournois();
       }
       return null;
@@ -72,8 +72,7 @@ class ProfileController {
 
     for (final String tournoiId in tournoiIds) {
       try {
-        final Tournoi tournoi =
-            await _pocketbaseService.getTournoi(tournoiId);
+        final Tournoi tournoi = await _pocketbaseService.getTournoi(tournoiId);
         userTournois[tournoiId] = tournoi;
       } catch (_) {
         // Tournoi introuvable : on ignore silencieusement.
@@ -119,8 +118,10 @@ class ProfileController {
       if (accept) {
         await _pocketbaseService.acceptTeamInvite(teamId, currentUserId);
       } else {
-        await _pocketbaseService
-            .declineOrRemoveTeamInvite(teamId, currentUserId);
+        await _pocketbaseService.declineOrRemoveTeamInvite(
+          teamId,
+          currentUserId,
+        );
       }
       await loadProfileAndInvitations(onStateChanged: onStateChanged);
       return null;

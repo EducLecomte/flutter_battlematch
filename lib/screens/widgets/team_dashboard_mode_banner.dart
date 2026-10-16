@@ -12,7 +12,7 @@ class TeamDashboardModeBanner extends StatelessWidget {
   final bool canEditEstims;
 
   const TeamDashboardModeBanner({
-    super.key, 
+    super.key,
     required this.isCaptain,
     required this.canViewSummary,
     required this.canToggleMatched,
@@ -37,8 +37,7 @@ class TeamDashboardModeBanner extends StatelessWidget {
           ? theme.colorScheme.primaryContainer.withValues(alpha: 0.2)
           : Colors.grey.withValues(alpha: 0.05),
       child: Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         child: Row(
           children: [
             Icon(
@@ -79,21 +78,21 @@ class TeamDashboardModeBanner extends StatelessWidget {
         text: "Mode Capitaine : Cliquez sur une cellule pour acter un appariement (match). Appui long pour voir les détails et éditer les estimations de votre équipe.",
       );
     }
-    
+
     // Si l'utilisateur a des permissions avancées, mode spécifié
     if (canViewSummary || canToggleMatched || canEditEstims) {
       final List<String> permissions = [];
       if (canViewSummary) permissions.add("voir les colonnes Moy. / Δ");
       if (canToggleMatched) permissions.add("matcher les parties");
       if (canEditEstims) permissions.add("modifier les estimations des autres");
-      
+
       final permissionsText = permissions.join(" et ");
       return _ModeInfo(
         isCaptain: false,
         text: "Mode Membre : Vous pouvez $permissionsText.",
       );
     }
-    
+
     // Sinon, mode joueur standard
     return _ModeInfo(
       isCaptain: false,
@@ -106,8 +105,5 @@ class _ModeInfo {
   final bool isCaptain;
   final String text;
 
-  _ModeInfo({
-    required this.isCaptain,
-    required this.text,
-  });
+  _ModeInfo({required this.isCaptain, required this.text});
 }

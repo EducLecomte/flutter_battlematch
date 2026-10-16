@@ -13,7 +13,8 @@ import 'package:flutter/material.dart';
 /// `HomeShell` (main.dart) détient une [GlobalKey] vers le state de chaque
 /// écran et appelle [refreshOnTabActivated] sur l'écran qui vient de
 /// devenir actif dans la barre de navigation du bas.
-abstract class RefreshableScreenState<T extends StatefulWidget> extends State<T> {
+abstract class RefreshableScreenState<T extends StatefulWidget>
+    extends State<T> {
   /// Recharge les données de l'écran.
   ///
   /// Appelé par `HomeShell` à l'activation de l'onglet correspondant

@@ -23,7 +23,7 @@ const int adminColorPickerColonnes = 6;
 /// échantillons ne doivent pas étirer le dialogue sur toute la largeur).
 const double adminColorPickerGrilleLargeur =
     adminColorPickerColonnes * adminColorPickerSwatchTaille +
-        (adminColorPickerColonnes - 1) * adminColorPickerEspacement;
+    (adminColorPickerColonnes - 1) * adminColorPickerEspacement;
 
 /// Teintes 500 des familles Material proposées par le sélecteur, dans
 /// l'ordre de la palette Material.
@@ -68,8 +68,7 @@ class AdminColorPickerDialog extends StatefulWidget {
   const AdminColorPickerDialog({super.key, this.initialColor});
 
   @override
-  State<AdminColorPickerDialog> createState() =>
-      _AdminColorPickerDialogState();
+  State<AdminColorPickerDialog> createState() => _AdminColorPickerDialogState();
 }
 
 class _AdminColorPickerDialogState extends State<AdminColorPickerDialog> {
@@ -106,8 +105,9 @@ class _AdminColorPickerDialogState extends State<AdminColorPickerDialog> {
     return AlertDialog(
       title: const Text("Choisir une couleur"),
       content: ConstrainedBox(
-        constraints:
-            const BoxConstraints(maxWidth: adminColorPickerGrilleLargeur),
+        constraints: const BoxConstraints(
+          maxWidth: adminColorPickerGrilleLargeur,
+        ),
         child: Wrap(
           spacing: adminColorPickerEspacement,
           runSpacing: adminColorPickerEspacement,

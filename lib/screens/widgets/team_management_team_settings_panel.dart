@@ -121,7 +121,9 @@ class _TeamManagementTeamSettingsPanelState
             const SizedBox(height: 8),
             SwitchListTile(
               title: const Text("Voir les colonnes Moy. / Δ"),
-              subtitle: const Text("Permet aux membres (non-capitaines) de voir les colonnes Moy. / Δ."),
+              subtitle: const Text(
+                "Permet aux membres (non-capitaines) de voir les colonnes Moy. / Δ.",
+              ),
               value: _membresVoirSynthese,
               onChanged: (bool value) {
                 setState(() {
@@ -136,7 +138,9 @@ class _TeamManagementTeamSettingsPanelState
             ),
             SwitchListTile(
               title: const Text("Matcher les parties"),
-              subtitle: const Text("Permet aux membres (non-capitaines) de matcher les parties."),
+              subtitle: const Text(
+                "Permet aux membres (non-capitaines) de matcher les parties.",
+              ),
               value: _membresMatcher,
               onChanged: (bool value) {
                 setState(() {
@@ -151,7 +155,9 @@ class _TeamManagementTeamSettingsPanelState
             ),
             SwitchListTile(
               title: const Text("Modifier les estimations des autres"),
-              subtitle: const Text("Permet aux membres (non-capitaines) de modifier les estimations des autres."),
+              subtitle: const Text(
+                "Permet aux membres (non-capitaines) de modifier les estimations des autres.",
+              ),
               value: _membresEditerEstims,
               onChanged: (bool value) {
                 setState(() {

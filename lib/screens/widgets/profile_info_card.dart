@@ -35,10 +35,7 @@ class ProfileInfoCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Text(
-              "Email : $email",
-              style: const TextStyle(color: Colors.grey),
-            ),
+            Text("Email : $email", style: const TextStyle(color: Colors.grey)),
             const SizedBox(height: 16),
 
             // Champ Pseudo

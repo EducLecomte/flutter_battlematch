@@ -40,14 +40,16 @@ class PocketbaseTeamMembresService {
     String joueurId,
     String role,
   ) async {
-    await _holder.clientPocketBase.collection(collectionNameTeamMembres).create(
-      body: {
-        'team_id': teamId,
-        'joueur_id': joueurId,
-        'role': role,
-        'statut': statutAccepte,
-      },
-    );
+    await _holder.clientPocketBase
+        .collection(collectionNameTeamMembres)
+        .create(
+          body: {
+            'team_id': teamId,
+            'joueur_id': joueurId,
+            'role': role,
+            'statut': statutAccepte,
+          },
+        );
   }
 
   /// Insère l'utilisateur connecté comme membre accepté via mot de passe.
@@ -58,15 +60,17 @@ class PocketbaseTeamMembresService {
     final String? joueurId = _holder.currentUserId;
     if (joueurId == null) throw Exception("Non authentifié");
 
-    await _holder.clientPocketBase.collection(collectionNameTeamMembres).create(
-      body: {
-        'team_id': teamId,
-        'joueur_id': joueurId,
-        'role': roleJoueur,
-        'statut': statutAccepte,
-        'mot_de_passe': motDePasse,
-      },
-    );
+    await _holder.clientPocketBase
+        .collection(collectionNameTeamMembres)
+        .create(
+          body: {
+            'team_id': teamId,
+            'joueur_id': joueurId,
+            'role': roleJoueur,
+            'statut': statutAccepte,
+            'mot_de_passe': motDePasse,
+          },
+        );
   }
 
   /// Récupère l'enregistrement team_membres d'un couple équipe/joueur.
@@ -74,14 +78,13 @@ class PocketbaseTeamMembresService {
     String teamId,
     String joueurId,
   ) async {
-    final List<RecordModel> resultats =
-        await _holder.clientPocketBase
-            .collection(collectionNameTeamMembres)
-            .getFullList(
-              filter:
-                  'team_id = "${_holder.echapperFiltrePocketBase(teamId)}" '
-                  '&& joueur_id = "${_holder.echapperFiltrePocketBase(joueurId)}"',
-            );
+    final List<RecordModel> resultats = await _holder.clientPocketBase
+        .collection(collectionNameTeamMembres)
+        .getFullList(
+          filter:
+              'team_id = "${_holder.echapperFiltrePocketBase(teamId)}" '
+              '&& joueur_id = "${_holder.echapperFiltrePocketBase(joueurId)}"',
+        );
     return resultats.isEmpty ? null : resultats.first;
   }
 
@@ -92,8 +95,10 @@ class PocketbaseTeamMembresService {
 
   /// Rôle courant d'un membre (ou null s'il n'appartient pas à l'équipe).
   Future<String?> getRoleMembre(String teamId, String joueurId) async {
-    final RecordModel? recordMembre =
-        await getTeamMembreRecord(teamId, joueurId);
+    final RecordModel? recordMembre = await getTeamMembreRecord(
+      teamId,
+      joueurId,
+    );
     return recordMembre?.get<String>('role');
   }
 
@@ -102,14 +107,13 @@ class PocketbaseTeamMembresService {
   /// est comparé à la taille d'équipe (nombre de joueurs importés, team_meta)
   /// pour interdire à une équipe de dépasser la taille du tournoi.
   Future<int> compterJoueursEquipe(String teamId) async {
-    final List<RecordModel> records =
-        await _holder.clientPocketBase
-            .collection(collectionNameTeamMembres)
-            .getFullList(
-              filter:
-                  'team_id = "${_holder.echapperFiltrePocketBase(teamId)}" '
-                  '&& role != "$roleCoach"',
-            );
+    final List<RecordModel> records = await _holder.clientPocketBase
+        .collection(collectionNameTeamMembres)
+        .getFullList(
+          filter:
+              'team_id = "${_holder.echapperFiltrePocketBase(teamId)}" '
+              '&& role != "$roleCoach"',
+        );
     return records.length;
   }
 
@@ -121,17 +125,16 @@ class PocketbaseTeamMembresService {
     String joueurId,
     String? teamMetaId,
   ) async {
-    final RecordModel? recordMembre =
-        await getTeamMembreRecord(teamId, joueurId);
+    final RecordModel? recordMembre = await getTeamMembreRecord(
+      teamId,
+      joueurId,
+    );
     if (recordMembre == null) {
       throw Exception("Aucune appartenance trouvée pour ce joueur.");
     }
     await _holder.clientPocketBase
         .collection(collectionNameTeamMembres)
-        .update(
-          recordMembre.id,
-          body: {'team_meta_id': teamMetaId ?? ''},
-        );
+        .update(recordMembre.id, body: {'team_meta_id': teamMetaId ?? ''});
   }
 
   /// Met à jour le rôle d'un membre d'équipe existant.
@@ -140,8 +143,10 @@ class PocketbaseTeamMembresService {
     String joueurId,
     String role,
   ) async {
-    final RecordModel? recordMembre =
-        await getTeamMembreRecord(teamId, joueurId);
+    final RecordModel? recordMembre = await getTeamMembreRecord(
+      teamId,
+      joueurId,
+    );
     if (recordMembre == null) {
       throw Exception("Aucune appartenance trouvée pour ce joueur.");
     }
@@ -154,21 +159,20 @@ class PocketbaseTeamMembresService {
   /// Retourne une liste de maps : {'role', 'statut', 'joueur'}.
   Future<List<Map<String, dynamic>>> getTeamMembres(String teamId) async {
     try {
-      final List<RecordModel> records =
-          await _holder.clientPocketBase
-              .collection(collectionNameTeamMembres)
-              .getFullList(
-                filter:
-                    'team_id = "${_holder.echapperFiltrePocketBase(teamId)}"',
-                expand: 'joueur_id',
-              );
+      final List<RecordModel> records = await _holder.clientPocketBase
+          .collection(collectionNameTeamMembres)
+          .getFullList(
+            filter: 'team_id = "${_holder.echapperFiltrePocketBase(teamId)}"',
+            expand: 'joueur_id',
+          );
 
       return records.map((RecordModel record) {
         return <String, dynamic>{
           'role': record.get<String>('role'),
           'statut': record.get<String>('statut'),
           'joueur': Joueur.fromPocketBaseRecord(
-              record.get<RecordModel>('expand.joueur_id')),
+            record.get<RecordModel>('expand.joueur_id'),
+          ),
         };
       }).toList();
     } catch (exception) {

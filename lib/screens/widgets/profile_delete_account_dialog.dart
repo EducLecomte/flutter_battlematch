@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-Future<bool> showProfileDeleteAccountConfirmation(
-  BuildContext buildContext,
-) {
+Future<bool> showProfileDeleteAccountConfirmation(BuildContext buildContext) {
   return showDialog<bool>(
     context: buildContext,
     builder: (dialogContext) => AlertDialog(
